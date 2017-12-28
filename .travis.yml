@@ -5,6 +5,11 @@ sudo: required
 jdk:
   - oraclejdk9
 
+before_install:
+  - gvm list gradle
+  - gvm install gradle 4.2.1
+  - gvm default gradle 4.2.1
+
 script:
   - sudo chmod +x gradlew
-  - gradle clean build  --gradle-version 4.2.1
+  - gradle clean build
