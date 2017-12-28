@@ -57,5 +57,4 @@ jacocoTestReport {
 check.dependsOn jacocoTestReport
 
 //apply plugin: 'coveralls'
-
 //coveralls.jacocoReportPath = './build/test-results/junit-platform/TEST-junit-jupiter.xml'
