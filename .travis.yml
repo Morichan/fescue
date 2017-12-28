@@ -20,8 +20,6 @@ install:
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ../src/main/resources/Classes.g4
   - mkdir ../src/main/java/parser/
   - cp * ../src/main/java/parser/.
-
-after_install:
   - cd ../
   - rm -rf ./parserWorkshop/
 
