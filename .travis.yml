@@ -22,7 +22,3 @@ install:
   - cp * ../src/main/java/parser/.
   - cd ../
   - rm -rf ./parserWorkshop/
-
-script:
-  - sudo chmod +x gradlew
-  - gradle clean build
