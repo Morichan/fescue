@@ -37,7 +37,8 @@ dependencies {
 //junitPlatform.enableStandardTestTask true
 //test.systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'warn'
 
-apply plugin: 'application'
+
+//apply plugin: 'application'
 apply plugin: 'jacoco'
 jacoco.toolVersion = '0.+'
 
