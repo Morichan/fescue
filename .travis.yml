@@ -28,7 +28,7 @@ after_success:
   - pwd
   - du -a ./
   - gradle test jacocoTestReport
-  - bash <(curl -s https://codecov.io/bash -f './build/test-results/junit-platform/TEST-junit-jupiter.xml')
+  - bash <(curl -s https://codecov.io/bash) -f ./build/test-results/junit-platform/TEST-junit-jupiter.xml
 
 env:
   global:
