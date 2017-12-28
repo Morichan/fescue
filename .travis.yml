@@ -28,7 +28,7 @@ after_success:
   - pwd
   - gradle clean test jacocoTestReport
   - du -a ./
-  - bash <(curl -s https://codecov.io/bash) -f ./build/reports/jacoco/test/html/jacocoTestReport.xml
+  - bash <(curl -s https://codecov.io/bash) -f ./build/reports/jacoco/test/jacocoTestReport.xml # Travisでのディレクトリ、ローカルとは異なる
 
 env:
   global:
