@@ -25,3 +25,4 @@ install:
   - cd ../
   - rm -rf ./parserWorkshop/
   - du -a ./
+
