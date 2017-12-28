@@ -7,7 +7,7 @@ jdk:
 
 before_install:
   - curl -s api.sdkman.io | bash
-  - source .sdkman/bin/sdkman-init.sh
+  - source /home/travis/.sdkman/bin/sdkman-init.sh # ターミナル上での表示結果
   - sdk list gradle
   - sdk install gradle 4.2.1
   - sdk default gradle 4.2.1
