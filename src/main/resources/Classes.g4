@@ -1,5 +1,9 @@
 grammar Classes;
 
+@header {
+package parser;
+}
+
 property
     :   visibility? name
     ;
@@ -17,10 +21,12 @@ name
 
 
 
-PUBLIC:   '+';
-PRIBATE:   '-';
-PROTECTED:   '#';
-PACKAGE:   '~';
+PUBLIC:       '+';
+PRIBATE:      '-';
+PROTECTED:    '#';
+PACKAGE:      '~';
+
+WS:           [ \t\r\n\u000C]+ -> channel(HIDDEN);
 
 IDENTIFIER:   Letter LetterOrDigit*;
 
