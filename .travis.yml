@@ -26,4 +26,4 @@ install:
 
 after_success:
   - pwd
-  - gradle jacocoTestReport coveralls
+  - gradle test jacocoTestReport coveralls

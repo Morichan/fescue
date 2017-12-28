@@ -40,7 +40,6 @@ dependencies {
 apply plugin: 'application'
 apply plugin: 'jacoco'
 jacoco.toolVersion = '0.+'
-apply plugin: 'coveralls'
 
 jacocoTestReport {
     reports {
@@ -49,5 +48,7 @@ jacocoTestReport {
         html.enabled = true
     }
 }
+
+apply plugin: 'coveralls'
 
 coveralls.jacocoReportPath = 'build/test-results/junit-platform/TEST-junit-jupiter.xml'
