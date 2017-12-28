@@ -29,6 +29,7 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.+'
     testCompile 'org.junit.jupiter:junit-jupiter-params:5.+' // parameterized tests
     testCompile 'org.assertj:assertj-core:3.+'
+    testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
 
 test {
@@ -44,13 +45,27 @@ test {
 
 //apply plugin: 'application'
 apply plugin: 'jacoco'
-jacoco.toolVersion = '0.+'
+jacoco {
+    toolVersion = '0.+'
+    applyTo junitPlatformTest
+}
 
 jacocoTestReport {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**/Main*'])
+        })
+    }
     reports {
         xml.enabled = true
         csv.enabled = false
         html.enabled = true
+    }
+}
+
+junitPlatformTest {
+    jacoco {
+        destinationFile = file("${buildDir}/jacoco/test.exec")
     }
 }
 
