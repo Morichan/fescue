@@ -29,25 +29,31 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.+'
     testCompile 'org.junit.jupiter:junit-jupiter-params:5.+' // parameterized tests
     testCompile 'org.assertj:assertj-core:3.+'
+
     testCompileOnly 'org.apiguardian:apiguardian-api:1.0.0'
 }
+
+
 
 test {
     systemProperties 'property': 'value'
 }
 
-//test.ignoreFailures true
-
 junitPlatform.enableStandardTestTask true
-//test.systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'warn'
 
-
-//apply plugin: 'application'
 apply plugin: 'jacoco'
 jacoco {
     toolVersion = '0.+'
     applyTo junitPlatformTest
 }
+
+junitPlatformTest {
+    jacoco {
+        destinationFile = file("${buildDir}/jacoco/test.exec")
+    }
+}
+
+
 
 jacocoTestReport {
     afterEvaluate {
@@ -62,13 +68,7 @@ jacocoTestReport {
     }
 }
 
-junitPlatformTest {
-    jacoco {
-        destinationFile = file("${buildDir}/jacoco/test.exec")
-    }
-}
 
-check.dependsOn jacocoTestReport
 
-apply plugin: 'coveralls'
-coveralls.jacocoReportPath = './build/reports/jacoco/test/jacocoTestReport.xml'
+// apply plugin: 'coveralls'
+// coveralls.jacocoReportPath = './build/reports/jacoco/test/jacocoTestReport.xml'

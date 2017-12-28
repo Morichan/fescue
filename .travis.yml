@@ -1,12 +1,17 @@
 language: java
 
-sudo: required
-cache: bundler
-bundler_args: --without production --deployment
-
 jdk:
   - oraclejdk9
 
+sudo: required
+
+# キャッシュを残してTravisCI高速化（体感はあまりない）
+cache: bundler
+bundler_args: --without production --deployment
+
+
+
+# Gradleを最新版にする（古い場合はJava9に未対応）
 before_install:
   - curl -s api.sdkman.io | bash
   - source /home/travis/.sdkman/bin/sdkman-init.sh # ターミナル上での表示結果
@@ -14,6 +19,7 @@ before_install:
   - sdk install gradle 4.4.1 # gradle version 4.2.1 以降を使う
   - sdk default gradle 4.4.1
 
+# ANTLRを用いた構文解析機を生成する（Gradleでの構文解析寄生性もあるらしいけど、これで動くからいいや）
 install:
   - curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入すること
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
@@ -23,15 +29,17 @@ install:
   - mv ./src/main/resources/Classes*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
   - rm ./src/main/resources/*.interp
 
+
+
+# Jacocoを含むテストとビルドを行う
 script:
   - pwd
-  - gradle clean test jacocoTestReport
+  - gradle clean jacocoTestReport build
 
+
+
+# codecovにJacocoの実行結果を送信する
 after_success:
   - du -a ./
-  - bash <(curl -s https://codecov.io/bash) -f ./build/reports/jacoco/test/jacocoTestReport.xml # Travisでのディレクトリ、ローカルとは異なる
+  - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリ、ローカルとは異なる
   # - gradle coveralls
-
-env:
-  global:
-    secure: "AMxrZCJpVZ5FG2T/y63Gfs4gmhgVbs8PYxF/qVMhOga0BHvsA1QIn+WDgwZT1KGHuNoA9GYg6zEXVGlk3jEzQlO5o1+P5BlSQ+kYzWXG1eg0QtgeW+q33vi2LfEOJ3KP5Bbe1BDSxMPZ7WixKYP82P9F8g6f+O+4P2qbBEmSFRqSvOLLg5KEJW9+P2ewOtk9HghIYCL+VlZusPriX3MCUIk5qVL4OcBHqXA3sLrpP2hk6eVWNVFp5WbTjoMnWG7zmuALmfU2xdNg8yAFZqtLm1nW3xhAsh0NNM/LY0ZvarH2tbWcxi1MaXDYNI867MM/9K2u1UutHAgy2oluqjCYs+9Gteg9/pZfpSQjBd0p1qQ1utBKCaqZyaCe9FLVkuRBZirwZft+mkTAqUWIbTf5DYrAWr70DNxFrjaPGYzQO+b5IE+FhpprlFNdUc7z1+1FW69rxg9TaAogzxZk4ERVlZAeVh8zW8ZFT6s3EzFc67SZ4eukBO3b/DvVHLrw03y55slZkkMf9Tzg6EZO1zJTTtCrt4/tUZJdf6RFPCSLN1P7FSq0C+KfH/YaqnhL+T3RbVw6O+96nIBe60xNa6eOAyQVsyhZkV81YSV1YObYp2pAPv8Win6rxERHGYjFLknkQ/M9Hri4kFBC/fnfK4KOsuRJb0lRNYLjEqiSag2onXk="
