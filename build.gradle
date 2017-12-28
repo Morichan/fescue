@@ -38,7 +38,6 @@ test {
 
 //test.ignoreFailures true
 
-
 junitPlatform.enableStandardTestTask true
 //test.systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'warn'
 
@@ -71,5 +70,5 @@ junitPlatformTest {
 
 check.dependsOn jacocoTestReport
 
-//apply plugin: 'coveralls'
-//coveralls.jacocoReportPath = './build/test-results/junit-platform/TEST-junit-jupiter.xml'
+apply plugin: 'coveralls'
+coveralls.jacocoReportPath = './build/reports/jacoco/test/jacocoTestReport.xml'

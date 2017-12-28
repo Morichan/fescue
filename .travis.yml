@@ -22,13 +22,15 @@ install:
   - mkdir ./src/main/java/parser/
   - mv ./src/main/resources/Classes*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
   - rm ./src/main/resources/*.interp
-  - du -a ./
 
-after_success:
+script:
   - pwd
   - gradle clean test jacocoTestReport
+
+after_success:
   - du -a ./
   - bash <(curl -s https://codecov.io/bash) -f ./build/reports/jacoco/test/jacocoTestReport.xml # Travisでのディレクトリ、ローカルとは異なる
+  - gradle cveralls
 
 env:
   global:

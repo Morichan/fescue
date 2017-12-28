@@ -67,11 +67,6 @@ class ClassesEvalListenerTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
-
-            @Test
-            void test() {
-                assertThat("w").isEqualTo("w");
-            }
         }
     }
 
