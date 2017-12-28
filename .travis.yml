@@ -30,7 +30,7 @@ script:
 after_success:
   - du -a ./
   - bash <(curl -s https://codecov.io/bash) -f ./build/reports/jacoco/test/jacocoTestReport.xml # Travisでのディレクトリ、ローカルとは異なる
-  - gradle cveralls
+  - gradle coveralls
 
 env:
   global:
