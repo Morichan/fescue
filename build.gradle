@@ -31,6 +31,10 @@ dependencies {
     testCompile 'org.assertj:assertj-core:3.+'
 }
 
+test {
+    systemProperties 'property': 'value'
+}
+
 //test.ignoreFailures true
 
 
