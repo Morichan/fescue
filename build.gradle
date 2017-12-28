@@ -39,7 +39,7 @@ test {
 //test.ignoreFailures true
 
 
-//junitPlatform.enableStandardTestTask true
+junitPlatform.enableStandardTestTask true
 //test.systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'warn'
 
 
