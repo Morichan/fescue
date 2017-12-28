@@ -18,8 +18,8 @@ install:
   - curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入すること
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ../src/main/resources/Classes.g4
-  - ls -al
-  - rm antlr-4.7.1-complete.jar
+#  - ls -al
+#  - rm antlr-4.7.1-complete.jar
   - mkdir ../src/main/java/parser/
   - cp * ../src/main/java/parser/.
   - cd ../
