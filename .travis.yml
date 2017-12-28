@@ -11,6 +11,16 @@ before_install:
   - sdk list gradle
   - sdk install gradle 4.2.1
   - sdk default gradle 4.2.1
+  - ls -al
+
+install:
+  - echo install!
+
+after_install:
+  - echo after_install!!
+
+before_script:
+  - echo before_script!!!
 
 script:
   - sudo chmod +x gradlew
