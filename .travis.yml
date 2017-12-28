@@ -1,0 +1,10 @@
+language: java
+
+sudo: required
+
+jdk:
+  - oraclejdk9
+
+script:
+  - sudo chmod +x gradlew
+  - ./gradlew build
