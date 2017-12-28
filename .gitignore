@@ -3,3 +3,4 @@
 /bin/
 *.test
 *.swp
+/src/main/java/parser/
