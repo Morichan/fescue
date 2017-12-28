@@ -41,5 +41,5 @@ script:
 # codecovにJacocoの実行結果を送信する
 after_success:
   - du -a ./
-  - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリ、ローカルとは異なる
+  - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリはローカルと異なる
   # - gradle coveralls
