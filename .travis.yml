@@ -27,6 +27,7 @@ install:
 after_success:
   - pwd
   # - gradle test jacocoTestReport coveralls -repotoken $COVERALL_TOKEN
+  - du -a ./
   - gradle check test jacocoTestReport coveralls
 
 
