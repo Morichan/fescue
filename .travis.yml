@@ -14,8 +14,8 @@ before_install:
 
 install:
   - curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入すること
-  - java -cp ./antlr-4.7.1-complete.jar; org.antlr.v4.Tool # ツールの確認
-  - java -cp ./antlr-4.7.1-complete.jar; org.antlr.v4.Tool ../src/main/resources/Classes.g4
+  - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
+  - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ../src/main/resources/Classes.g4
   - du -a ./
   - rm antlr-4.7.1-complete.jar
 
