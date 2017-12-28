@@ -7,4 +7,4 @@ jdk:
 
 script:
   - sudo chmod +x gradlew
-  - ./gradlew build
+  - gradle clean build
