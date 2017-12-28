@@ -6,9 +6,9 @@ jdk:
   - oraclejdk9
 
 before_install:
-  - gvm list gradle
-  - gvm install gradle 4.2.1
-  - gvm default gradle 4.2.1
+  - sdk list gradle
+  - sdk install gradle 4.2.1
+  - sdk default gradle 4.2.1
 
 script:
   - sudo chmod +x gradlew
