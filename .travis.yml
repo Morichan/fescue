@@ -23,3 +23,7 @@ install:
   - mv ./src/main/resources/Classes*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
   - rm ./src/main/resources/*.interp
   - du -a ./
+
+after_success:
+  - pwd
+  - gradle jacocoTestReport coveralls
