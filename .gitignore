@@ -1,5 +1,7 @@
 /.idea/
 /tmp/
 /bin/
+/build/
 *.test
 *.swp
+/src/main/java/parser/

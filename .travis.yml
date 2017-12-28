@@ -1,0 +1,45 @@
+language: java
+
+jdk:
+  - oraclejdk9
+
+sudo: required
+
+# キャッシュを残してTravisCI高速化（体感はあまりない）
+cache: bundler
+bundler_args: --without production --deployment
+
+
+
+# Gradleを最新版にする（古い場合はJava9に未対応）
+before_install:
+  - curl -s api.sdkman.io | bash
+  - source /home/travis/.sdkman/bin/sdkman-init.sh # ターミナル上での表示結果
+  - sdk list gradle
+  - sdk install gradle 4.4.1 # gradle version 4.2.1 以降を使う
+  - sdk default gradle 4.4.1
+
+# ANTLRを用いた構文解析機を生成する（Gradleでの構文解析寄生性もあるらしいけど、これで動くからいいや）
+install:
+  - curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入すること
+  - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
+  - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ./src/main/resources/Classes.g4 # ./src/main/resources ディレクトリ内に構文解析機を生成
+  - rm antlr-4.7.1-complete.jar
+  - mkdir ./src/main/java/parser/
+  - mv ./src/main/resources/Classes*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
+  - rm ./src/main/resources/*.interp
+
+
+
+# Jacocoを含むテストとビルドを行う
+script:
+  - pwd
+  - gradle clean jacocoTestReport build
+
+
+
+# codecovにJacocoの実行結果を送信する
+after_success:
+  - du -a ./
+  - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリはローカルと異なる
+  # - gradle coveralls
