@@ -1,6 +1,8 @@
 language: java
 
 sudo: required
+cache: bundler
+bundler_args: --without production --deployment
 
 jdk:
   - oraclejdk9
@@ -21,4 +23,3 @@ install:
   - mv ./src/main/resources/Classes*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
   - rm ./src/main/resources/*.interp
   - du -a ./
-

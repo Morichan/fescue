@@ -1,8 +1,6 @@
-ビルド状況
-
-|Main|Develop|
-|:--:|:--:|
-|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|
+| |Main|Develop|
+|:--|:--:|:--:|
+|Build|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|
 
 
 # 概要
