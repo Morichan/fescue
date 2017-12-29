@@ -25,10 +25,11 @@ class AttributeEvaluationTest {
             @Test
             void テキストをセットして走査するとエラーを返さない() {
                 String expected = "attribute";
+                String actual;
 
                 obj.setAttribute("attribute");
                 obj.walk();
-                String actual = obj.getAttribute();
+                actual = obj.getAttribute();
 
                 assertThat(actual).isEqualTo(expected);
             }
