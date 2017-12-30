@@ -1,7 +1,6 @@
 package usage;
 
 import net.java.quickcheck.Generator;
-import net.java.quickcheck.generator.PrimitiveGenerators;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.jupiter.api.*;
 
@@ -9,8 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static net.java.quickcheck.generator.CombinedGenerators.lists;
-import static net.java.quickcheck.generator.PrimitiveGenerators.letterStrings;
-import static net.java.quickcheck.generator.PrimitiveGenerators.strings;
+import static net.java.quickcheck.generator.PrimitiveGenerators.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +53,7 @@ class AttributeEvaluationTest {
             void 属性を返す() {
                 String expected = "attribute";
 
-                String actual = obj.extractClassName();
+                String actual = obj.extractName();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -74,7 +72,7 @@ class AttributeEvaluationTest {
             void 属性を返す() {
                 String expected = "attribute";
 
-                String actual = obj.extractClassName();
+                String actual = obj.extractName();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -102,7 +100,7 @@ class AttributeEvaluationTest {
             void 属性を返す() {
                 String expected = "attribute";
 
-                String actual = obj.extractClassName();
+                String actual = obj.extractName();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -130,7 +128,7 @@ class AttributeEvaluationTest {
             void 属性を返す() {
                 String expected = "attribute";
 
-                String actual = obj.extractClassName();
+                String actual = obj.extractName();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -167,7 +165,7 @@ class AttributeEvaluationTest {
             void 属性を返す() {
                 String expected = "attribute";
 
-                String actual = obj.extractClassName();
+                String actual = obj.extractName();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -185,7 +183,16 @@ class AttributeEvaluationTest {
         @Nested
         class QuickCheckの場合 {
             final Generator<String> nameGenerator = letterStrings();
-            final Generator<String> visibilityGenerator = strings(" -+#~");
+            final Generator<String> visibilityGenerator = fixedValues("", "-", "+", "#", "~");
+            final Generator<Boolean> dividedGenerator = booleans();
+            final Generator<String> propTypeGenerator = fixedValues("bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double");
+
+            String name;
+
+            @BeforeEach
+            void selectName() {
+                name = selectNameOfLengthZero();
+            }
 
             @RepeatedTest(100)
             void 名前を返す() {
@@ -193,7 +200,7 @@ class AttributeEvaluationTest {
                 walk(expected);
 
                 try {
-                    String actual = obj.extractClassName();
+                    String actual = obj.extractName();
                     assertThat(actual).isEqualTo(expected);
 
                 } catch (InputMismatchException e) {
@@ -203,20 +210,42 @@ class AttributeEvaluationTest {
 
             @RepeatedTest(100)
             void 可視性を返す() {
-                String expected = selectNameOfLengthZero();
-                String visibilities = visibilityGenerator.next();
-                String visibility;
-                try {
-                    visibility = visibilities.substring(0, 1);
-                } catch (StringIndexOutOfBoundsException e) {
-                    visibility = "";
-                }
-                walk(visibility + " " + expected);
+                String visibility = visibilityGenerator.next();
+                walk(visibility + " " + name);
 
                 String actual = obj.extractVisibility();
 
-                if (visibility.length() <= 0 || visibility.equals(" ")) assertThat(actual).isEqualTo("");
+                if (visibility.length() <= 0) assertThat(actual).isNull();
                 else assertThat(actual).isEqualTo(visibility);
+            }
+
+            @RepeatedTest(100)
+            void 派生を返す() {
+                String visibility = visibilityGenerator.next();
+                boolean isDivided = dividedGenerator.next();
+                String divided = isDivided ? "/" : "";
+
+                walk(visibility + " " + divided + name);
+                String actual = obj.extractDivided();
+
+                if (isDivided) assertThat(actual).isEqualTo(divided);
+                else assertThat(actual).isNull();
+            }
+
+            @RepeatedTest(100)
+            void 型を返す() {
+                String visibility = visibilityGenerator.next();
+                String propType = propTypeGenerator.next();
+
+                walk(visibility + " " + name + " : " + propType);
+
+                try {
+                    String actual = obj.extractPropType();
+                    assertThat(actual).isEqualTo(propType);
+
+                } catch (InputMismatchException e) {
+                    System.out.println("InputMismatchException : input attribute name '"+name+"'" + " and prop type '"+propType+"'");
+                }
             }
 
             private String selectNameOfLengthZero() {
@@ -273,14 +302,14 @@ class AttributeEvaluationTest {
             void 名前を返す() {
                 String expected = "attribute";
 
-                String actual = obj.extractClassName();
+                String actual = obj.extractName();
 
                 assertThat(actual).isEqualTo(expected);
             }
 
             @RepeatedTest(testCount)
             void 属性を返す(RepetitionInfo info) {
-                List<String> visibilities = Arrays.asList("", "-", "+", "#", "~");
+                List<String> visibilities = Arrays.asList(null, "-", "+", "#", "~");
                 String expected = selectExpected(0, info, visibilities);
 
                 String actual = obj.extractVisibility();
@@ -291,7 +320,7 @@ class AttributeEvaluationTest {
             @RepeatedTest(testCount)
             void 派生を返す(RepetitionInfo info) {
                 List<Boolean> isDivided = Arrays.asList(false, true);
-                String expected = "";
+                String expected = null;
                 if (10 < info.getCurrentRepetition() && isDivided.get((info.getCurrentRepetition() - 1) % isDivided.size())) expected = "/";
                 else if (5 < info.getCurrentRepetition() && info.getCurrentRepetition() <= 10) expected = "/";
 
@@ -303,7 +332,7 @@ class AttributeEvaluationTest {
             @RepeatedTest(testCount)
             void 型を返す(RepetitionInfo info) {
                 List<String> propType = Arrays.asList("bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double");
-                String expected = "";
+                String expected = null;
                 if (10 < info.getCurrentRepetition()) expected = selectExpected(10, info, propType);
 
                 String actual = obj.extractPropType();
@@ -343,22 +372,27 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 名前を取得しようとするとエラーを返す () {
-                assertThrows(IllegalArgumentException.class, () -> obj.extractClassName());
+            void 名前を取得しようとするとエラーを返す() {
+                assertThrows(IllegalArgumentException.class, () -> obj.extractName());
             }
         }
 
         @Nested
-        class 型と同じ文字列を入力した場合 {
+        class プリミティブ型と同じ文字列を入力した場合 {
 
             @BeforeEach
             void setup() {
-                walk("int");
+                walk("int : float");
             }
 
             @Test
-            void 名前を取得しようとするとエラーを返す () {
-                assertThrows(InputMismatchException.class, () -> obj.extractClassName());
+            void 名前を取得しようとするとエラーを返す() {
+                assertThrows(InputMismatchException.class, () -> obj.extractName());
+            }
+
+            @Test
+            void 型を取得しようとするとエラーを返す() {
+                assertThrows(InputMismatchException.class, () -> obj.extractPropType());
             }
         }
     }
