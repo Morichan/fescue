@@ -2,6 +2,7 @@ package usage;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.ClassesLexer;
@@ -34,6 +35,7 @@ public class AttributeEvaluation {
                 name = context.getChild(i).getText();
                 break;
             }
+            if (context.exception != null) throw context.exception;
         }
         if (name.length() <= 0) throw new IllegalArgumentException();
         return name;

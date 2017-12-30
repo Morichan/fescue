@@ -30,6 +30,7 @@ dependencies {
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.+'
     testCompile 'org.junit.jupiter:junit-jupiter-params:5.+' // parameterized tests
     testCompile 'org.assertj:assertj-core:3.+'
+    testCompile 'net.java.quickcheck:quickcheck:0.+'
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.+'
 }
