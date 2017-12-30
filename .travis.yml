@@ -32,7 +32,7 @@ install:
 
 
 # Jacocoを含むテストとビルドの実行
-script:
+after_script:
   - pwd
   - gradle clean jacocoTestReport build
 
