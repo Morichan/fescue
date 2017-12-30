@@ -34,6 +34,146 @@ class AttributeEvaluationTest {
                 assertThat(actual).isEqualTo(expected);
             }
         }
+
+        @Nested
+        class 名前だけの場合 {
+            final String attribute = "attribute";
+
+            @BeforeEach
+            void setup() {
+                walk(attribute);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "attribute";
+
+                String actual = obj.extractClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 可視性を含む場合 {
+            final String attribute = "- attribute";
+
+            @BeforeEach
+            void setup() {
+                walk(attribute);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "attribute";
+
+                String actual = obj.extractClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 可視性を返す() {
+                String expected = "-";
+
+                String actual = obj.extractVisibility();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 派生を含む場合 {
+            final String attribute = "/attribute";
+
+            @BeforeEach
+            void setup() {
+                walk(attribute);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "attribute";
+
+                String actual = obj.extractClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 派生を返す() {
+                String expected = "/";
+
+                String actual = obj.extractDivided();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 属性と派生を含む場合 {
+            final String attribute = "- /attribute";
+
+            @BeforeEach
+            void setup() {
+                walk(attribute);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "attribute";
+
+                String actual = obj.extractClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 可視性を返す() {
+                String expected = "-";
+
+                String actual = obj.extractVisibility();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 派生を返す() {
+                String expected = "/";
+
+                String actual = obj.extractDivided();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 型を含む場合 {
+            final String attribute = "attribute : int";
+
+            @BeforeEach
+            void setup() {
+                walk(attribute);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "attribute";
+
+                String actual = obj.extractClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 型を返す() {
+                String expected = "int";
+
+                String actual = obj.extractPropType();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
     }
 
     @Nested
@@ -52,5 +192,11 @@ class AttributeEvaluationTest {
                 assertThrows(IllegalArgumentException.class, () -> obj.walk());
             }
         }
+    }
+
+    private void walk(String text) {
+        obj = new AttributeEvaluation();
+        obj.setAttribute(text);
+        obj.walk();
     }
 }

@@ -11,17 +11,17 @@ bundler_args: --without production --deployment
 
 
 
-# Gradleを最新版にする（古い場合はJava9に未対応）
+# Gradleを最新版へ変更（古い場合はJava9に未対応）
 before_install:
-  - curl -s api.sdkman.io | bash
-  - source /home/travis/.sdkman/bin/sdkman-init.sh # ターミナル上での表示結果
-  - sdk list gradle
-  - sdk install gradle 4.4.1 # gradle version 4.2.1 以降を使う
-  - sdk default gradle 4.4.1
+  - travis_retry curl -s api.sdkman.io | bash
+  - travis_retry source /home/travis/.sdkman/bin/sdkman-init.sh # ターミナル上での表示結果を参考
+  - travis_retry sdk list gradle # gradleの利用可能なバージョンの一覧を表示
+  - travis_retry sdk install gradle 4.4.1 # gradle version 4.2.1 以降を使用
+  - travis_retry sdk default gradle 4.4.1
 
-# ANTLRを用いた構文解析機を生成する（Gradleでの構文解析寄生性もあるらしいけど、これで動くからいいや）
+# ANTLRを用いた構文解析機の生成（Gradleでの構文解析機生成もあるらしいけど、これで動くからいいや）
 install:
-  - curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入すること
+  - travis_retry curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ./src/main/resources/Classes.g4 # ./src/main/resources ディレクトリ内に構文解析機を生成
   - rm antlr-4.7.1-complete.jar
@@ -31,14 +31,14 @@ install:
 
 
 
-# Jacocoを含むテストとビルドを行う
+# Jacocoを含むテストとビルドの実行
 script:
   - pwd
   - gradle clean jacocoTestReport build
 
 
 
-# codecovにJacocoの実行結果を送信する
+# codecovへJacocoの実行結果送信
 after_success:
   - du -a ./
   - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリはローカルと異なる
