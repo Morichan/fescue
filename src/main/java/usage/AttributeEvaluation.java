@@ -35,6 +35,7 @@ public class AttributeEvaluation {
                 break;
             }
         }
+        if (name.length() <= 0) throw new IllegalArgumentException();
         return name;
     }
 

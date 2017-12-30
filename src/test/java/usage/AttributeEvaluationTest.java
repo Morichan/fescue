@@ -1,8 +1,9 @@
 package usage;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -174,6 +175,92 @@ class AttributeEvaluationTest {
                 assertThat(actual).isEqualTo(expected);
             }
         }
+
+        @Nested
+        class 反復テストの場合 {
+            final List<String> attributes = Arrays.asList(
+                    "attribute",
+                    "- attribute",
+                    "+ attribute",
+                    "# attribute",
+                    "~ attribute",
+                    "/attribute",
+                    "- /attribute",
+                    "+ /attribute",
+                    "# /attribute",
+                    "~ /attribute",
+                    "attribute : bool",
+                    "- /attribute : boolean",
+                    "+ attribute : c",
+                    "# /attribute : char",
+                    "~ attribute : character",
+                    "/attribute : byte",
+                    "- attribute : s",
+                    "+ /attribute : short",
+                    "# attribute : i",
+                    "~ /attribute : int",
+                    "attribute : integer",
+                    "- /attribute : l",
+                    "+ attribute : long",
+                    "# /attribute : f",
+                    "~ attribute : float",
+                    "/attribute : lf",
+                    "- attribute : double"
+            );
+
+            final int testCount = 27;
+
+            @BeforeEach
+            void setup(RepetitionInfo info) {
+                walk(attributes.get(info.getCurrentRepetition() - 1));
+            }
+
+            @RepeatedTest(testCount)
+            void 名前を返す() {
+                String expected = "attribute";
+
+                String actual = obj.extractClassName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @RepeatedTest(testCount)
+            void 属性を返す(RepetitionInfo info) {
+                List<String> visibilities = Arrays.asList("", "-", "+", "#", "~");
+                String expected = selectExpected(0, info, visibilities);
+
+                String actual = obj.extractVisibility();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @RepeatedTest(testCount)
+            void 派生を返す(RepetitionInfo info) {
+                List<Boolean> isDivided = Arrays.asList(false, true);
+                String expected = "";
+                if (10 < info.getCurrentRepetition() && isDivided.get((info.getCurrentRepetition() - 1) % isDivided.size())) expected = "/";
+                else if (5 < info.getCurrentRepetition() && info.getCurrentRepetition() <= 10) expected = "/";
+
+                String actual = obj.extractDivided();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @RepeatedTest(testCount)
+            void 型を返す(RepetitionInfo info) {
+                List<String> propType = Arrays.asList("bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double");
+                String expected = "";
+                if (10 < info.getCurrentRepetition()) expected = selectExpected(10, info, propType);
+
+                String actual = obj.extractPropType();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            private String selectExpected(int ignoreCount,RepetitionInfo info, List<String> candidates) {
+                return candidates.get((info.getCurrentRepetition() - 1 - ignoreCount) % candidates.size());
+            }
+        }
     }
 
     @Nested
@@ -190,6 +277,20 @@ class AttributeEvaluationTest {
             @Test
             void テキストをセットせずに走査したらエラーを返す() {
                 assertThrows(IllegalArgumentException.class, () -> obj.walk());
+            }
+        }
+
+        @Nested
+        class 空文字を入力した場合 {
+
+            @BeforeEach
+            void setup() {
+                walk("");
+            }
+
+            @Test
+            void 属性名を取得しようとするとエラーを返す () {
+                assertThrows(IllegalArgumentException.class, () -> obj.extractClassName());
             }
         }
     }
