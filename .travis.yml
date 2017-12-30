@@ -36,8 +36,6 @@ after_script:
   - pwd
   - gradle clean jacocoTestReport build
 
-
-
 # codecovへJacocoの実行結果送信
 after_success:
   - du -a ./
