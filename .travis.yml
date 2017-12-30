@@ -31,13 +31,15 @@ install:
 
 
 
-# Jacocoを含むテストとビルドの実行
-after_script:
+# Jacocoを含むテストとビルドの実行およびcodecovへJacocoの実行結果送信
+after_success:
   - pwd
   - gradle clean jacocoTestReport build
-
-# codecovへJacocoの実行結果送信
-after_success:
   - du -a ./
   - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリはローカルと異なる
+  # - gradle coveralls
+
+# codecovへJacocoの実行結果送信
+after_failure:
+  - bash <(curl -s https://codecov.io/bash)
   # - gradle coveralls
