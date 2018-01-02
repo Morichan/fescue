@@ -69,12 +69,14 @@ public class AttributeEvaluation {
      *         <li>属性文を設定していない場合（{@link #setAttribute(String)}参照） : {@link ClassesParser.PropertyContext#exception}</li>
      *         <li>属性文がプリミティブ型と同じ文字列の場合 : {@link IllegalArgumentException}</li>
      *     </ul>
+     *     また、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
      *
-     * @return
+     * @return 属性名
      */
     public String extractName() {
         String name = null;
+
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.NameContext) {
                 name = context.getChild(i).getText();
@@ -83,6 +85,7 @@ public class AttributeEvaluation {
             if (context.exception != null) throw context.exception;
         }
         if (name == null) throw new IllegalArgumentException();
+
         return name;
     }
 
@@ -101,12 +104,14 @@ public class AttributeEvaluation {
      */
     public String extractVisibility() {
         String visibility = null;
+
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.VisibilityContext) {
                 visibility = context.getChild(i).getText();
                 break;
             }
         }
+
         return visibility;
     }
 
@@ -125,12 +130,14 @@ public class AttributeEvaluation {
      */
     public String extractDivided() {
         String divided = null;
+
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.DividedContext) {
                 divided = context.getChild(i).getText();
                 break;
             }
         }
+
         return divided;
     }
 
@@ -150,6 +157,7 @@ public class AttributeEvaluation {
      */
     public String extractPropType() {
         String propType = null;
+
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.PropTypeContext) {
                 propType = context.getChild(i).getChild(1).getText();
@@ -159,6 +167,32 @@ public class AttributeEvaluation {
         extractName(); // if (attributeName == null) throw new InputMismatchException();
 
         return propType;
+    }
+
+    /**
+     * <p> 既定値を抽出します。 </p>
+     *
+     * <p>
+     *     次の場合は{@code null}を返します。
+     *     <ul>
+     *         <li> 属性文を設定していない場合 </li>
+     *         <li> 属性名を含んでいない場合 </li>
+     *     </ul>
+     * </p>
+     *
+     * @return 既定値
+     */
+    public String extractDefaultValue() {
+        String defaultValue = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.DefaultValueContext) {
+                defaultValue = context.getChild(i).getChild(1).getText();
+                break;
+            }
+        }
+
+        return defaultValue;
     }
 
     /**

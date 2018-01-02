@@ -31,7 +31,7 @@ propType
     ;
 
 multiplicityRange
-    :   LBRACK (lower '..')? upper RBRACK
+    :   LBRACK (lower RANGE)? upper RBRACK
     ;
 
 lower
@@ -65,6 +65,7 @@ propModefier
 expression
     :   IDENTIFIER
     |   literal
+    |   ('+' | '-') expression
     ;
 
 primitiveType
@@ -81,8 +82,8 @@ primitiveType
 literal
     :   integerLiteral
     |   floatLiteral
-    |   CHAR_LITERAL
-    |   STRING_LITERAL
+    |   SQUOT_LITERAL
+    |   DQUOT_LITERAL
     |   BOOL_LITERAL
     |   NULL_LITERAL
     ;
@@ -108,6 +109,7 @@ PROTECTED:          '#';
 PACKAGE:            '~';
 
 UNLIMITATION:       '*';
+RANGE:              '..';
 
 BOOLEAN:            'bool' | 'boolean';
 CHAR:               'c' | 'char' | 'character';
@@ -134,13 +136,13 @@ SLASH:              '/';
 
 DECIMAL_LITERAL:    ('0' | [1-9] (Digits? | '_'+ Digits)) [lL]?;
 HEX_LITERAL:        '0' [xX] [0-9a-fA-F] ([0-9a-fA-F_]* [0-9a-fA-F])? [lL]?;
-OCT_LITERAL:        '0' '_'* [0-7] ([0-7_]* [0-7])? [lL]?;
+OCT_LITERAL:        '0' ('_'* | 'o'?) [0-7] ([0-7_]* [0-7])? [lL]?;
 BINARY_LITERAL:     '0' [bB] [01] ([01_]* [01])? [lL]?;
 
-INTEGER_LITERAL:     Digits;
+INTEGER_LITERAL:    Digits;
 
 FLOAT_LITERAL:      (Digits '.' Digits? | '.' Digits) ExponentPart? [fFdD]?
-             |       Digits (ExponentPart [fFdD]? | [fFdD])
+             |      Digits (ExponentPart [fFdD]? | [fFdD])
              ;
 
 HEX_FLOAT_LITERAL:  '0' [xX] (HexDigits '.'? | HexDigits? '.' HexDigits) [pP] [+-]? Digits [fFdD]?;
@@ -149,15 +151,21 @@ BOOL_LITERAL:       TRUL_LITERAL
             |       FALSE_LITERAL
             ;
 
-TRUL_LITERAL:       [tT] ('rue' | 'RUE');
-FALSE_LITERAL:      [fF] ('alse' | 'ALSE');
+TRUL_LITERAL:       'true' | 'TRUE' | 'True' | '1';
+FALSE_LITERAL:      'false' | 'FALSE' | 'False' | '0';
 
-NULL_LITERAL:       [nN] ('ull' | 'ULL' | 'ul' | 'UL' | 'il' | 'IL');
+NULL_LITERAL:       NULL | NUL | NIL | NONE | UNDEF;
+
+NULL:               'null' | 'NULL' | 'Null';
+NUL:                'nul' | 'NUL' | 'Nul';
+NIL:                'nil' | 'NIL' | 'Nil';
+NONE:               'none' | 'NONE' | 'None';
+UNDEF:              'undef' | 'UNDEF' | 'Undef';
 
 WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
 
-CHAR_LITERAL:       SQUOT ([^'\\\r\n] | EscapeSequence) SQUOT;
-STRING_LITERAL:     DQUOT ([^"\\\r\n] | EscapeSequence)* DQUOT;
+SQUOT_LITERAL:      SQUOT (~['\\\r\n] | EscapeSequence)* SQUOT;
+DQUOT_LITERAL:      DQUOT (~["\\\r\n] | EscapeSequence)* DQUOT;
 
 IDENTIFIER:         Letter LetterOrDigit*;
 
@@ -166,7 +174,7 @@ fragment ExponentPart
     ;
 
 fragment EscapeSequence
-    :    '\\' [btnfr"'\\]
+    :    '\\' [0abtnvfrs"'\\]
     |    '\\' ([0-3]? [0-7])? [0-7]
     |    '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
     ;
