@@ -187,7 +187,14 @@ public class AttributeEvaluation {
 
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.DefaultValueContext) {
-                defaultValue = context.getChild(i).getChild(1).getText();
+                if (context.getChild(i).getChild(1).getChild(1) instanceof ClassesParser.CreatorContext) {
+                    defaultValue = "new ";
+                    for (int j = 0; j < context.getChild(i).getChild(1).getChild(1).getChildCount(); j++) {
+                        defaultValue += context.getChild(i).getChild(1).getChild(1).getChild(j).getText();
+                    }
+                } else {
+                    defaultValue = context.getChild(i).getChild(1).getText();
+                }
                 break;
             }
         }
@@ -203,7 +210,7 @@ public class AttributeEvaluation {
      * </p>
      */
     public void walk() {
-        if(attribute == null) throw new IllegalArgumentException();
+        if (attribute == null) throw new IllegalArgumentException();
 
         lexer = new ClassesLexer(CharStreams.fromString(attribute));
         tokens = new CommonTokenStream(lexer);

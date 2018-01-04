@@ -976,6 +976,186 @@ class AttributeEvaluationTest {
                     assertThat(actual).isEqualTo(expected);
                 }
             }
+
+            @Nested
+            class 式に関して {
+
+                @Test
+                void 加算を返す() {
+                    String expected = "1+2";
+                    String attribute = "onePlusTwo = 1 + 2";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 減算を返す() {
+                    String expected = "1-2";
+                    String attribute = "oneMinusTwo = 1 - 2";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 乗算を返す() {
+                    String expected = "1*2";
+                    String attribute = "oneMultipliedByTwo = 1 * 2";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 除算を返す() {
+                    String expected = "1/2";
+                    String attribute = "oneDividedByTwo = 1 / 2";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 余りを返す() {
+                    String expected = "1%2";
+                    String attribute = "remainderOfOneDividedByTwo = 1 % 2";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void インスタンス生成文を返す() {
+                    String expected = "new ClassName()";
+                    String attribute = "classInstance = new ClassName()";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void クラスメソッドを用いたインスタンス生成文を返す() {
+                    String expected = "new ClassName.getNewInstance()";
+                    String attribute = "classInstance = new ClassName.getNewInstance()";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 引数を持つクラスメソッドを用いたインスタンス生成文を返す() {
+                    String expected = "new ClassName.getNewInstance(arg1,arg2)";
+                    String attribute = "classInstance = new ClassName.getNewInstance(arg1, arg2)";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void クラスメソッド文を返す() {
+                    String expected = "ClassName.staticClassMethod()";
+                    String attribute = "classInstance = ClassName.staticClassMethod()";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 連続したクラスメソッド文を返す() {
+                    String expected = "ClassName.staticClassMethod().getInstance()";
+                    String attribute = "classInstance = ClassName.staticClassMethod().getInstance()";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 引数を持つクラスメソッド文を返す() {
+                    String expected = "ClassName.staticClassMethod(ClassName.method(),instance.method())";
+                    String attribute = "classInstance = ClassName.staticClassMethod(ClassName.method(),instance.method())";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 連続した引数を持つクラスメソッド文を返す() {
+                    String expected = "ClassName.staticClassMethod(ClassName.method(),instance.method()).getInstance(arg1,arg2,arg3)";
+                    String attribute = "classInstance = ClassName.staticClassMethod(ClassName.method(),instance.method()).getInstance(arg1,arg2,arg3)";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void インスタンスを返す() {
+                    String expected = "instance";
+                    String attribute = "classInstance = instance";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void インスタンスのインスタンスを返す() {
+                    String expected = "instance.hasInstance";
+                    String attribute = "classInstance = instance.hasInstance";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void インスタンスのメソッドを返す() {
+                    String expected = "instance.hasMethod()";
+                    String attribute = "classInstance = instance.hasMethod()";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void メソッドのインスタンスを返す() {
+                    String expected = "method().hasInstance";
+                    String attribute = "classInstance = method().hasInstance";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
         }
 
         @Nested
@@ -1226,12 +1406,12 @@ class AttributeEvaluationTest {
             class 既定値の場合 {
 
                 @Test
-                void ドットのみを入力すると空文字を返す() {
+                void ドットのみを入力するとドットを返す() {
                     walk("dotOnly = .");
 
                     String actual = obj.extractDefaultValue();
 
-                    assertThat(actual).isEmpty();
+                    assertThat(actual).isEqualTo(".");
                 }
 
                 @Test

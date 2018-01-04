@@ -65,7 +65,45 @@ propModefier
 expression
     :   IDENTIFIER
     |   literal
-    |   ('+' | '-') expression
+    |   expression bop='.'
+        (   IDENTIFIER
+        |   explicitGenericInvocationSuffix
+        )
+    |   expression arguments
+    |   NEW creator
+    |   bop=('+' | '-') expression
+    |   expression bop=('*'|'/'|'%') expression
+    |   expression bop=('+'|'-') expression
+    ;
+
+creator
+    :   createdName classCreatorRest
+    ;
+
+createdName
+    :   IDENTIFIER ('.' IDENTIFIER)*
+    |   primitiveType
+    ;
+
+classCreatorRest
+    :   arguments
+    ;
+
+superSuffix
+    :    arguments
+    |    DOT IDENTIFIER arguments?
+    ;
+
+explicitGenericInvocationSuffix
+    :    IDENTIFIER arguments
+    ;
+
+arguments
+    : LPAREN expressionList? RPAREN
+    ;
+
+expressionList
+    : expression (',' expression)*
     ;
 
 primitiveType
@@ -111,6 +149,8 @@ PACKAGE:            '~';
 UNLIMITATION:       '*';
 RANGE:              '..';
 
+NEW:                'new';
+
 BOOLEAN:            'bool' | 'boolean';
 CHAR:               'c' | 'char' | 'character';
 BYTE:               'byte';
@@ -129,6 +169,7 @@ RBRACK:             ']';
 SQUOT:              '\'';
 DQUOT:              '"';
 COMMA:              ',';
+DOT:                '.';
 
 ASSIGN:             '=';
 COLON:              ':';
