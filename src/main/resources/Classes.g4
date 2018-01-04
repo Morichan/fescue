@@ -67,6 +67,7 @@ expression
     |   literal
     |   expression bop='.'
         (   IDENTIFIER
+        |   primitiveType
         |   explicitGenericInvocationSuffix
         )
     |   expression arguments
@@ -74,6 +75,7 @@ expression
     |   bop=('+' | '-') expression
     |   expression bop=('*'|'/'|'%') expression
     |   expression bop=('+'|'-') expression
+    |   primitiveType arguments?
     ;
 
 creator
@@ -96,6 +98,7 @@ superSuffix
 
 explicitGenericInvocationSuffix
     :    IDENTIFIER arguments
+    |    primitiveType arguments
     ;
 
 arguments

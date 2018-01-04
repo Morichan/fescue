@@ -3,6 +3,7 @@ package usage;
 import net.java.quickcheck.Generator;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.jupiter.api.*;
+import parser.ClassesParser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -1160,10 +1161,17 @@ class AttributeEvaluationTest {
 
         @Nested
         class ランダムテストの場合 {
-            final Generator<String> nameGenerator = letterStrings();
+            final Generator<String> textGenerator = letterStrings();
             final Generator<String> visibilityGenerator = fixedValues("", "-", "+", "#", "~");
-            final Generator<Boolean> dividedGenerator = booleans();
+            final Generator<Boolean> genuinenessGenerator = booleans();
             final Generator<String> propTypeGenerator = fixedValues("bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double");
+            final Generator<DefaultValueType> defaultValueGenerator = fixedValues(DefaultValueType.Numeric, DefaultValueType.Text, DefaultValueType.Genuineness, DefaultValueType.Undefined, DefaultValueType.Expression);
+            final Generator<Integer> methodArgsSizeGenerator = integers(1, 5);
+            final Generator<Integer> instanceSizeGenerator = integers(1, 10);
+            final Generator<Integer> integerGenerator = integers();
+            final Generator<Double> doubleGenerator = doubles();
+            final Generator<String> genuinenessTextGenerator = fixedValues("true", "True", "TRUE", "false", "False", "FALSE", "1", "0");
+            final Generator<String> nullTextGenerator = fixedValues("null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
 
             String name;
 
@@ -1200,7 +1208,7 @@ class AttributeEvaluationTest {
             @RepeatedTest(100)
             void 派生を返す() {
                 String visibility = visibilityGenerator.next();
-                boolean isDivided = dividedGenerator.next();
+                boolean isDivided = genuinenessGenerator.next();
                 String divided = isDivided ? "/" : "";
 
                 walk(visibility + " " + divided + name);
@@ -1226,12 +1234,85 @@ class AttributeEvaluationTest {
                 }
             }
 
+            @RepeatedTest(1000)
+            void 既定値を返す() {
+                String visibility = visibilityGenerator.next();
+                String defaultValue = createDefaultValue();
+
+                walk(visibility + " " + name + " = " + defaultValue);
+
+                try {
+                    String actual = obj.extractDefaultValue();
+                    assertThat(actual).isEqualTo(defaultValue);
+
+                } catch (InputMismatchException e) {
+                    System.out.println("InputMismatchException : input attribute name '"+name+"'" + " and defaultValue '"+defaultValue+"'");
+                }
+            }
+
             private String selectNameOfLengthZero() {
                 String text;
 
                 do {
-                    text = nameGenerator.next();
+                    text = textGenerator.next();
                 } while (text.length() <= 0);
+
+                return text;
+            }
+
+            private String createDefaultValue() {
+                String text = "";
+                DefaultValueType type = defaultValueGenerator.next();
+
+                if (type == DefaultValueType.Numeric) {
+                    boolean isInteger = genuinenessGenerator.next();
+                    boolean isHadSign = genuinenessGenerator.next();
+                    if (isHadSign) text = "+";
+
+                    if (isInteger) {
+                        int number = integerGenerator.next();
+                        text += Integer.toString(number);
+                    } else {
+                        double number = doubleGenerator.next();
+                        text += Double.toString(number);
+                    }
+
+                } else if (type == DefaultValueType.Text) {
+                    boolean isSingleQuotation = genuinenessGenerator.next();
+                    if (isSingleQuotation) {
+                        text = "'" + selectNameOfLengthZero() + "'";
+                    } else {
+                        text = "\"" + selectNameOfLengthZero() + "\"";
+                    }
+
+                } else if (type == DefaultValueType.Genuineness) {
+                    text = genuinenessTextGenerator.next();
+
+                } else if (type == DefaultValueType.Undefined) {
+                    text = nullTextGenerator.next();
+
+                } else if (type == DefaultValueType.Expression) {
+                    text = createInstance(instanceSizeGenerator.next(), methodArgsSizeGenerator.next());
+                }
+
+                return text;
+            }
+
+            private String createInstance(int instanceSize, int argsSize) {
+                String text = selectNameOfLengthZero();
+                boolean isMethod = genuinenessGenerator.next();
+
+                if (isMethod) {
+                    if (0 < argsSize) {
+                        text += "(" + createInstance(instanceSize - 1, methodArgsSizeGenerator.next()) + ")";
+                    } else {
+                        text += "()";
+                    }
+                }
+
+                if (0 < instanceSize) {
+                    text += "." + createInstance(instanceSize - 1, methodArgsSizeGenerator.next());
+                }
 
                 return text;
             }
@@ -1467,6 +1548,13 @@ class AttributeEvaluationTest {
 
                     assertThat(actual).isEqualTo("3.");
                 }
+
+                @Test
+                void プリミティブ型と同じ文字列を名前に入力するとエラーを返す() {
+                    walk("int = 1");
+
+                    assertThrows(InputMismatchException.class, () -> obj.extractDefaultValue());
+                }
             }
         }
     }
@@ -1475,5 +1563,13 @@ class AttributeEvaluationTest {
         obj = new AttributeEvaluation();
         obj.setAttribute(text);
         obj.walk();
+    }
+
+    enum DefaultValueType {
+        Numeric,
+        Text,
+        Genuineness,
+        Undefined,
+        Expression,
     }
 }

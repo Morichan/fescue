@@ -149,8 +149,9 @@ public class AttributeEvaluation {
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
      *         <li> 属性名を含んでいない場合 </li>
-     *         <li> 属性名がプリミティブ型と同じ文字列の場合（{@link #extractName()}参照） </li>
      *     </ul>
+     *
+     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link IllegalArgumentException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 型 {@code null}の可能性あり
@@ -178,6 +179,8 @@ public class AttributeEvaluation {
      *         <li> 属性文を設定していない場合 </li>
      *         <li> 属性名を含んでいない場合 </li>
      *     </ul>
+     *
+     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link IllegalArgumentException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 既定値
@@ -198,6 +201,7 @@ public class AttributeEvaluation {
                 break;
             }
         }
+        extractName(); // if (attributeName == null) throw new InputMismatchException();
 
         return defaultValue;
     }
