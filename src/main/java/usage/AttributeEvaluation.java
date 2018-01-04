@@ -151,7 +151,7 @@ public class AttributeEvaluation {
      *         <li> 属性名を含んでいない場合 </li>
      *     </ul>
      *
-     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link IllegalArgumentException}を投げます（{@link #extractName()}参照）。
+     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 型 {@code null}の可能性あり
@@ -180,7 +180,7 @@ public class AttributeEvaluation {
      *         <li> 属性名を含んでいない場合 </li>
      *     </ul>
      *
-     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link IllegalArgumentException}を投げます（{@link #extractName()}参照）。
+     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 既定値
