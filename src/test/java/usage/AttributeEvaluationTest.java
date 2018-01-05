@@ -1759,10 +1759,32 @@ class AttributeEvaluationTest {
             }
 
             @Nested
+            class 可視性の場合 {
+
+                @Test
+                void プリミティブ型と同じ文字列を名前に入力してもエラーは返さない() {
+                    walk("- int");
+
+                    assertThat(obj.extractVisibility()).isEqualTo("-");
+                }
+            }
+
+            @Nested
+            class 派生の場合 {
+
+                @Test
+                void プリミティブ型と同じ文字列を名前に入力してもエラーは返さない() {
+                    walk("/int");
+
+                    assertThat(obj.extractDivided()).isEqualTo("/");
+                }
+            }
+
+            @Nested
             class 型の場合 {
 
                 @Test
-                void プリミティブ型と同じ文字列を入力するとエラーを返す() {
+                void プリミティブ型と同じ文字列を名前に入力するとエラーを返す() {
                     walk("int : float");
 
                     assertThatThrownBy(() -> obj.extractPropType()).isInstanceOf(InputMismatchException.class);

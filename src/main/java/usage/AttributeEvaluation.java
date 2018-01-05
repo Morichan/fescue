@@ -2,6 +2,7 @@ package usage;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.ClassesLexer;
@@ -46,6 +47,8 @@ public class AttributeEvaluation {
     private ParseTreeWalker walker;
 
     private String attribute;
+    private boolean isSameBetweenNameAndPrimitiveType = false;
+    private InputMismatchException inputMismatchException;
 
     /**
      * <p> 属性文を設定します。 </p>
@@ -77,8 +80,8 @@ public class AttributeEvaluation {
      * <p>
      *     次の場合は例外を投げます。
      *     <ul>
-     *         <li>属性文を設定していない場合（{@link #setAttribute(String)}参照） : {@link ClassesParser.PropertyContext#exception}</li>
-     *         <li>属性文がプリミティブ型と同じ文字列の場合 : {@link IllegalArgumentException}</li>
+     *         <li>属性文を設定していない場合（{@link #setAttribute(String)}参照） : {@link IllegalArgumentException}</li>
+     *         <li>属性文がプリミティブ型と同じ文字列の場合 : {@link ClassesParser.PropertyContext#exception}</li>
      *     </ul>
      *     また、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
@@ -176,7 +179,7 @@ public class AttributeEvaluation {
                 break;
             }
         }
-        extractName(); // if (attributeName == null) throw new InputMismatchException();
+        checkIfNameIsSamePrimitiveType();
 
         return propType;
     }
@@ -208,7 +211,7 @@ public class AttributeEvaluation {
                 }
             }
         }
-        extractName(); // if (attributeName == null) throw new InputMismatchException();
+        checkIfNameIsSamePrimitiveType();
 
         return multiplicityRangeLower;
     }
@@ -241,7 +244,7 @@ public class AttributeEvaluation {
                 break;
             }
         }
-        extractName(); // if (attributeName == null) throw new InputMismatchException();
+        checkIfNameIsSamePrimitiveType();
 
         return multiplicityRangeUpper;
     }
@@ -277,7 +280,7 @@ public class AttributeEvaluation {
                 break;
             }
         }
-        extractName(); // if (attributeName == null) throw new InputMismatchException();
+        checkIfNameIsSamePrimitiveType();
 
         return defaultValue;
     }
@@ -292,6 +295,8 @@ public class AttributeEvaluation {
      * </p>
      */
     public void walk() {
+        isSameBetweenNameAndPrimitiveType = false;
+        inputMismatchException = null;
         if (attribute == null) throw new IllegalArgumentException();
 
         lexer = new ClassesLexer(CharStreams.fromString(attribute));
@@ -302,9 +307,25 @@ public class AttributeEvaluation {
         listener = new ClassesEvalListener();
         walker.walk(listener, tree);
         context = listener.getProperty();
+
+        try {
+            extractName();
+        } catch (InputMismatchException e) {
+            isSameBetweenNameAndPrimitiveType = true;
+            inputMismatchException = e;
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR! Please Set Attribute!");
+        }
     }
 
 
+
+    /**
+     * 名前がプリミティブ型と同じ文字列かどうかを判定し、同じ場合は{@link ClassesParser.PropertyContext#exception}を返す。
+     */
+    private void checkIfNameIsSamePrimitiveType() {
+        if (isSameBetweenNameAndPrimitiveType) throw inputMismatchException;
+    }
 
     /**
      * <p> {@code "\\.\\."}という文字列（2つ連続したドット）が存在した場合、その両端に半角スペースを挿入します。 </p>
