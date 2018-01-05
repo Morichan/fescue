@@ -273,7 +273,7 @@ class AttributeEvaluationTest {
             @Nested
             class 上限が文字列の場合 {
 
-                final String attribute = "attribute [(this is more than zero, constant)]";
+                final String attribute = "attribute [(this is more than 0, constant)]";
 
                 @BeforeEach
                 void setup() {
@@ -290,7 +290,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 多重度の上限を返す() {
-                    String expected = "(this is more than zero, constant)";
+                    String expected = "(this is more than 0, constant)";
 
                     String actual = obj.extractMultiplicityRangeUpper();
 
@@ -330,7 +330,7 @@ class AttributeEvaluationTest {
             @Nested
             class 上限が式の場合 {
 
-                final String attribute = "attribute [(1/(5-4)%3, not isTrue(), ! isTrue AND isFalse, method(1, text) or method(thisIs.instance, text))]";
+                final String attribute = "attribute [(1/(5-4)%3, not is() and ! is AND isnt OR method(1,t) or NOT method(thisIs.ins,t), a < b == c && d >= e != f || g > h, i <= j)]";
 
                 @BeforeEach
                 void setup() {
@@ -347,7 +347,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 多重度の上限を返す() {
-                    String expected = "(1 / (5 - 4) % 3, not isTrue(), ! isTrue AND isFalse, method(1,text) or method(thisIs.instance,text))";
+                    String expected = "(1 / (5 - 4) % 3, not is() and ! is AND isnt OR method(1,t) or NOT method(thisIs.ins,t), a < b == c && d >= e != f || g > h, i <= j)";
 
                     String actual = obj.extractMultiplicityRangeUpper();
 
@@ -1359,7 +1359,7 @@ class AttributeEvaluationTest {
             final Generator<String> nullTextGenerator = fixedValues("null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
             final Generator<Integer> multiplicityRangeSizeGenerator = integers(1, 5);
 
-            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not",
+            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT",
                     "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
                     "true", "True", "TRUE", "false", "False", "FALSE",
                     "null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
