@@ -31,18 +31,22 @@ propType
     ;
 
 multiplicityRange
-    :   LBRACK (lower RANGE)? upper RBRACK
+    :   LBRACK (lower rangeSplit)? upper RBRACK
     ;
 
 lower
-    :   INTEGER_LITERAL
+    :   integerLiteral
     |   valueSpecification
     ;
 
 upper
     :   UNLIMITATION
-    |   INTEGER_LITERAL
+    |   integerLiteral
     |   valueSpecification
+    ;
+
+rangeSplit
+    :   RANGE
     ;
 
 valueSpecification
@@ -63,8 +67,9 @@ propModefier
     ;
 
 expression
-    :   IDENTIFIER
+    :   LPAREN expression RPAREN
     |   literal
+    |   IDENTIFIER
     |   expression bop='.'
         (   IDENTIFIER
         |   primitiveType
@@ -73,8 +78,12 @@ expression
     |   expression arguments
     |   NEW creator
     |   bop=('+' | '-') expression
+    |   bop=('!' | 'not') expression
     |   expression bop=('*'|'/'|'%') expression
     |   expression bop=('+'|'-') expression
+    |   expression bop=('==' | '!=') expression
+    |   expression bop=('&&' | 'and' | 'AND') expression
+    |   expression bop=('||' | 'or' | 'OR') expression
     |   primitiveType arguments?
     ;
 
@@ -157,7 +166,7 @@ NEW:                'new';
 BOOLEAN:            'bool' | 'boolean';
 CHAR:               'c' | 'char' | 'character';
 BYTE:               'byte';
-SHORT:              's' | 'short';
+SHORT:              'short';
 INT:                'i' | 'int' | 'integer';
 LONG:               'l' | 'long';
 FLOAT:              'f' | 'float';
@@ -214,34 +223,34 @@ DQUOT_LITERAL:      DQUOT (~["\\\r\n] | EscapeSequence)* DQUOT;
 IDENTIFIER:         Letter LetterOrDigit*;
 
 fragment ExponentPart
-    : [eE] [+-]? Digits
+    :   [eE] [+-]? Digits
     ;
 
 fragment EscapeSequence
-    :    '\\' [0abtnvfrs"'\\]
-    |    '\\' ([0-3]? [0-7])? [0-7]
-    |    '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
+    :   '\\' [0abtnvfrs"'\\]
+    |   '\\' ([0-3]? [0-7])? [0-7]
+    |   '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
     ;
 
 fragment HexDigits
-    : HexDigit ((HexDigit | '_')* HexDigit)?
+    :   HexDigit ((HexDigit | '_')* HexDigit)?
     ;
 
 fragment HexDigit
-    :    [0-9a-fA-F]
+    :   [0-9a-fA-F]
     ;
 
 fragment Digits
-    : [0-9] ([0-9_]* [0-9])?
+    :   [0-9] ([0-9_]* [0-9])?
     ;
 
 fragment LetterOrDigit
-    :    Letter
-    |    [0-9]
+    :   Letter
+    |   [0-9]
     ;
 
 fragment Letter
-    :    [a-zA-Z$_] // these are the "java letters" below 0x7F
-    |    ~[\u0000-\u007F\uD800-\uDBFF] // covers all characters above 0x7F which are not a surrogate
-    |    [\uD800-\uDBFF] [\uDC00-\uDFFF] // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
+    :   [a-zA-Z$_] // these are the "java letters" below 0x7F
+    |   ~[\u0000-\u007F\uD800-\uDBFF] // covers all characters above 0x7F which are not a surrogate
+    |   [\uD800-\uDBFF] [\uDC00-\uDFFF] // covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
     ;

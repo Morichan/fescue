@@ -7,6 +7,11 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.ClassesLexer;
 import parser.ClassesParser;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * <p> 属性における要素の抽出クラス </p>
  *
@@ -43,12 +48,18 @@ public class AttributeEvaluation {
     private String attribute;
 
     /**
-     * 属性文を設定します。
+     * <p> 属性文を設定します。 </p>
+     *
+     * <p>
+     *     {@code "\\.\\."}という文字列（2つ連続したドット）が存在した場合、その両端に半角スペースを挿入します。
+     *     これは、多重度における下限と上限の指定の箇所をパースする際に、半角スペースが入っていない場合はうまくパースできないためです。
+     *     詳しくは{@link #insertSpaceBothEndsOfRangeOperator(String)}を参照してください。
+     * </p>
      *
      * @param text 設定する属性文 {@code null}可だが{@link #walk()}で{@link IllegalArgumentException}を投げる。
      */
     public void setAttribute(String text) {
-        attribute = text;
+        attribute = insertSpaceBothEndsOfRangeOperator(text);
     }
 
     /**
@@ -171,6 +182,71 @@ public class AttributeEvaluation {
     }
 
     /**
+     * <p> 多重度における下限を抽出します。 </p>
+     *
+     * <p>
+     *     次の場合は{@code null}を返します。
+     *     <ul>
+     *         <li> 属性文を設定していない場合 </li>
+     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 下限が存在しない場合 </li>
+     *     </ul>
+     *
+     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     * </p>
+     *
+     * @return 多重度における下限
+     */
+    public String extractMultiplicityRangeLower() {
+        String multiplicityRangeLower = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.MultiplicityRangeContext) {
+                if (context.getChild(i).getChild(1) instanceof ClassesParser.LowerContext) {
+                    multiplicityRangeLower = formatMultiplicityRangeExpression((ClassesParser.LowerContext) context.getChild(i).getChild(1));
+                    break;
+                }
+            }
+        }
+        extractName(); // if (attributeName == null) throw new InputMismatchException();
+
+        return multiplicityRangeLower;
+    }
+
+    /**
+     * <p> 多重度における上限を抽出します。 </p>
+     *
+     * <p>
+     *     次の場合は{@code null}を返します。
+     *     <ul>
+     *         <li> 属性文を設定していない場合 </li>
+     *         <li> 属性名を含んでいない場合 </li>
+     *     </ul>
+     *
+     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     * </p>
+     *
+     * @return 多重度における上限
+     */
+    public String extractMultiplicityRangeUpper() {
+        String multiplicityRangeUpper = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.MultiplicityRangeContext) {
+                if (context.getChild(i).getChild(1) instanceof ClassesParser.UpperContext) {
+                    multiplicityRangeUpper = formatMultiplicityRangeExpression((ClassesParser.UpperContext) context.getChild(i).getChild(1));
+                } else if (context.getChild(i).getChild(3) instanceof ClassesParser.UpperContext) {
+                    multiplicityRangeUpper = formatMultiplicityRangeExpression((ClassesParser.UpperContext) context.getChild(i).getChild(3));
+                }
+                break;
+            }
+        }
+        extractName(); // if (attributeName == null) throw new InputMismatchException();
+
+        return multiplicityRangeUpper;
+    }
+
+    /**
      * <p> 既定値を抽出します。 </p>
      *
      * <p>
@@ -196,7 +272,7 @@ public class AttributeEvaluation {
                         defaultValue += context.getChild(i).getChild(1).getChild(1).getChild(j).getText();
                     }
                 } else {
-                    defaultValue = context.getChild(i).getChild(1).getText();
+                    defaultValue = formatExpression((ClassesParser.ExpressionContext) context.getChild(i).getChild(1));
                 }
                 break;
             }
@@ -205,6 +281,8 @@ public class AttributeEvaluation {
 
         return defaultValue;
     }
+
+
 
     /**
      * <p> 字句解析と構文解析を行い、構文解析木を走査します。 </p>
@@ -224,5 +302,149 @@ public class AttributeEvaluation {
         listener = new ClassesEvalListener();
         walker.walk(listener, tree);
         context = listener.getProperty();
+    }
+
+
+
+    /**
+     * <p> {@code "\\.\\."}という文字列（2つ連続したドット）が存在した場合、その両端に半角スペースを挿入します。 </p>
+     *
+     * <p>
+     *     正確には、文法における多重度の下限と上限の指定（[0..1]のようなもの）内での、真ん中の2つのドット（以降は範囲演算子と呼びます）の両端に半角スペースを挿入します。
+     *     これは、範囲演算子の箇所をパースする際に、半角スペースが入っていない場合はうまくパースできないためです。
+     *     手法としては、単純な置換（{@code matcher("\\.\\.") -> replaceAll(" .. ")}）を用いています。
+     *     既に半角スペースが入っていたとしても、新たに半角スペースを挿入しますが、パースに問題はありません。
+     * </p>
+     *
+     * @param text 設定する属性文 {@code null}可だが{@link #walk()}で{@link IllegalArgumentException}を投げる。
+     * @return もし {@code "\\.\\."}が存在する場合はその両端に半角スペースを挿入した文字列、存在しない場合は入力した文字列
+     */
+    private String insertSpaceBothEndsOfRangeOperator(String text) {
+        Pattern p = Pattern.compile("\\.\\.");
+        Matcher m = p.matcher(text);
+        if (m.find()) text = m.replaceAll(" .. ");
+        return text;
+    }
+
+    /**
+     * <p> 式における文章を整形します。 </p>
+     *
+     * <p>
+     *     次の場合、間にスペースを挿入します。
+     *     <ul>
+     *         <li></li>
+     *     </ul>
+     * </p>
+     * @param ctx
+     * @return
+     */
+    private String formatExpression(ClassesParser.ExpressionContext ctx) {
+        String text;
+
+        if (ctx.getChildCount() == 2) {
+            if (ctx.getChild(1) instanceof ClassesParser.ExpressionContext && (ctx.getChild(0).getText().equals("!") || ctx.getChild(0).getText().equals("not"))) {
+                text = ctx.getChild(0).getText() + " " + formatExpression((ClassesParser.ExpressionContext) ctx.getChild(1));
+            } else if (ctx.getChild(1) instanceof ClassesParser.ExpressionContext) {
+                text = ctx.getChild(0).getText() + formatExpression((ClassesParser.ExpressionContext) ctx.getChild(1));
+            } else {
+                text = ctx.getText();
+            }
+
+        } else if (ctx.getChildCount() == 3) {
+            if (ctx.getChild(0) instanceof ClassesParser.ExpressionContext && ctx.getChild(2) instanceof ClassesParser.ExpressionContext) {
+                text = formatExpression((ClassesParser.ExpressionContext) ctx.getChild(0)) + " " + ctx.getChild(1).getText() + " " + formatExpression((ClassesParser.ExpressionContext) ctx.getChild(2));
+            } else if (ctx.getChild(1) instanceof ClassesParser.ExpressionContext) {
+                text = ctx.getChild(0).getText() + formatExpression((ClassesParser.ExpressionContext) ctx.getChild(1)) + ctx.getChild(2).getText();
+            } else {
+                text = ctx.getText();
+            }
+
+        } else {
+            text = ctx.getText();
+        }
+
+        return text;
+    }
+
+    /**
+     * <p> 多重度における下限の文章を整形します。 </p>
+     *
+     * <p>
+     *     <ul>
+     *         <li> value-specificationの場合は"()"で囲んだ文字列を返します（{@link #formatMultiplicityRangeExpression(ClassesParser.ValueSpecificationContext)}を参照）。 </li>
+     *         <li> 数値の場合は数値の文字列を返します。 </li>
+     *     </ul>
+     * </p>
+     *
+     * @param ctx 多重度における下限のコンテキスト
+     * @return 多重度における下限の文章
+     */
+    private String formatMultiplicityRangeExpression(ClassesParser.LowerContext ctx) {
+        String text;
+
+        if (ctx.getChild(0) instanceof ClassesParser.ValueSpecificationContext) {
+            text = formatMultiplicityRangeExpression((ClassesParser.ValueSpecificationContext) ctx.getChild(0));
+        } else {
+            text = ctx.getText();
+        }
+
+        return text;
+    }
+
+    /**
+     * <p> 多重度における上限の文章を整形します。 </p>
+     *
+     * <p>
+     *     <ul>
+     *         <li> value-specificationの場合は"()"で囲んだ文字列を返します（{@link #formatMultiplicityRangeExpression(ClassesParser.ValueSpecificationContext)}を参照）。 </li>
+     *         <li> {@code "*"}の場合はそのものを返します。 </li>
+     *         <li> 数値の場合は数値の文字列を返します。 </li>
+     *     </ul>
+     * </p>
+     *
+     * @param ctx 多重度における上限のコンテキスト
+     * @return 多重度における上限の文章
+     */
+    private String formatMultiplicityRangeExpression(ClassesParser.UpperContext ctx) {
+        String text;
+
+        if (ctx.getChild(0) instanceof ClassesParser.ValueSpecificationContext) {
+            text = formatMultiplicityRangeExpression((ClassesParser.ValueSpecificationContext) ctx.getChild(0));
+        } else {
+            text = ctx.getText();
+        }
+
+        return text;
+    }
+
+    /**
+     * <p> 多重度における下限または上限のvalue-specificationの文章を整形します。 </p>
+     *
+     * <p>
+     *     {@link #formatMultiplicityRangeExpression(ClassesParser.LowerContext)}または{@link #formatMultiplicityRangeExpression(ClassesParser.UpperContext)}で利用します。
+     *     単語を{@code " "}で区切った文を{@code ", "}で区切った文章に整形し、それを{@code "()"}で囲んだ文字列を返します。
+     * </p>
+     *
+     * @param ctx 多重度における下限または上限のvalue-specificationコンテキスト
+     * @return 単語を{@code " "}で区切った文を{@code ", "}で区切った文章に整形し{@code "()"}で囲んだ文字列
+     */
+    private String formatMultiplicityRangeExpression(ClassesParser.ValueSpecificationContext ctx) {
+        String text = "(";
+        List<String> expressions = new ArrayList<>();
+        List<String> expression = new ArrayList<>();
+
+        // 括弧 "(" と括弧閉じ ")" を無視
+        for (int i = 1; i < ctx.getChildCount() - 1; i++) {
+            if (ctx.getChild(i) instanceof ClassesParser.ExpressionContext) {
+                expression.add(formatExpression((ClassesParser.ExpressionContext) ctx.getChild(i)));
+            } else {
+                expressions.add(String.join(" ", expression));
+                expression.clear();
+            }
+        }
+        expressions.add(String.join(" ", expression));
+        text += String.join(", ", expressions) + ")";
+
+        return text;
     }
 }

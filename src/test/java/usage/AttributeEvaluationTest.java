@@ -2,17 +2,16 @@ package usage;
 
 import net.java.quickcheck.Generator;
 import org.antlr.v4.runtime.InputMismatchException;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
-import parser.ClassesParser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static net.java.quickcheck.generator.CombinedGenerators.lists;
 import static net.java.quickcheck.generator.PrimitiveGenerators.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttributeEvaluationTest {
 
@@ -179,6 +178,181 @@ class AttributeEvaluationTest {
                 String actual = obj.extractPropType();
 
                 assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 多重度を含む場合 {
+
+            @Nested
+            class 下限と上限が数値の場合 {
+
+                final String attribute = "attribute [0..1]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限を返す() {
+                    String expected = "0";
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "1";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 上限が数値の場合 {
+
+                final String attribute = "attribute [1]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限ではnullを返す() {
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isNull();
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "1";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 下限と上限が文字列の場合 {
+
+                final String attribute = "attribute [(this is zero)..(one)]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限を返す() {
+                    String expected = "(this is zero)";
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "(one)";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 上限が文字列の場合 {
+
+                final String attribute = "attribute [(this is more than zero, constant)]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限ではnullを返す() {
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isNull();
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "(this is more than zero, constant)";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 下限と上限が式の場合 {
+
+                final String attribute = "attribute [(1+0)..(one+(twoMethod()+three))]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限を返す() {
+                    String expected = "(1 + 0)";
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "(one + (twoMethod() + three))";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 上限が式の場合 {
+
+                final String attribute = "attribute [(1/(5-4)%3, not isTrue(), ! isTrue AND isFalse, method(1, text) or method(thisIs.instance, text))]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限ではnullを返す() {
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isNull();
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "(1 / (5 - 4) % 3, not isTrue(), ! isTrue AND isFalse, method(1,text) or method(thisIs.instance,text))";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
             }
         }
 
@@ -983,7 +1157,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 加算を返す() {
-                    String expected = "1+2";
+                    String expected = "1 + 2";
                     String attribute = "onePlusTwo = 1 + 2";
                     walk(attribute);
 
@@ -994,7 +1168,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 減算を返す() {
-                    String expected = "1-2";
+                    String expected = "1 - 2";
                     String attribute = "oneMinusTwo = 1 - 2";
                     walk(attribute);
 
@@ -1005,7 +1179,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 乗算を返す() {
-                    String expected = "1*2";
+                    String expected = "1 * 2";
                     String attribute = "oneMultipliedByTwo = 1 * 2";
                     walk(attribute);
 
@@ -1016,7 +1190,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 除算を返す() {
-                    String expected = "1/2";
+                    String expected = "1 / 2";
                     String attribute = "oneDividedByTwo = 1 / 2";
                     walk(attribute);
 
@@ -1027,8 +1201,19 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 余りを返す() {
-                    String expected = "1%2";
+                    String expected = "1 % 2";
                     String attribute = "remainderOfOneDividedByTwo = 1 % 2";
+                    walk(attribute);
+
+                    String actual = obj.extractDefaultValue();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 括弧付きの式を返す() {
+                    String expected = "1 / (2 * ((3 + 4) - 5))";
+                    String attribute = "remainderOfOneDividedByTwo = 1 / (2 * ((3 + 4) - 5))";
                     walk(attribute);
 
                     String actual = obj.extractDefaultValue();
@@ -1167,27 +1352,35 @@ class AttributeEvaluationTest {
             final Generator<String> propTypeGenerator = fixedValues("bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double");
             final Generator<DefaultValueType> defaultValueGenerator = fixedValues(DefaultValueType.Numeric, DefaultValueType.Text, DefaultValueType.Genuineness, DefaultValueType.Undefined, DefaultValueType.Expression);
             final Generator<Integer> methodArgsSizeGenerator = integers(1, 5);
-            final Generator<Integer> instanceSizeGenerator = integers(1, 10);
+            final Generator<Integer> instanceSizeGenerator = integers(1, 5);
             final Generator<Integer> integerGenerator = integers();
             final Generator<Double> doubleGenerator = doubles();
             final Generator<String> genuinenessTextGenerator = fixedValues("true", "True", "TRUE", "false", "False", "FALSE", "1", "0");
             final Generator<String> nullTextGenerator = fixedValues("null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
+            final Generator<Integer> multiplicityRangeSizeGenerator = integers(1, 5);
+
+            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not",
+                    "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
+                    "true", "True", "TRUE", "false", "False", "FALSE",
+                    "null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
 
             String name;
 
             @BeforeEach
             void selectName() {
-                name = selectNameOfLengthZero();
+                name = selectNameOfLengthZeroWithoutKeyword();
             }
 
             @RepeatedTest(100)
             void 名前を返す() {
-                String expected = selectNameOfLengthZero();
+                String expected = selectNameOfLengthZeroWithoutKeyword();
                 walk(expected);
 
                 try {
                     String actual = obj.extractName();
-                    assertThat(actual).isEqualTo(expected);
+                    assertThat(actual)
+                            .as("InputMismatchException : input '"+expected+"'")
+                            .isEqualTo(expected);
 
                 } catch (InputMismatchException e) {
                     System.out.println("InputMismatchException : input '"+expected+"'");
@@ -1197,12 +1390,13 @@ class AttributeEvaluationTest {
             @RepeatedTest(100)
             void 可視性を返す() {
                 String visibility = visibilityGenerator.next();
-                walk(visibility + " " + name);
+                String attribute = visibility + " " + name;
+                walk(attribute);
 
                 String actual = obj.extractVisibility();
 
-                if (visibility.length() <= 0) assertThat(actual).isNull();
-                else assertThat(actual).isEqualTo(visibility);
+                if (visibility.length() <= 0) assertThat(actual).as("InputMismatchException : input '"+attribute+"'").isNull();
+                else assertThat(actual).as("InputMismatchException : input '"+attribute+"'").isEqualTo(visibility);
             }
 
             @RepeatedTest(100)
@@ -1210,27 +1404,55 @@ class AttributeEvaluationTest {
                 String visibility = visibilityGenerator.next();
                 boolean isDivided = genuinenessGenerator.next();
                 String divided = isDivided ? "/" : "";
+                String attribute = visibility + " " + divided + name;
 
-                walk(visibility + " " + divided + name);
+                walk(attribute);
                 String actual = obj.extractDivided();
 
-                if (isDivided) assertThat(actual).isEqualTo(divided);
-                else assertThat(actual).isNull();
+                if (isDivided) assertThat(actual).as("InputMismatchException : input '"+attribute+"'").isEqualTo(divided);
+                else assertThat(actual).as("InputMismatchException : input '"+attribute+"'").isNull();
             }
 
             @RepeatedTest(100)
             void 型を返す() {
                 String visibility = visibilityGenerator.next();
                 String propType = propTypeGenerator.next();
+                String attribute = visibility + " " + name + " : " + propType;
 
-                walk(visibility + " " + name + " : " + propType);
+                walk(attribute);
 
                 try {
                     String actual = obj.extractPropType();
-                    assertThat(actual).isEqualTo(propType);
+                    assertThat(actual)
+                            .as("InputMismatchException : input '"+attribute+"'")
+                            .isEqualTo(propType);
 
                 } catch (InputMismatchException e) {
-                    System.out.println("InputMismatchException : input attribute name '"+name+"'" + " and prop type '"+propType+"'");
+                    System.out.println("InputMismatchException : input '"+attribute+"'");
+                }
+            }
+
+            @RepeatedTest(200)
+            void 多重度を返す() {
+                String visibility = visibilityGenerator.next();
+                String multiplicityRange = createMultiplicityRange();
+                String attribute = visibility + " " + name + " [" + multiplicityRange + "]";
+
+                walk(attribute);
+
+                try {
+                    String lower = obj.extractMultiplicityRangeLower();
+                    String upper = obj.extractMultiplicityRangeUpper();
+                    String actual = upper;
+                    if (lower != null) {
+                        actual = lower + ".." + upper;
+                    }
+                    assertThat(actual)
+                            .as("InputMismatchException : input '"+attribute+"'")
+                            .isEqualTo(multiplicityRange);
+
+                } catch (InputMismatchException e) {
+                    System.out.println("InputMismatchException : input '"+attribute+"'");
                 }
             }
 
@@ -1238,26 +1460,39 @@ class AttributeEvaluationTest {
             void 既定値を返す() {
                 String visibility = visibilityGenerator.next();
                 String defaultValue = createDefaultValue();
+                String attribute = visibility + " " + name + " = " + defaultValue;
 
-                walk(visibility + " " + name + " = " + defaultValue);
+                walk(attribute);
 
                 try {
                     String actual = obj.extractDefaultValue();
-                    assertThat(actual).isEqualTo(defaultValue);
+                    assertThat(actual)
+                            .as("InputMismatchException : input '"+attribute+"'")
+                            .isEqualTo(defaultValue);
 
                 } catch (InputMismatchException e) {
-                    System.out.println("InputMismatchException : input attribute name '"+name+"'" + " and defaultValue '"+defaultValue+"'");
+                    System.out.println("InputMismatchException : input '"+attribute+"'");
                 }
             }
 
-            private String selectNameOfLengthZero() {
+            private String selectNameOfLengthZeroWithoutKeyword() {
                 String text;
 
                 do {
                     text = textGenerator.next();
-                } while (text.length() <= 0);
+                } while (text.length() <= 0 || keywords.contains(text));
 
                 return text;
+            }
+
+            private int selectNumberNotLessThan(int lessNumber) {
+                int number;
+
+                do {
+                    number = integerGenerator.next();
+                } while (number <= lessNumber);
+
+                return number;
             }
 
             private String createDefaultValue() {
@@ -1280,9 +1515,9 @@ class AttributeEvaluationTest {
                 } else if (type == DefaultValueType.Text) {
                     boolean isSingleQuotation = genuinenessGenerator.next();
                     if (isSingleQuotation) {
-                        text = "'" + selectNameOfLengthZero() + "'";
+                        text = "'" + selectNameOfLengthZeroWithoutKeyword() + "'";
                     } else {
-                        text = "\"" + selectNameOfLengthZero() + "\"";
+                        text = "\"" + selectNameOfLengthZeroWithoutKeyword() + "\"";
                     }
 
                 } else if (type == DefaultValueType.Genuineness) {
@@ -1299,7 +1534,7 @@ class AttributeEvaluationTest {
             }
 
             private String createInstance(int instanceSize, int argsSize) {
-                String text = selectNameOfLengthZero();
+                String text = selectNameOfLengthZeroWithoutKeyword();
                 boolean isMethod = genuinenessGenerator.next();
 
                 if (isMethod) {
@@ -1315,6 +1550,57 @@ class AttributeEvaluationTest {
                 }
 
                 return text;
+            }
+
+            private String createMultiplicityRange() {
+                String text = "";
+                boolean isHadLower = genuinenessGenerator.next();
+                boolean isValueSpecificationByLower = genuinenessGenerator.next();
+                boolean isValueSpecificationByUpper = genuinenessGenerator.next();
+                boolean isUnlimitedByUpper = genuinenessGenerator.next();
+                int lowerNumber = 1;
+
+                if (isHadLower) {
+                    if (isValueSpecificationByLower) {
+                        text = "(" + createMultiplicityRangeExpression() + ")..";
+                    } else {
+                        lowerNumber = selectNumberNotLessThan(0);
+                        text = Integer.toString(lowerNumber) + "..";
+                    }
+                }
+
+                if (isValueSpecificationByUpper) {
+                    text += "(" + createMultiplicityRangeExpression() + ")";
+                } else if (isUnlimitedByUpper) {
+                    text += "*";
+                } else {
+                    text += Integer.toString(selectNumberNotLessThan(lowerNumber));
+                }
+
+                return text;
+            }
+
+            private String createMultiplicityRangeExpression() {
+                int expressionSize = multiplicityRangeSizeGenerator.next();
+
+                List<String> expressions = new ArrayList<>();
+                List<String> expression = new ArrayList<>();
+                for (int i = 0; i < expressionSize; i++) {
+                    int size = multiplicityRangeSizeGenerator.next();
+                    for (int j = 0; j < size; j++) {
+                        if (genuinenessGenerator.next()) {
+                            expression.add(selectNameOfLengthZeroWithoutKeyword());
+                        } else if (genuinenessGenerator.next()) {
+                            expression.add(createInstance(instanceSizeGenerator.next(), methodArgsSizeGenerator.next()));
+                        } else {
+                            expression.add(Integer.toString(selectNumberNotLessThan(0)));
+                        }
+                    }
+                    expressions.add(String.join(" ", expression));
+                    expression.clear();
+                }
+
+                return String.join(", ", expressions);
             }
         }
 
@@ -1447,7 +1733,7 @@ class AttributeEvaluationTest {
             void 走査したらエラーを返す() {
                 obj = new AttributeEvaluation();
 
-                assertThrows(IllegalArgumentException.class, () -> obj.walk());
+                assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
             }
         }
 
@@ -1461,14 +1747,14 @@ class AttributeEvaluationTest {
                 void 空文字を入力するとエラーを返す() {
                     walk("");
 
-                    assertThrows(IllegalArgumentException.class, () -> obj.extractName());
+                    assertThatThrownBy(() -> obj.extractName()).isInstanceOf(IllegalArgumentException.class);
                 }
 
                 @Test
                 void プリミティブ型と同じ文字列を入力するとエラーを返す() {
                     walk("int : float");
 
-                    assertThrows(InputMismatchException.class, () -> obj.extractName());
+                    assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
                 }
             }
 
@@ -1479,7 +1765,28 @@ class AttributeEvaluationTest {
                 void プリミティブ型と同じ文字列を入力するとエラーを返す() {
                     walk("int : float");
 
-                    assertThrows(InputMismatchException.class, () -> obj.extractPropType());
+                    assertThatThrownBy(() -> obj.extractPropType()).isInstanceOf(InputMismatchException.class);
+                }
+            }
+
+            @Nested
+            class 多重度の場合 {
+
+                @Test
+                void プリミティブ型と同じ文字列を名前に入力すると下限でエラーを返す() {
+                    SoftAssertions softly = new SoftAssertions();
+
+                    walk("double [0..1]");
+
+                    softly.assertThatThrownBy(() -> obj.extractMultiplicityRangeUpper()).isInstanceOf(InputMismatchException.class);
+                    assertThatThrownBy(() -> obj.extractMultiplicityRangeLower()).isInstanceOf(InputMismatchException.class);
+                }
+
+                @Test
+                void プリミティブ型と同じ文字列を名前に入力すると上限でエラーを返す() {
+                    walk("double [*]");
+
+                    assertThatThrownBy(() -> obj.extractMultiplicityRangeUpper()).isInstanceOf(InputMismatchException.class);
                 }
             }
 
@@ -1553,7 +1860,7 @@ class AttributeEvaluationTest {
                 void プリミティブ型と同じ文字列を名前に入力するとエラーを返す() {
                     walk("int = 1");
 
-                    assertThrows(InputMismatchException.class, () -> obj.extractDefaultValue());
+                    assertThatThrownBy(() -> obj.extractDefaultValue()).isInstanceOf(InputMismatchException.class);
                 }
             }
         }
