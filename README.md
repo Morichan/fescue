@@ -1,6 +1,6 @@
 | |Main|Develop|
 |:--|:--:|:--:|
-|Build|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|
+|Build|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=master)](https://travis-ci.org/Morichan/ClassesGrammar)|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|
 |Codecov|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/master/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/develop/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|
 
 # 概要
