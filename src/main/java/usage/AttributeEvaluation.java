@@ -235,7 +235,7 @@ public class AttributeEvaluation {
             if (context.getChild(i) instanceof ClassesParser.MultiplicityRangeContext) {
                 if (context.getChild(i).getChild(1) instanceof ClassesParser.UpperContext) {
                     multiplicityRangeUpper = formatMultiplicityRangeExpression((ClassesParser.UpperContext) context.getChild(i).getChild(1));
-                } else if (context.getChild(i).getChild(3) instanceof ClassesParser.UpperContext) {
+                } else {
                     multiplicityRangeUpper = formatMultiplicityRangeExpression((ClassesParser.UpperContext) context.getChild(i).getChild(3));
                 }
                 break;
@@ -327,22 +327,24 @@ public class AttributeEvaluation {
     }
 
     /**
-     * <p> 式における文章を整形します。 </p>
+     * <p> 式の文章を整形します。 </p>
      *
      * <p>
-     *     次の場合、間にスペースを挿入します。
+     *     次の場合、トークン間にスペースを挿入します。
      *     <ul>
-     *         <li></li>
+     *         <li> {@code numberOrExpression ([+*%/-] | '<=' | '>=' | '>' | '<' | '==' | '!=' | '&&' | 'and' | 'AND' | '||' | 'or' | 'OR') numberOrExpression} </li>
+     *         <li> {@code ('!' | 'not' | 'NOT') numberOrExpression} </li>
      *     </ul>
      * </p>
-     * @param ctx
-     * @return
+     *
+     * @param ctx 式のコンテキスト
+     * @return 式のおける文章
      */
     private String formatExpression(ClassesParser.ExpressionContext ctx) {
         String text;
 
         if (ctx.getChildCount() == 2) {
-            if (ctx.getChild(1) instanceof ClassesParser.ExpressionContext && (ctx.getChild(0).getText().equals("!") || ctx.getChild(0).getText().equals("not"))) {
+            if (ctx.getChild(1) instanceof ClassesParser.ExpressionContext && (ctx.getChild(0).getText().equals("!") || ctx.getChild(0).getText().equals("not") || ctx.getChild(0).getText().equals("NOT"))) {
                 text = ctx.getChild(0).getText() + " " + formatExpression((ClassesParser.ExpressionContext) ctx.getChild(1));
             } else if (ctx.getChild(1) instanceof ClassesParser.ExpressionContext) {
                 text = ctx.getChild(0).getText() + formatExpression((ClassesParser.ExpressionContext) ctx.getChild(1));

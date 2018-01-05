@@ -78,9 +78,10 @@ expression
     |   expression arguments
     |   NEW creator
     |   bop=('+' | '-') expression
-    |   bop=('!' | 'not') expression
+    |   bop=('!' | 'not' | 'NOT') expression
     |   expression bop=('*'|'/'|'%') expression
     |   expression bop=('+'|'-') expression
+    |   expression bop=('<=' | '>=' | '>' | '<') expression
     |   expression bop=('==' | '!=') expression
     |   expression bop=('&&' | 'and' | 'AND') expression
     |   expression bop=('||' | 'or' | 'OR') expression
