@@ -67,8 +67,9 @@ propModefier
     ;
 
 expression
-    :   IDENTIFIER
+    :   LPAREN expression RPAREN
     |   literal
+    |   IDENTIFIER
     |   expression bop='.'
         (   IDENTIFIER
         |   primitiveType
@@ -77,8 +78,12 @@ expression
     |   expression arguments
     |   NEW creator
     |   bop=('+' | '-') expression
+    |   bop=('!' | 'not') expression
     |   expression bop=('*'|'/'|'%') expression
     |   expression bop=('+'|'-') expression
+    |   expression bop=('==' | '!=') expression
+    |   expression bop=('&&' | 'and' | 'AND') expression
+    |   expression bop=('||' | 'or' | 'OR') expression
     |   primitiveType arguments?
     ;
 
@@ -161,7 +166,7 @@ NEW:                'new';
 BOOLEAN:            'bool' | 'boolean';
 CHAR:               'c' | 'char' | 'character';
 BYTE:               'byte';
-SHORT:              's' | 'short';
+SHORT:              'short';
 INT:                'i' | 'int' | 'integer';
 LONG:               'l' | 'long';
 FLOAT:              'f' | 'float';
