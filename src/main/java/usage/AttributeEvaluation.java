@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.ClassesLexer;
 import parser.ClassesParser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * <p> 属性における要素の抽出クラス </p>
  *
@@ -43,12 +46,18 @@ public class AttributeEvaluation {
     private String attribute;
 
     /**
-     * 属性文を設定します。
+     * <p> 属性文を設定します。 </p>
+     *
+     * <p>
+     *     {@code "\\.\\."}という文字列（2つ連続したドット）が存在した場合、その両端に半角スペースを挿入します。
+     *     これは、多重度における下限と上限の指定の箇所をパースする際に、半角スペースが入っていない場合はうまくパースできないためです。
+     *     詳しくは{@link #insertSpaceBothEndsOfRangeOperator(String)}を参照してください。
+     * </p>
      *
      * @param text 設定する属性文 {@code null}可だが{@link #walk()}で{@link IllegalArgumentException}を投げる。
      */
     public void setAttribute(String text) {
-        attribute = text;
+        attribute = insertSpaceBothEndsOfRangeOperator(text);
     }
 
     /**
@@ -207,6 +216,46 @@ public class AttributeEvaluation {
     }
 
     /**
+     * 多重度における下限を抽出します。
+     *
+     * @return 多重度における下限
+     */
+    public String extractMultiplicityRangeLower() {
+        String multiplicityRangeLower = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.MultiplicityRangeContext) {
+                if (context.getChild(i).getChild(1) instanceof ClassesParser.LowerContext) {
+                    multiplicityRangeLower = context.getChild(i).getChild(1).getText();
+                }
+            }
+        }
+
+        return multiplicityRangeLower;
+    }
+
+    /**
+     * 多重度における上限を抽出します。
+     *
+     * @return 多重度における上限
+     */
+    public String extractMultiplicityRangeUpper() {
+        String multiplicityRangeUpper = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.MultiplicityRangeContext) {
+                if (context.getChild(i).getChild(1) instanceof ClassesParser.UpperContext) {
+                    multiplicityRangeUpper = context.getChild(i).getChild(1).getText();
+                } else if (context.getChild(i).getChild(3) instanceof ClassesParser.UpperContext) {
+                    multiplicityRangeUpper = context.getChild(i).getChild(3).getText();
+                }
+            }
+        }
+
+        return multiplicityRangeUpper;
+    }
+
+    /**
      * <p> 字句解析と構文解析を行い、構文解析木を走査します。 </p>
      *
      * <p>
@@ -224,5 +273,29 @@ public class AttributeEvaluation {
         listener = new ClassesEvalListener();
         walker.walk(listener, tree);
         context = listener.getProperty();
+    }
+
+    /**
+     * <p> {@code "\\.\\."}という文字列（2つ連続したドット）が存在した場合、その両端に半角スペースを挿入します。 </p>
+     *
+     * <p>
+     *     正確には、文法における多重度の下限と上限の指定（[0..1]のようなもの）内での、真ん中の2つのドット（以降は範囲演算子と呼びます）の両端に半角スペースを挿入します。
+     *     これは、範囲演算子の箇所をパースする際に、半角スペースが入っていない場合はうまくパースできないためです。
+     *     手法としては、単純な置換（{@code matcher("\\.\\.") -> replaceAll(" .. ")}）を用いています。
+     *     既に半角スペースが入っていたとしても、新たに半角スペースを挿入しますが、パースに問題はありません。
+     * </p>
+     *
+     * @param text 設定する属性文 {@code null}可だが{@link #walk()}で{@link IllegalArgumentException}を投げる。
+     * @return もし {@code "\\.\\."}が存在する場合はその両端に半角スペースを挿入した文字列、存在しない場合は入力した文字列
+     */
+    private String insertSpaceBothEndsOfRangeOperator(String text) {
+        Pattern p = Pattern.compile("\\.\\.");
+        Matcher m = p.matcher(text);
+        if (m.find()) text = m.replaceAll(" .. ");
+        return text;
+    }
+
+    private String MultiplicityRangeExpression(ClassesParser.LowerContext ctx) {
+        return "";
     }
 }

@@ -1160,6 +1160,126 @@ class AttributeEvaluationTest {
         }
 
         @Nested
+        class 多重度を含む場合 {
+
+            @Nested
+            class 下限と上限が数値の場合 {
+
+                final String attribute = "attribute [0..1]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限を返す() {
+                    String expected = "0";
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "1";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 上限が数値の場合 {
+
+                final String attribute = "attribute [1]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限ではnullを返す() {
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isNull();
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "1";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 下限と上限が文字列の場合 {
+
+                final String attribute = "attribute [(this is zero)..(one)]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Disabled
+                @Test
+                void 多重度の下限を返す() {
+                    String expected = "(this is zero)";
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "(one)";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 上限が文字列の場合 {
+
+                final String attribute = "attribute [(this is more than zero, constant)]";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void 多重度の下限ではnullを返す() {
+
+                    String actual = obj.extractMultiplicityRangeLower();
+
+                    assertThat(actual).isNull();
+                }
+
+                @Disabled
+                @Test
+                void 多重度の上限を返す() {
+                    String expected = "(this is more than zero, constant)";
+
+                    String actual = obj.extractMultiplicityRangeUpper();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+        }
+
+        @Nested
         class ランダムテストの場合 {
             final Generator<String> textGenerator = letterStrings();
             final Generator<String> visibilityGenerator = fixedValues("", "-", "+", "#", "~");
