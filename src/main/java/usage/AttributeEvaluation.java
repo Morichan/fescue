@@ -81,9 +81,9 @@ public class AttributeEvaluation {
      *     次の場合は例外を投げます。
      *     <ul>
      *         <li>属性文を設定していない場合（{@link #setAttribute(String)}参照） : {@link IllegalArgumentException}</li>
-     *         <li>属性文がプリミティブ型と同じ文字列の場合 : {@link ClassesParser.PropertyContext#exception}</li>
+     *         <li>設定した属性文が予約語と同じ文字列の場合 : {@link ClassesParser.PropertyContext#exception}</li>
      *     </ul>
-     *     また、戻り値が{@code null}の可能性は恐らくありません。
+     *     また、処理の最後に{@code null}判定を行っているため（真の場合は上記の1番目の操作を行う）、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
      *
      * @return 属性名
@@ -110,7 +110,7 @@ public class AttributeEvaluation {
      *     次の場合は{@code null}を返します。
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
-     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
      *     </ul>
      * </p>
      *
@@ -136,7 +136,7 @@ public class AttributeEvaluation {
      *     次の場合は{@code null}を返します。
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
-     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
      *     </ul>
      * </p>
      *
@@ -162,10 +162,10 @@ public class AttributeEvaluation {
      *     次の場合は{@code null}を返します。
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
-     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
      *     </ul>
      *
-     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     *     また、設定した属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 型 {@code null}の可能性あり
@@ -191,11 +191,11 @@ public class AttributeEvaluation {
      *     次の場合は{@code null}を返します。
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
-     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
      *         <li> 下限が存在しない場合 </li>
      *     </ul>
      *
-     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     *     また、設定した属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 多重度における下限
@@ -223,10 +223,10 @@ public class AttributeEvaluation {
      *     次の場合は{@code null}を返します。
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
-     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
      *     </ul>
      *
-     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     *     また、設定した属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 多重度における上限
@@ -256,10 +256,10 @@ public class AttributeEvaluation {
      *     次の場合は{@code null}を返します。
      *     <ul>
      *         <li> 属性文を設定していない場合 </li>
-     *         <li> 属性名を含んでいない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
      *     </ul>
      *
-     *     また、属性名がプリミティブ型と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     *     また、属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
      * @return 既定値
@@ -283,6 +283,45 @@ public class AttributeEvaluation {
         checkIfNameIsSamePrimitiveType();
 
         return defaultValue;
+    }
+
+    /**
+     * <p> 修飾子を抽出します。 </p>
+     *
+     * <p>
+     *     次の場合は{@code null}を返します。
+     *     <ul>
+     *         <li> 属性文を設定していない場合 </li>
+     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
+     *     </ul>
+     *
+     *     また、属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     * </p>
+     *
+     * @return 修飾子
+     */
+    public String extractPropModifier() {
+        String propModifier = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.PropModifiersContext) {
+                List<String> modifiers = new ArrayList<>();
+                for (int j = 0; j < context.getChild(i).getChildCount(); j++) {
+                    if (context.getChild(i).getChild(j) instanceof ClassesParser.PropModifierContext) {
+                        if (context.getChild(i).getChild(j).getChildCount() == 2) {
+                            modifiers.add(context.getChild(i).getChild(j).getChild(0).getText() + " " + context.getChild(i).getChild(j).getChild(1).getText());
+                        } else {
+                            modifiers.add(context.getChild(i).getChild(j).getText());
+                        }
+                    }
+                }
+                propModifier = String.join(", ", modifiers);
+                break;
+            }
+        }
+        checkIfNameIsSamePrimitiveType();
+
+        return propModifier;
     }
 
 
@@ -321,7 +360,7 @@ public class AttributeEvaluation {
 
 
     /**
-     * 名前がプリミティブ型と同じ文字列かどうかを判定し、同じ場合は{@link ClassesParser.PropertyContext#exception}を返す。
+     * 名前が予約語と同じ文字列かどうかを判定し、同じ場合は{@link ClassesParser.PropertyContext#exception}を返します。
      */
     private void checkIfNameIsSamePrimitiveType() {
         if (isSameBetweenNameAndPrimitiveType) throw inputMismatchException;
@@ -359,7 +398,7 @@ public class AttributeEvaluation {
      * </p>
      *
      * @param ctx 式のコンテキスト
-     * @return 式のおける文章
+     * @return 式の文章
      */
     private String formatExpression(ClassesParser.ExpressionContext ctx) {
         String text;
