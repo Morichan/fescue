@@ -12,6 +12,7 @@ import java.util.List;
 import static net.java.quickcheck.generator.PrimitiveGenerators.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttributeEvaluationTest {
 
@@ -1345,6 +1346,90 @@ class AttributeEvaluationTest {
         }
 
         @Nested
+        class 修飾子を含む場合 {
+
+            @Nested
+            class 単純なプロパティが1つであれば {
+
+                final String attribute = "attribute {readOnly}";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "readOnly";
+
+                    String actual = obj.extractPropModifier();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 単純なプロパティが複数であれば {
+
+                final String attribute = "attribute {readOnly, union, ordered, unique}";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "readOnly, union, ordered, unique";
+
+                    String actual = obj.extractPropModifier();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class プロパティ名を持つプロパティが1つであれば {
+
+                final String attribute = "attribute {subsets instance}";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "subsets instance";
+
+                    String actual = obj.extractPropModifier();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class プロパティ名を持つプロパティが複数であれば {
+
+                final String attribute = "attribute {subsets instance.method(), redefines method().instance}";
+
+                @BeforeEach
+                void setup() {
+                    walk(attribute);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "subsets instance.method(), redefines method().instance";
+
+                    String actual = obj.extractPropModifier();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+        }
+
+        @Nested
         class ランダムテストの場合 {
             final Generator<String> textGenerator = letterStrings();
             final Generator<String> visibilityGenerator = fixedValues("", "-", "+", "#", "~");
@@ -1358,6 +1443,8 @@ class AttributeEvaluationTest {
             final Generator<String> genuinenessTextGenerator = fixedValues("true", "True", "TRUE", "false", "False", "FALSE", "1", "0");
             final Generator<String> nullTextGenerator = fixedValues("null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
             final Generator<Integer> multiplicityRangeSizeGenerator = integers(1, 5);
+            final Generator<Integer> propModifiersSizeGenerator = integers(1, 5);
+            final Generator<String> simplePropModifierGenerator = fixedValues("readOnly", "union", "ordered", "unique");
 
             final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT",
                     "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
@@ -1432,7 +1519,7 @@ class AttributeEvaluationTest {
                 }
             }
 
-            @RepeatedTest(200)
+            @RepeatedTest(100)
             void 多重度を返す() {
                 String visibility = visibilityGenerator.next();
                 String multiplicityRange = createMultiplicityRange();
@@ -1456,7 +1543,7 @@ class AttributeEvaluationTest {
                 }
             }
 
-            @RepeatedTest(1000)
+            @RepeatedTest(100)
             void 既定値を返す() {
                 String visibility = visibilityGenerator.next();
                 String defaultValue = createDefaultValue();
@@ -1474,6 +1561,74 @@ class AttributeEvaluationTest {
                     System.out.println("InputMismatchException : input '"+attribute+"'");
                 }
             }
+
+            @RepeatedTest(100)
+            void 修飾子を返す() {
+                String visibility = visibilityGenerator.next();
+                String propModifiers = createPropModifiers();
+                String attribute = visibility + " " + name + " {" + propModifiers + "}";
+
+                walk(attribute);
+
+                try {
+                    String actual = obj.extractPropModifier();
+                    assertThat(actual)
+                            .as("InputMismatchException : input '"+attribute+"'")
+                            .isEqualTo(propModifiers);
+
+                } catch (InputMismatchException e) {
+                    System.out.println("InputMismatchException : input '"+attribute+"'");
+                }
+            }
+
+            @RepeatedTest(1000)
+            void それぞれの要素を全て返す() {
+                String visibility = visibilityGenerator.next();
+                boolean isDivided = genuinenessGenerator.next();
+                String divided = isDivided ? "/" : "";
+                String propType = propTypeGenerator.next();
+                String multiplicityRange = createMultiplicityRange();
+                String defaultValue = createDefaultValue();
+                String propModifiers = createPropModifiers();
+
+                String attribute = visibility + " " + divided + name + " : " + propType + " [" + multiplicityRange + "] = " + defaultValue + " {" + propModifiers + "}";
+                walk(attribute);
+
+                try {
+                    String actualName = obj.extractName();
+                    String actualDivided = obj.extractDivided();
+                    String actualVisibility = obj.extractVisibility();
+                    String actualPropType = obj.extractPropType();
+                    String lower = obj.extractMultiplicityRangeLower();
+                    String upper = obj.extractMultiplicityRangeUpper();
+                    String actualMultiplicityRange = lower == null
+                            ? upper
+                            : lower + ".." + upper;
+                    String actualDefaultValue = obj.extractDefaultValue();
+                    String actualPropModifiers = obj.extractPropModifier();
+
+                    assertAll("InputMismatchException : input '"+attribute+"'",
+                            () -> assertThat(actualName).isEqualTo(name),
+                            () -> {
+                                    if (visibility.length() <= 0) assertThat(actualVisibility).isNull();
+                                    else assertThat(actualVisibility).isEqualTo(visibility);
+                                },
+                            () -> {
+                                    if (isDivided) assertThat(actualDivided).isEqualTo(divided);
+                                    else assertThat(actualDivided).isNull();
+                                },
+                            () -> assertThat(actualPropType).isEqualTo(propType),
+                            () -> assertThat(actualMultiplicityRange).isEqualTo(multiplicityRange),
+                            () -> assertThat(actualDefaultValue).isEqualTo(defaultValue),
+                            () -> assertThat(actualPropModifiers).isEqualTo(propModifiers)
+                            );
+
+                } catch (InputMismatchException e) {
+                    System.out.println("InputMismatchException : input '"+attribute+"'");
+                }
+            }
+
+
 
             private String selectNameOfLengthZeroWithoutKeyword() {
                 String text;
@@ -1533,6 +1688,32 @@ class AttributeEvaluationTest {
                 return text;
             }
 
+            private String createPropModifiers() {
+                List<String> modifiers = new ArrayList<>();
+                int modifiersSize = propModifiersSizeGenerator.next();
+
+                for (int i = 0; i < modifiersSize; i++) {
+                    modifiers.add(createPropModifier());
+                }
+
+                return String.join(", ", modifiers);
+            }
+
+            private String createPropModifier() {
+                String text;
+
+                if (genuinenessGenerator.next()) {
+                    text = genuinenessGenerator.next()
+                            ? "subsets " + createExpression(1)
+                            : "redefines " + createExpression(1);
+
+                } else {
+                    text = simplePropModifierGenerator.next();
+                }
+
+                return text;
+            }
+
             private String createInstance(int instanceSize, int argsSize) {
                 String text = selectNameOfLengthZeroWithoutKeyword();
                 boolean isMethod = genuinenessGenerator.next();
@@ -1562,7 +1743,7 @@ class AttributeEvaluationTest {
 
                 if (isHadLower) {
                     if (isValueSpecificationByLower) {
-                        text = "(" + createMultiplicityRangeExpression() + ")..";
+                        text = "(" + createMultiplicityRangeExpression(multiplicityRangeSizeGenerator.next()) + ")..";
                     } else {
                         lowerNumber = selectNumberNotLessThan(0);
                         text = Integer.toString(lowerNumber) + "..";
@@ -1570,7 +1751,7 @@ class AttributeEvaluationTest {
                 }
 
                 if (isValueSpecificationByUpper) {
-                    text += "(" + createMultiplicityRangeExpression() + ")";
+                    text += "(" + createMultiplicityRangeExpression(multiplicityRangeSizeGenerator.next()) + ")";
                 } else if (isUnlimitedByUpper) {
                     text += "*";
                 } else {
@@ -1580,27 +1761,30 @@ class AttributeEvaluationTest {
                 return text;
             }
 
-            private String createMultiplicityRangeExpression() {
-                int expressionSize = multiplicityRangeSizeGenerator.next();
+            private String createMultiplicityRangeExpression(int expressionSize) {
 
                 List<String> expressions = new ArrayList<>();
-                List<String> expression = new ArrayList<>();
                 for (int i = 0; i < expressionSize; i++) {
-                    int size = multiplicityRangeSizeGenerator.next();
-                    for (int j = 0; j < size; j++) {
-                        if (genuinenessGenerator.next()) {
-                            expression.add(selectNameOfLengthZeroWithoutKeyword());
-                        } else if (genuinenessGenerator.next()) {
-                            expression.add(createInstance(instanceSizeGenerator.next(), methodArgsSizeGenerator.next()));
-                        } else {
-                            expression.add(Integer.toString(selectNumberNotLessThan(0)));
-                        }
-                    }
-                    expressions.add(String.join(" ", expression));
-                    expression.clear();
+                    expressions.add(createExpression(multiplicityRangeSizeGenerator.next()));
                 }
 
                 return String.join(", ", expressions);
+            }
+
+            private String createExpression(int size) {
+                List<String> expression = new ArrayList<>();
+
+                for (int j = 0; j < size; j++) {
+                    if (genuinenessGenerator.next()) {
+                        expression.add(selectNameOfLengthZeroWithoutKeyword());
+                    } else if (genuinenessGenerator.next()) {
+                        expression.add(createInstance(instanceSizeGenerator.next(), methodArgsSizeGenerator.next()));
+                    } else {
+                        expression.add(Integer.toString(selectNumberNotLessThan(0)));
+                    }
+                }
+
+                return String.join(" ", expression);
             }
         }
 
@@ -1751,8 +1935,8 @@ class AttributeEvaluationTest {
                 }
 
                 @Test
-                void プリミティブ型と同じ文字列を入力するとエラーを返す() {
-                    walk("int : float");
+                void 予約語と同じ文字列を入力するとエラーを返す() {
+                    walk("not : float");
 
                     assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
                 }
@@ -1762,7 +1946,7 @@ class AttributeEvaluationTest {
             class 可視性の場合 {
 
                 @Test
-                void プリミティブ型と同じ文字列を名前に入力してもエラーは返さない() {
+                void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
                     walk("- int");
 
                     assertThat(obj.extractVisibility()).isEqualTo("-");
@@ -1773,7 +1957,7 @@ class AttributeEvaluationTest {
             class 派生の場合 {
 
                 @Test
-                void プリミティブ型と同じ文字列を名前に入力してもエラーは返さない() {
+                void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
                     walk("/int");
 
                     assertThat(obj.extractDivided()).isEqualTo("/");
@@ -1784,7 +1968,7 @@ class AttributeEvaluationTest {
             class 型の場合 {
 
                 @Test
-                void プリミティブ型と同じ文字列を名前に入力するとエラーを返す() {
+                void 予約語と同じ文字列を名前に入力するとエラーを返す() {
                     walk("int : float");
 
                     assertThatThrownBy(() -> obj.extractPropType()).isInstanceOf(InputMismatchException.class);
@@ -1795,7 +1979,7 @@ class AttributeEvaluationTest {
             class 多重度の場合 {
 
                 @Test
-                void プリミティブ型と同じ文字列を名前に入力すると下限でエラーを返す() {
+                void 予約語と同じ文字列を名前に入力すると下限でエラーを返す() {
                     SoftAssertions softly = new SoftAssertions();
 
                     walk("double [0..1]");
@@ -1805,7 +1989,7 @@ class AttributeEvaluationTest {
                 }
 
                 @Test
-                void プリミティブ型と同じ文字列を名前に入力すると上限でエラーを返す() {
+                void 予約語と同じ文字列を名前に入力すると上限でエラーを返す() {
                     walk("double [*]");
 
                     assertThatThrownBy(() -> obj.extractMultiplicityRangeUpper()).isInstanceOf(InputMismatchException.class);
@@ -1879,10 +2063,21 @@ class AttributeEvaluationTest {
                 }
 
                 @Test
-                void プリミティブ型と同じ文字列を名前に入力するとエラーを返す() {
+                void 予約語と同じ文字列を名前に入力するとエラーを返す() {
                     walk("int = 1");
 
                     assertThatThrownBy(() -> obj.extractDefaultValue()).isInstanceOf(InputMismatchException.class);
+                }
+            }
+
+            @Nested
+            class 修飾子の場合 {
+
+                @Test
+                void 予約語と同じ文字列を名前に入力するとエラーを返す() {
+                    walk("int {readOnly}");
+
+                    assertThatThrownBy(() -> obj.extractPropModifier()).isInstanceOf(InputMismatchException.class);
                 }
             }
         }

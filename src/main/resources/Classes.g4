@@ -5,7 +5,7 @@ package parser;
 }
 
 property
-    :   visibility? divided? name propType? multiplicityRange? defaultValue? propModefiers?
+    :   visibility? divided? name propType? multiplicityRange? defaultValue? propModifiers?
     ;
 
 visibility
@@ -57,13 +57,27 @@ defaultValue
     :   ASSIGN expression
     ;
 
-propModefiers
-    :   LBRACE propModefier (COMMA propModefier)* RBRACE
+propModifiers
+    :   LBRACE propModifier (COMMA propModifier)* RBRACE
     ;
 
-propModefier
+propModifier
     :   READONLY
     |   UNION
+    |   SUBSETS propertyName
+    |   REDEFINES propertyName
+    |   ORDERED
+    |   UNIQUE
+    |   propConstraint
+    ;
+
+propertyName
+    :   name
+    |   expression
+    ;
+
+propConstraint
+    :   NONE
     ;
 
 expression
@@ -153,6 +167,10 @@ floatLiteral
 
 READONLY:           'readOnly';
 UNION:              'union';
+SUBSETS:            'subsets';
+REDEFINES:          'redefines';
+ORDERED:            'ordered';
+UNIQUE:             'unique';
 
 PUBLIC:             '+';
 PRIBATE:            '-';
