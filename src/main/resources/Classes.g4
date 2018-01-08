@@ -31,7 +31,7 @@ propType
     ;
 
 multiplicityRange
-    :   LBRACK (lower rangeSplit)? upper RBRACK
+    :   LBRACK (lower RANGE)? upper RBRACK
     ;
 
 lower
@@ -43,10 +43,6 @@ upper
     :   UNLIMITATION
     |   integerLiteral
     |   valueSpecification
-    ;
-
-rangeSplit
-    :   RANGE
     ;
 
 valueSpecification
@@ -68,16 +64,11 @@ propModifier
     |   REDEFINES propertyName
     |   ORDERED
     |   UNIQUE
-    |   propConstraint
     ;
 
 propertyName
     :   name
     |   expression
-    ;
-
-propConstraint
-    :   NONE
     ;
 
 expression
@@ -86,7 +77,6 @@ expression
     |   IDENTIFIER
     |   expression bop='.'
         (   IDENTIFIER
-        |   primitiveType
         |   explicitGenericInvocationSuffix
         )
     |   expression arguments
@@ -99,7 +89,6 @@ expression
     |   expression bop=('==' | '!=') expression
     |   expression bop=('&&' | 'and' | 'AND') expression
     |   expression bop=('||' | 'or' | 'OR') expression
-    |   primitiveType arguments?
     ;
 
 creator
@@ -108,7 +97,6 @@ creator
 
 createdName
     :   IDENTIFIER ('.' IDENTIFIER)*
-    |   primitiveType
     ;
 
 classCreatorRest
@@ -122,7 +110,6 @@ superSuffix
 
 explicitGenericInvocationSuffix
     :    IDENTIFIER arguments
-    |    primitiveType arguments
     ;
 
 arguments

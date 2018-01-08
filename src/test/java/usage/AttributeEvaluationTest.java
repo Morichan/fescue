@@ -331,7 +331,7 @@ class AttributeEvaluationTest {
             @Nested
             class 上限が式の場合 {
 
-                final String attribute = "attribute [(1/(5-4)%3, not is() and ! is AND isnt OR method(1,t) or NOT method(thisIs.ins,t), a < b == c && d >= e != f || g > h, i <= j)]";
+                final String attribute = "attribute [(1/(5-4)%3, not is() and ! test AND number OR method(1,t) or NOT method(thisIs.ins,t), a < b == d && e >= g != h || j > k, m <= n)]";
 
                 @BeforeEach
                 void setup() {
@@ -348,7 +348,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 多重度の上限を返す() {
-                    String expected = "(1 / (5 - 4) % 3, not is() and ! is AND isnt OR method(1,t) or NOT method(thisIs.ins,t), a < b == c && d >= e != f || g > h, i <= j)";
+                    String expected = "(1 / (5 - 4) % 3, not is() and ! test AND number OR method(1,t) or NOT method(thisIs.ins,t), a < b == d && e >= g != h || j > k, m <= n)";
 
                     String actual = obj.extractMultiplicityRangeUpper();
 
@@ -1446,7 +1446,7 @@ class AttributeEvaluationTest {
             final Generator<Integer> propModifiersSizeGenerator = integers(1, 5);
             final Generator<String> simplePropModifierGenerator = fixedValues("readOnly", "union", "ordered", "unique");
 
-            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT",
+            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new",
                     "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
                     "true", "True", "TRUE", "false", "False", "FALSE",
                     "null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
