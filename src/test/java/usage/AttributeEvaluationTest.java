@@ -34,9 +34,9 @@ class AttributeEvaluationTest {
                 String expected = "attribute";
                 String actual;
 
-                obj.setAttribute("attribute");
+                obj.setText("attribute");
                 obj.walk();
-                actual = obj.getAttribute();
+                actual = obj.getText();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -2085,7 +2085,7 @@ class AttributeEvaluationTest {
 
     private void walk(String text) {
         obj = new AttributeEvaluation();
-        obj.setAttribute(text);
+        obj.setText(text);
         obj.walk();
     }
 

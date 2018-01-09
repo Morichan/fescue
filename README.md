@@ -26,30 +26,32 @@ UMLのクラス図における属性の文章を入力すると、構文木を�
 
 次のように利用してください。
 
-    import usage.AttributeEvaluation;
+```java:AttributeManager.java
+import usage.AttributeEvaluation;
 
-    /**
-     * 属性管理
-     *
-     * $ javac -cp classes.jar AttributeManager.java
-     * $ java -cp ./;classes.jar;antlr.jar AttributeManager
-     */
-    class AttributeManager {
+/**
+ * 属性管理
+ *
+ * $ javac -cp classes.jar AttributeManager.java
+ * $ java -cp ./;classes.jar;antlr.jar AttributeManager
+ */
+ class AttributeManager {
 
-        public static void main(String args[]) {
-            AttributeEvaluation evaluation = new AttributeEvaluation();
+    public static void main(String args[]) {
+        AttributeEvaluation evaluation = new AttributeEvaluation();
 
-            evaluation.setAttribute("- attribute : int");
-            evaluation.walk();
+        evaluation.setAttribute("- attribute : int");
+        evaluation.walk();
 
-            String name = evaluation.extractName();
-            String visibility = evaluation.extractVisibility();
-            String propType = evaluation.extractPropType();
+        String name = evaluation.extractName();
+        String visibility = evaluation.extractVisibility();
+        String propType = evaluation.extractPropType();
 
-            // "visibility: -, name: attribute, type: int"
-            System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + propType);
-        }
+        // "visibility: -, name: attribute, type: int"
+        System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + propType);
     }
+}
+```
 
 テストコードに使用例や対応構文を書いていますので、そちらもご覧ください。
 
@@ -64,7 +66,9 @@ UMLのクラス図における属性の文章を入力すると、構文木を�
 
 属性の文法は次の通りです。
 
-    <property> ::= [<visibility>] ['/'] <name> [':' <prop-type>] ['[' <multiplicity> ']'] ['=' <default>] ['{' <prop-modifier> [',' <prop-modifier>]*'}']
+```EBNF:AttributeGrammar
+<property> ::= [<visibility>] ['/'] <name> [':' <prop-type>] ['[' <multiplicity> ']'] ['=' <default>] ['{' <prop-modifier> [',' <prop-modifier>]*'}']
+```
 
 * visibility: 可視性（例、`'+', '-'`）
 * '/': 派生
