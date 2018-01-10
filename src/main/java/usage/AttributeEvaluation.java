@@ -6,12 +6,11 @@ import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.ClassesLexer;
+import parser.ClassesListener;
 import parser.ClassesParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * <p> 属性における要素の抽出クラス </p>
@@ -36,19 +35,10 @@ import java.util.regex.Pattern;
  *     順番を変えると{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
  * </p>
  */
-public class AttributeEvaluation {
-    private ClassesEvalListener listener;
+public class AttributeEvaluation extends ClassEvaluation {
     private ClassesParser.PropertyContext context;
 
-    private ClassesLexer lexer;
-    private CommonTokenStream tokens;
-    private ClassesParser parser;
-    private ParseTree tree;
-    private ParseTreeWalker walker;
-
     private String attribute;
-    private boolean isSameBetweenNameAndPrimitiveType = false;
-    private InputMismatchException inputMismatchException;
 
     /**
      * <p> 属性文を設定します。 </p>
@@ -59,20 +49,55 @@ public class AttributeEvaluation {
      *     詳しくは{@link #insertSpaceBothEndsOfRangeOperator(String)}を参照してください。
      * </p>
      *
-     * @param text 設定する属性文 {@code null}可だが{@link #walk()}で{@link IllegalArgumentException}を投げる。
+     * @param text 設定する属性文 {@code null}不可（{@link #insertSpaceBothEndsOfRangeOperator(String)}で{@link IllegalArgumentException}を投げる。）
      */
-    public void setAttribute(String text) {
+    @Override
+    public void setText(String text) {
         attribute = insertSpaceBothEndsOfRangeOperator(text);
     }
 
     /**
-     * 属性文を取得します。
+     * <p> 属性文を取得します。 </p>
+     *
+     * <p>
+     *     {@link #setText(String)}を実行する前にこのメソッドを実行した場合は{@code null}を返します。
+     * </p>
      *
      * @return 属性文 {@code null}の可能性あり
      */
-    public String getAttribute() {
+    @Override
+    public String getText() {
         return attribute;
     }
+
+
+
+    /**
+     * <p> 字句解析と構文解析を行い、構文解析木を走査します。 </p>
+     *
+     * <p>
+     *     属性文を設定していない場合は{@link IllegalArgumentException}を投げます。
+     * </p>
+     */
+    @Override
+    public void walk() {
+        initIfIsSameBetweenNameAndKeyword();
+        if (attribute == null) throw new IllegalArgumentException();
+
+        ClassesParser parser = generateParser(attribute);
+        ClassesEvalListener listener = walk(parser.property());
+        context = listener.getProperty();
+
+        try {
+            extractName();
+        } catch (InputMismatchException e) {
+            setInputMismatchException(e);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR! Please Set Attribute!");
+        }
+    }
+
+
 
     /**
      * <p> 属性名を抽出します。 </p>
@@ -80,9 +105,10 @@ public class AttributeEvaluation {
      * <p>
      *     次の場合は例外を投げます。
      *     <ul>
-     *         <li>属性文を設定していない場合（{@link #setAttribute(String)}参照） : {@link IllegalArgumentException}</li>
+     *         <li>属性文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
      *         <li>設定した属性文が予約語と同じ文字列の場合 : {@link ClassesParser.PropertyContext#exception}</li>
      *     </ul>
+     *
      *     また、処理の最後に{@code null}判定を行っているため（真の場合は上記の1番目の操作を行う）、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
      *
@@ -325,66 +351,6 @@ public class AttributeEvaluation {
     }
 
 
-
-    /**
-     * <p> 字句解析と構文解析を行い、構文解析木を走査します。 </p>
-     *
-     * <p>
-     *     属性文を設定していない場合は{@link IllegalArgumentException}を投げます（{@link #setAttribute(String)}参照）。
-     * </p>
-     */
-    public void walk() {
-        isSameBetweenNameAndPrimitiveType = false;
-        inputMismatchException = null;
-        if (attribute == null) throw new IllegalArgumentException();
-
-        lexer = new ClassesLexer(CharStreams.fromString(attribute));
-        tokens = new CommonTokenStream(lexer);
-        parser = new ClassesParser(tokens);
-        tree = parser.property();
-        walker = new ParseTreeWalker();
-        listener = new ClassesEvalListener();
-        walker.walk(listener, tree);
-        context = listener.getProperty();
-
-        try {
-            extractName();
-        } catch (InputMismatchException e) {
-            isSameBetweenNameAndPrimitiveType = true;
-            inputMismatchException = e;
-        } catch (IllegalArgumentException e) {
-            System.out.println("ERROR! Please Set Attribute!");
-        }
-    }
-
-
-
-    /**
-     * 名前が予約語と同じ文字列かどうかを判定し、同じ場合は{@link ClassesParser.PropertyContext#exception}を返します。
-     */
-    private void checkIfNameIsSamePrimitiveType() {
-        if (isSameBetweenNameAndPrimitiveType) throw inputMismatchException;
-    }
-
-    /**
-     * <p> {@code "\\.\\."}という文字列（2つ連続したドット）が存在した場合、その両端に半角スペースを挿入します。 </p>
-     *
-     * <p>
-     *     正確には、文法における多重度の下限と上限の指定（[0..1]のようなもの）内での、真ん中の2つのドット（以降は範囲演算子と呼びます）の両端に半角スペースを挿入します。
-     *     これは、範囲演算子の箇所をパースする際に、半角スペースが入っていない場合はうまくパースできないためです。
-     *     手法としては、単純な置換（{@code matcher("\\.\\.") -> replaceAll(" .. ")}）を用いています。
-     *     既に半角スペースが入っていたとしても、新たに半角スペースを挿入しますが、パースに問題はありません。
-     * </p>
-     *
-     * @param text 設定する属性文 {@code null}可だが{@link #walk()}で{@link IllegalArgumentException}を投げる。
-     * @return もし {@code "\\.\\."}が存在する場合はその両端に半角スペースを挿入した文字列、存在しない場合は入力した文字列
-     */
-    private String insertSpaceBothEndsOfRangeOperator(String text) {
-        Pattern p = Pattern.compile("\\.\\.");
-        Matcher m = p.matcher(text);
-        if (m.find()) text = m.replaceAll(" .. ");
-        return text;
-    }
 
     /**
      * <p> 式の文章を整形します。 </p>

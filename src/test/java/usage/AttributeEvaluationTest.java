@@ -13,6 +13,7 @@ import static net.java.quickcheck.generator.PrimitiveGenerators.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AttributeEvaluationTest {
 
@@ -30,13 +31,23 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void テキストをセットして走査するとエラーを返さない() {
+            void 文を設定すると文を返す() {
+                String expected = "attribute";
+
+                obj.setText(expected);
+                String actual = obj.getText();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 文を設定して走査するとエラーを返さない() {
                 String expected = "attribute";
                 String actual;
 
-                obj.setAttribute("attribute");
+                obj.setText("attribute");
                 obj.walk();
-                actual = obj.getAttribute();
+                actual = obj.getText();
 
                 assertThat(actual).isEqualTo(expected);
             }
@@ -1919,6 +1930,15 @@ class AttributeEvaluationTest {
 
                 assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
             }
+
+            @Test
+            void 文を取得しようとしたらnullを返す() {
+                obj = new AttributeEvaluation();
+
+                String actual = obj.getText();
+
+                assertThat(actual).isNull();
+            }
         }
 
         @Nested
@@ -2085,7 +2105,7 @@ class AttributeEvaluationTest {
 
     private void walk(String text) {
         obj = new AttributeEvaluation();
-        obj.setAttribute(text);
+        obj.setText(text);
         obj.walk();
     }
 
