@@ -1,11 +1,19 @@
 package usage;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.InputMismatchException;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import parser.ClassesLexer;
 import parser.ClassesParser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * クラスの属性または操作の抽象クラス
+ */
 abstract public class ClassEvaluation implements Evaluation {
 
     private boolean isSameBetweenNameAndKeyword = false;
@@ -62,5 +70,35 @@ abstract public class ClassEvaluation implements Evaluation {
         Matcher m = p.matcher(text);
         if (m.find()) text = m.replaceAll(" .. ");
         return text;
+    }
+
+    /**
+     * 構文解析機を生成します。
+     *
+     * @param parsedTarget 構文解析対象の文字列
+     * @return 構文解析結果
+     */
+    protected ClassesParser generateParser(String parsedTarget) {
+        ClassesLexer lexer = new ClassesLexer(CharStreams.fromString(parsedTarget));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        return new ClassesParser(tokens);
+    }
+
+    /**
+     * <p> 取得した走査対象の構文木を走査します。 </p>
+     *
+     * <p>
+     *     走査対象の構文木には、{@link #generateParser(String)}で取得した構文解析結果の任意のトークンを頂点とする構文木を設定してください。
+     * </p>
+     *
+     * @param tree 走査対象の構文木
+     * @return 走査済みリスナ
+     */
+    protected ClassesEvalListener walk(ParseTree tree) {
+        ParseTreeWalker walker = new ParseTreeWalker();
+        ClassesEvalListener listener = new ClassesEvalListener();
+        walker.walk(listener, tree);
+
+        return listener;
     }
 }

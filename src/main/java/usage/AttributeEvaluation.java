@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import parser.ClassesLexer;
+import parser.ClassesListener;
 import parser.ClassesParser;
 
 import java.util.ArrayList;
@@ -35,14 +36,7 @@ import java.util.List;
  * </p>
  */
 public class AttributeEvaluation extends ClassEvaluation {
-    private ClassesEvalListener listener;
     private ClassesParser.PropertyContext context;
-
-    private ClassesLexer lexer;
-    private CommonTokenStream tokens;
-    private ClassesParser parser;
-    private ParseTree tree;
-    private ParseTreeWalker walker;
 
     private String attribute;
 
@@ -63,7 +57,11 @@ public class AttributeEvaluation extends ClassEvaluation {
     }
 
     /**
-     * 属性文を取得します。
+     * <p> 属性文を取得します。 </p>
+     *
+     * <p>
+     *     {@link #setText(String)}を実行する前にこのメソッドを実行した場合は{@code null}を返します。
+     * </p>
      *
      * @return 属性文 {@code null}の可能性あり
      */
@@ -78,7 +76,7 @@ public class AttributeEvaluation extends ClassEvaluation {
      * <p> 字句解析と構文解析を行い、構文解析木を走査します。 </p>
      *
      * <p>
-     *     属性文を設定していない場合は{@link IllegalArgumentException}を投げます（{@link #setText(String)}参照）。
+     *     属性文を設定していない場合は{@link IllegalArgumentException}を投げます。
      * </p>
      */
     @Override
@@ -86,13 +84,8 @@ public class AttributeEvaluation extends ClassEvaluation {
         initIfIsSameBetweenNameAndKeyword();
         if (attribute == null) throw new IllegalArgumentException();
 
-        lexer = new ClassesLexer(CharStreams.fromString(attribute));
-        tokens = new CommonTokenStream(lexer);
-        parser = new ClassesParser(tokens);
-        tree = parser.property();
-        walker = new ParseTreeWalker();
-        listener = new ClassesEvalListener();
-        walker.walk(listener, tree);
+        ClassesParser parser = generateParser(attribute);
+        ClassesEvalListener listener = walk(parser.property());
         context = listener.getProperty();
 
         try {
@@ -115,6 +108,7 @@ public class AttributeEvaluation extends ClassEvaluation {
      *         <li>属性文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
      *         <li>設定した属性文が予約語と同じ文字列の場合 : {@link ClassesParser.PropertyContext#exception}</li>
      *     </ul>
+     *
      *     また、処理の最後に{@code null}判定を行っているため（真の場合は上記の1番目の操作を行う）、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
      *
