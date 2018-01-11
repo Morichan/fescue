@@ -1,4 +1,4 @@
-grammar Classes;
+grammar ClassFeature;
 
 @header {
 package parser;

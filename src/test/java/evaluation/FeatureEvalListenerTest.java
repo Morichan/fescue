@@ -5,8 +5,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.*;
-import parser.ClassesLexer;
-import parser.ClassesParser;
+import parser.ClassFeatureLexer;
+import parser.ClassFeatureParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,9 +15,9 @@ import static org.assertj.core.api.Assertions.fail;
 class FeatureEvalListenerTest {
     FeatureEvalListener obj;
 
-    ClassesLexer lexer;
+    ClassFeatureLexer lexer;
     CommonTokenStream tokens;
-    ClassesParser parser;
+    ClassFeatureParser parser;
     ParseTree tree;
     ParseTreeWalker walker;
 
@@ -84,9 +84,9 @@ class FeatureEvalListenerTest {
         }
 
         private void walk(String text) {
-            lexer = new ClassesLexer(CharStreams.fromString(text));
+            lexer = new ClassFeatureLexer(CharStreams.fromString(text));
             tokens = new CommonTokenStream(lexer);
-            parser = new ClassesParser(tokens);
+            parser = new ClassFeatureParser(tokens);
             tree = parser.property();
             walker = new ParseTreeWalker();
             obj = new FeatureEvalListener();
@@ -157,9 +157,9 @@ class FeatureEvalListenerTest {
         }
 
         private void walk(String text) {
-            lexer = new ClassesLexer(CharStreams.fromString(text));
+            lexer = new ClassFeatureLexer(CharStreams.fromString(text));
             tokens = new CommonTokenStream(lexer);
-            parser = new ClassesParser(tokens);
+            parser = new ClassFeatureParser(tokens);
             tree = parser.operation();
             walker = new ParseTreeWalker();
             obj = new FeatureEvalListener();

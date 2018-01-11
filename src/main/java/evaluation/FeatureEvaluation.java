@@ -1,14 +1,12 @@
 package evaluation;
 
-import evaluation.Evaluation;
-import evaluation.FeatureEvalListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import parser.ClassesLexer;
-import parser.ClassesParser;
+import parser.ClassFeatureLexer;
+import parser.ClassFeatureParser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +20,7 @@ abstract public class FeatureEvaluation implements Evaluation {
     private InputMismatchException inputMismatchException;
 
     /**
-     * 名前が予約語と同じ文字列かどうかを判定し、同じ場合は{@link ClassesParser.PropertyContext#exception}を返します。
+     * 名前が予約語と同じ文字列かどうかを判定し、同じ場合は{@link ClassFeatureParser.PropertyContext#exception}を返します。
      */
     protected void checkIfNameIsSamePrimitiveType() {
         if (isSameBetweenNameAndKeyword) throw inputMismatchException;
@@ -80,10 +78,10 @@ abstract public class FeatureEvaluation implements Evaluation {
      * @param parsedTarget 構文解析対象の文字列
      * @return 構文解析結果
      */
-    protected ClassesParser generateParser(String parsedTarget) {
-        ClassesLexer lexer = new ClassesLexer(CharStreams.fromString(parsedTarget));
+    protected ClassFeatureParser generateParser(String parsedTarget) {
+        ClassFeatureLexer lexer = new ClassFeatureLexer(CharStreams.fromString(parsedTarget));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        return new ClassesParser(tokens);
+        return new ClassFeatureParser(tokens);
     }
 
     /**

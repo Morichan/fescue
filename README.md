@@ -3,6 +3,9 @@
 |Build|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=master)](https://travis-ci.org/Morichan/ClassesGrammar)|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|
 |Codecov|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/master/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/develop/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|
 
+[![BSD License](https://img.shields.io/badge/license-BSD3-blue.svg?style=flat)](LICENSE)
+![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg)
+
 # 概要
 
 ANTLR4を利用した、UMLのクラス図における、属性と操作の文法ファイル、およびそれを元に生成した構文解析機を利用する要素抽出ライブラリです。
@@ -17,7 +20,7 @@ ANTLR4を利用した、UMLのクラス図における、属性と操作の文�
 
 ## Classes.g4
 
-`src/main/resources/Classes.g4`に置いてあります。
+`src/main/resources/ClassFeature.g4`に置いてあります。
 
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
@@ -28,21 +31,26 @@ UMLのクラス図における属性の文章を入力すると、構文木を�
 
 次のように利用してください。
 
-```java:AttributeManager.java
+```java:FeatureManager.java
 import usage.AttributeEvaluation;
+import usage.OperationEvaluation;
 
 /**
- * 属性管理
+ * クラスの属性または機能マネージャ
  *
- * $ javac -cp classes.jar AttributeManager.java
- * $ java -cp ./;classes.jar;antlr.jar AttributeManager
+ * $ javac -cp classes-0.2.0.jar FeatureManager.java
+ * $ java -cp ./;classes-0.2.0.jar;antlr.jar FeatureManager
  */
- class AttributeManager {
+class FeatureManager {
 
     public static void main(String args[]) {
-        AttributeEvaluation evaluation = new AttributeEvaluation();
+        printAttribute();
+        printOperation();
+    }
 
-        evaluation.setAttribute("- attribute : int");
+    private static void printAttribute() {
+        AttributeEvaluation evaluation = new AttributeEvaluation();
+        evaluation.setText("- attribute : int");
         evaluation.walk();
 
         String name = evaluation.extractName();
@@ -51,6 +59,19 @@ import usage.AttributeEvaluation;
 
         // "visibility: -, name: attribute, type: int"
         System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + propType);
+    }
+
+    private static void printOperation() {
+        OperationEvaluation evaluation = new OperationEvaluation();
+        evaluation.setText("+ operation() : double");
+        evaluation.walk();
+
+        String name = evaluation.extractName();
+        String visibility = evaluation.extractVisibility();
+        String returnType = evaluation.extractReturnType();
+
+        // "visibility: +, name: operation, type: double"
+        System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + returnType);
     }
 }
 ```
