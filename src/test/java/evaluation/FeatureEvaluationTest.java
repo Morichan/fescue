@@ -1,5 +1,6 @@
-package usage;
+package evaluation;
 
+import evaluation.FeatureEvaluation;
 import mockit.MockUp;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,16 +29,18 @@ class FeatureEvaluationTest {
 
         @Test
         void 例外を設定した場合は例外を返す() {
-            obj.setInputMismatchException(new MockUp<InputMismatchException>() {
-            }.getMockInstance());
+            obj.setInputMismatchException(
+                    new MockUp<InputMismatchException>() {
+                    }.getMockInstance());
 
             assertThatThrownBy(() -> obj.checkIfNameIsSamePrimitiveType()).isInstanceOf(InputMismatchException.class);
         }
 
         @Test
         void 例外を設定後に初期化した場合は何も返さない() {
-            obj.setInputMismatchException(new MockUp<InputMismatchException>() {
-            }.getMockInstance());
+            obj.setInputMismatchException(
+                    new MockUp<InputMismatchException>() {
+                    }.getMockInstance());
 
             obj.initIfIsSameBetweenNameAndKeyword();
 
