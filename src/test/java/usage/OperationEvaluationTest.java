@@ -1,10 +1,12 @@
 package usage;
 
+import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OperationEvaluationTest {
@@ -43,6 +45,25 @@ class OperationEvaluationTest {
                 assertThat(actual).isEqualTo(expected);
             }
         }
+
+        @Nested
+        class 名前だけの場合 {
+            final String operation = "operation()";
+
+            @BeforeEach
+            void setup() {
+                walk(operation);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "operation";
+
+                String actual = obj.extractName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
     }
 
     @Nested
@@ -63,6 +84,37 @@ class OperationEvaluationTest {
 
                 assertThat(actual).isNull();
             }
+
+            @Test
+            void 走査したらエラーを返す() {
+                obj = new OperationEvaluation();
+
+                assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
+            }
         }
+
+        @Nested
+        class 名前の場合 {
+
+            @Test
+            void 空文字を入力するとエラーを返す() {
+                walk("");
+
+                assertThatThrownBy(() -> obj.extractName()).isInstanceOf(IllegalArgumentException.class);
+            }
+
+            @Test
+            void 予約語と同じ文字列を入力するとエラーを返す() {
+                walk("not : float");
+
+                assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
+            }
+        }
+    }
+
+    private void walk(String text) {
+        obj = new OperationEvaluation();
+        obj.setText(text);
+        obj.walk();
     }
 }

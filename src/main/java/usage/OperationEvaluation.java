@@ -1,6 +1,10 @@
 package usage;
 
+import org.antlr.v4.runtime.InputMismatchException;
+import parser.ClassesParser;
+
 public class OperationEvaluation extends ClassEvaluation {
+    private ClassesParser.OperationContext context;
     private String operation;
 
     /**
@@ -29,5 +33,34 @@ public class OperationEvaluation extends ClassEvaluation {
 
     @Override
     public void walk() {
+        initIfIsSameBetweenNameAndKeyword();
+        if (operation == null) throw new IllegalArgumentException();
+
+        ClassesParser parser = generateParser(operation);
+        ClassesEvalListener listener = walk(parser.operation());
+        context = listener.getOperation();
+
+        try {
+            extractName();
+        } catch (InputMismatchException e) {
+            setInputMismatchException(e);
+        } catch (IllegalArgumentException e) {
+            System.out.println("ERROR! Please Set Operation!");
+        }
+    }
+
+    public String extractName() {
+        String name = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.NameContext) {
+                name = context.getChild(i).getText();
+                break;
+            }
+            if (context.exception != null) throw context.exception;
+        }
+        if (name == null) throw new IllegalArgumentException();
+
+        return name;
     }
 }
