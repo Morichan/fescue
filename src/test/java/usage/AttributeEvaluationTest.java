@@ -63,7 +63,7 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 属性を返す() {
+            void 名前を返す() {
                 String expected = "attribute";
 
                 String actual = obj.extractName();
@@ -82,7 +82,7 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 属性を返す() {
+            void 名前を返す() {
                 String expected = "attribute";
 
                 String actual = obj.extractName();
@@ -110,7 +110,7 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 属性を返す() {
+            void 名前を返す() {
                 String expected = "attribute";
 
                 String actual = obj.extractName();
@@ -129,7 +129,7 @@ class AttributeEvaluationTest {
         }
 
         @Nested
-        class 属性と派生を含む場合 {
+        class 名前と派生を含む場合 {
             final String attribute = "- /attribute";
 
             @BeforeEach
@@ -138,7 +138,7 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 属性を返す() {
+            void 名前を返す() {
                 String expected = "attribute";
 
                 String actual = obj.extractName();
@@ -175,7 +175,7 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 属性を返す() {
+            void 名前を返す() {
                 String expected = "attribute";
 
                 String actual = obj.extractName();
@@ -378,7 +378,7 @@ class AttributeEvaluationTest {
             }
 
             @Test
-            void 属性を返す() {
+            void 名前を返す() {
                 String expected = "numberFive";
 
                 String actual = obj.extractName();

@@ -8,6 +8,10 @@ property
     :   visibility? divided? name propType? multiplicityRange? defaultValue? propModifiers?
     ;
 
+operation
+    :   visibility? name parameterList
+    ;
+
 visibility
     :   PUBLIC
     |   PRIBATE
@@ -64,6 +68,10 @@ propModifier
     |   REDEFINES propertyName
     |   ORDERED
     |   UNIQUE
+    ;
+
+parameterList
+    :   LPAREN RPAREN
     ;
 
 propertyName
