@@ -17,6 +17,8 @@ ANTLR4を利用した、UMLのクラス図における、属性と操作の文�
 
 ## Classes.g4
 
+`src/main/resources/Classes.g4`に置いてあります。
+
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
 
@@ -77,6 +79,15 @@ import usage.AttributeEvaluation;
 * multiplicity: 多重度（例、`'*', '0 .. 1'`）
 * default: 既定値（例、`'true', '3 + x'`）
 * prop-modifier: 修飾子（例、`'readOnly', 'subsets instance'`）
+
+
+
+# 開発環境
+
+* Windows 10 Pro
+* IntelliJ 2017.3.2
+* Java9
+* Gradle 4.4.1
 
 
 
