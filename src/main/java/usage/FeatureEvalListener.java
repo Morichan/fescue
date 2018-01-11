@@ -9,7 +9,7 @@ import parser.ClassesParser;
  *
  * {@link parser.ClassesBaseListener}およびそのクラスを自動生成するANTLRに依存します。
  */
-public class ClassesEvalListener extends parser.ClassesBaseListener {
+public class FeatureEvalListener extends parser.ClassesBaseListener {
     private ClassesParser.PropertyContext property = null;
     private ClassesParser.OperationContext operation = null;
 

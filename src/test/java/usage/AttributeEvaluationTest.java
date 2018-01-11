@@ -1357,7 +1357,7 @@ class AttributeEvaluationTest {
         }
 
         @Nested
-        class 修飾子を含む場合 {
+        class プロパティを含む場合 {
 
             @Nested
             class 単純なプロパティが1つであれば {
@@ -1457,7 +1457,7 @@ class AttributeEvaluationTest {
             final Generator<Integer> propModifiersSizeGenerator = integers(1, 5);
             final Generator<String> simplePropModifierGenerator = fixedValues("readOnly", "union", "ordered", "unique");
 
-            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new",
+            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new", "query", "in", "out", "inout", "return",
                     "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
                     "true", "True", "TRUE", "false", "False", "FALSE",
                     "null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
@@ -1574,7 +1574,7 @@ class AttributeEvaluationTest {
             }
 
             @RepeatedTest(100)
-            void 修飾子を返す() {
+            void プロパティを返す() {
                 String visibility = visibilityGenerator.next();
                 String propModifiers = createPropModifiers();
                 String attribute = visibility + " " + name + " {" + propModifiers + "}";
@@ -2091,7 +2091,7 @@ class AttributeEvaluationTest {
             }
 
             @Nested
-            class 修飾子の場合 {
+            class プロパティの場合 {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力するとエラーを返す() {

@@ -2,26 +2,18 @@ package usage;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import parser.ClassesLexer;
 import parser.ClassesParser;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.*;
 
-class ClassesEvalListenerTest {
-    ClassesEvalListener obj;
+class FeatureEvalListenerTest {
+    FeatureEvalListener obj;
 
     ClassesLexer lexer;
     CommonTokenStream tokens;
@@ -97,7 +89,7 @@ class ClassesEvalListenerTest {
             parser = new ClassesParser(tokens);
             tree = parser.property();
             walker = new ParseTreeWalker();
-            obj = new ClassesEvalListener();
+            obj = new FeatureEvalListener();
             walker.walk(obj, tree);
         }
     }
@@ -170,7 +162,7 @@ class ClassesEvalListenerTest {
             parser = new ClassesParser(tokens);
             tree = parser.operation();
             walker = new ParseTreeWalker();
-            obj = new ClassesEvalListener();
+            obj = new FeatureEvalListener();
             walker.walk(obj, tree);
         }
     }

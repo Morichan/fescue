@@ -3,7 +3,10 @@ package usage;
 import org.antlr.v4.runtime.InputMismatchException;
 import parser.ClassesParser;
 
-public class OperationEvaluation extends ClassEvaluation {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OperationEvaluation extends FeatureEvaluation {
     private ClassesParser.OperationContext context;
     private String operation;
 
@@ -46,7 +49,7 @@ public class OperationEvaluation extends ClassEvaluation {
         if (operation == null) throw new IllegalArgumentException();
 
         ClassesParser parser = generateParser(operation);
-        ClassesEvalListener listener = walk(parser.operation());
+        FeatureEvalListener listener = walk(parser.operation());
         context = listener.getOperation();
 
         try {
@@ -143,5 +146,44 @@ public class OperationEvaluation extends ClassEvaluation {
         checkIfNameIsSamePrimitiveType();
 
         return returnType;
+    }
+
+    /**
+     * <p> プロパティを抽出します。 </p>
+     *
+     * <p>
+     *     次の場合は{@code null}を返します。
+     *     <ul>
+     *         <li> 操作文を設定していない場合 </li>
+     *         <li> 設定した操作文に操作名を含んでいない場合 </li>
+     *     </ul>
+     *
+     *     また、操作名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
+     * </p>
+     *
+     * @return プロパティ
+     */
+    public String extractOperationProperty() {
+        String operationProperty = null;
+
+        for (int i = 0; i < context.getChildCount(); i++) {
+            if (context.getChild(i) instanceof ClassesParser.OperPropertiesContext) {
+                List<String> properties = new ArrayList<>();
+                for (int j = 0; j < context.getChild(i).getChildCount(); j++) {
+                    if (context.getChild(i).getChild(j) instanceof ClassesParser.OperPropertyContext) {
+                        if (context.getChild(i).getChild(j).getChildCount() == 2) {
+                            properties.add(context.getChild(i).getChild(j).getChild(0).getText() + " " + context.getChild(i).getChild(j).getChild(1).getText());
+                        } else {
+                            properties.add(context.getChild(i).getChild(j).getText());
+                        }
+                    }
+                }
+                operationProperty = String.join(", ", properties);
+                break;
+            }
+        }
+        checkIfNameIsSamePrimitiveType();
+
+        return operationProperty;
     }
 }
