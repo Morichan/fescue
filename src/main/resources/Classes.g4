@@ -9,7 +9,7 @@ property
     ;
 
 operation
-    :   visibility? name parameterList returnType?
+    :   visibility? name parameterList returnType? operProperties?
     ;
 
 visibility
@@ -28,6 +28,10 @@ name
     ;
 
 propType
+    :   type
+    ;
+
+type
     :   COLON
         (   IDENTIFIER
         |   primitiveType
@@ -58,6 +62,10 @@ defaultValue
     ;
 
 propModifiers
+    :   properties
+    ;
+
+properties
     :   LBRACE propModifier (COMMA propModifier)* RBRACE
     ;
 
@@ -70,15 +78,54 @@ propModifier
     |   UNIQUE
     ;
 
+propertyName
+    :   name
+    |   expression
+    ;
+
 parameterList
-    :   LPAREN RPAREN
+    :   LPAREN (parameter (COMMA parameter)*)* RPAREN
+    ;
+
+parameter
+    :   direction? parameterName typeExpression multiplicityRange? defaultValue? paramProperties?
+    ;
+
+direction
+    :   IN
+    |   OUT
+    |   INOUT
+    |   RETURN
+    ;
+
+parameterName
+    :   name
+    ;
+
+typeExpression
+    :   type
+    ;
+
+paramProperties
+    :   properties
     ;
 
 returnType
-    :   propType
+    :   type
     ;
 
-propertyName
+operProperties
+    :   LBRACE operProperty (COMMA operProperty)* RBRACE
+    ;
+
+operProperty
+    :   REDEFINES operName
+    |   QUERY
+    |   ORDERED
+    |   UNIQUE
+    ;
+
+operName
     :   name
     |   expression
     ;
@@ -165,6 +212,11 @@ SUBSETS:            'subsets';
 REDEFINES:          'redefines';
 ORDERED:            'ordered';
 UNIQUE:             'unique';
+QUERY:              'query';
+IN:                 'in';
+OUT:                'out';
+INOUT:              'inout';
+RETURN:             'return';
 
 PUBLIC:             '+';
 PRIBATE:            '-';

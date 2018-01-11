@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Nested;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class ClassEvaluationTest {
+class FeatureEvaluationTest {
 
-    ClassEvaluation obj;
+    FeatureEvaluation obj;
 
     @Nested
     class 例外処理に関して {
@@ -100,7 +100,7 @@ class ClassEvaluationTest {
     }
 
     private void setObj() {
-        obj = new ClassEvaluation() {
+        obj = new FeatureEvaluation() {
             @Override
             public void setText(String text) {
             }

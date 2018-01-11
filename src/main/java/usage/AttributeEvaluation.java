@@ -1,12 +1,6 @@
 package usage;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.InputMismatchException;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import parser.ClassesLexer;
-import parser.ClassesListener;
 import parser.ClassesParser;
 
 import java.util.ArrayList;
@@ -35,7 +29,7 @@ import java.util.List;
  *     順番を変えると{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
  * </p>
  */
-public class AttributeEvaluation extends ClassEvaluation {
+public class AttributeEvaluation extends FeatureEvaluation {
     private ClassesParser.PropertyContext context;
 
     private String attribute;
@@ -85,7 +79,7 @@ public class AttributeEvaluation extends ClassEvaluation {
         if (attribute == null) throw new IllegalArgumentException();
 
         ClassesParser parser = generateParser(attribute);
-        ClassesEvalListener listener = walk(parser.property());
+        FeatureEvalListener listener = walk(parser.property());
         context = listener.getProperty();
 
         try {
@@ -201,7 +195,7 @@ public class AttributeEvaluation extends ClassEvaluation {
 
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.PropTypeContext) {
-                propType = context.getChild(i).getChild(1).getText();
+                propType = context.getChild(i).getChild(0).getChild(1).getText();
                 break;
             }
         }
@@ -296,10 +290,12 @@ public class AttributeEvaluation extends ClassEvaluation {
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.DefaultValueContext) {
                 if (context.getChild(i).getChild(1).getChild(1) instanceof ClassesParser.CreatorContext) {
-                    defaultValue = "new ";
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("new ");
                     for (int j = 0; j < context.getChild(i).getChild(1).getChild(1).getChildCount(); j++) {
-                        defaultValue += context.getChild(i).getChild(1).getChild(1).getChild(j).getText();
+                        sb.append(context.getChild(i).getChild(1).getChild(1).getChild(j).getText());
                     }
+                    defaultValue = new String(sb);
                 } else {
                     defaultValue = formatExpression((ClassesParser.ExpressionContext) context.getChild(i).getChild(1));
                 }
@@ -312,7 +308,7 @@ public class AttributeEvaluation extends ClassEvaluation {
     }
 
     /**
-     * <p> 修飾子を抽出します。 </p>
+     * <p> プロパティを抽出します。 </p>
      *
      * <p>
      *     次の場合は{@code null}を返します。
@@ -324,7 +320,7 @@ public class AttributeEvaluation extends ClassEvaluation {
      *     また、属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
-     * @return 修飾子
+     * @return プロパティ
      */
     public String extractPropModifier() {
         String propModifier = null;
@@ -332,12 +328,12 @@ public class AttributeEvaluation extends ClassEvaluation {
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassesParser.PropModifiersContext) {
                 List<String> modifiers = new ArrayList<>();
-                for (int j = 0; j < context.getChild(i).getChildCount(); j++) {
-                    if (context.getChild(i).getChild(j) instanceof ClassesParser.PropModifierContext) {
-                        if (context.getChild(i).getChild(j).getChildCount() == 2) {
-                            modifiers.add(context.getChild(i).getChild(j).getChild(0).getText() + " " + context.getChild(i).getChild(j).getChild(1).getText());
+                for (int j = 0; j < context.getChild(i).getChild(0).getChildCount(); j++) {
+                    if (context.getChild(i).getChild(0).getChild(j) instanceof ClassesParser.PropModifierContext) {
+                        if (context.getChild(i).getChild(0).getChild(j).getChildCount() == 2) {
+                            modifiers.add(context.getChild(i).getChild(0).getChild(j).getChild(0).getText() + " " + context.getChild(i).getChild(0).getChild(j).getChild(1).getText());
                         } else {
-                            modifiers.add(context.getChild(i).getChild(j).getText());
+                            modifiers.add(context.getChild(i).getChild(0).getChild(j).getText());
                         }
                     }
                 }
