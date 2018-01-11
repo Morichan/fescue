@@ -1,5 +1,7 @@
-package usage;
+package evaluation;
 
+import evaluation.Evaluation;
+import evaluation.FeatureEvalListener;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.InputMismatchException;

@@ -1,5 +1,7 @@
 package usage;
 
+import evaluation.FeatureEvalListener;
+import evaluation.FeatureEvaluation;
 import org.antlr.v4.runtime.InputMismatchException;
 import parser.ClassesParser;
 
