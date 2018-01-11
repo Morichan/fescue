@@ -91,6 +91,13 @@ class OperationEvaluationTest {
 
                 assertThat(actual).isEqualTo(expected);
             }
+
+            @Test
+            void 可視性を書いていない場合はnullを返す() {
+                walk("doNotHasVisibility()");
+
+                assertThat(obj.extractVisibility()).isNull();
+            }
         }
 
         @Nested
@@ -164,6 +171,28 @@ class OperationEvaluationTest {
                 walk("not : float");
 
                 assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
+            }
+        }
+
+        @Nested
+        class 可視性の場合 {
+
+            @Test
+            void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
+                walk("+ int()");
+
+                assertThat(obj.extractVisibility()).isEqualTo("+");
+            }
+        }
+
+        @Nested
+        class 型の場合 {
+
+            @Test
+            void 予約語と同じ文字列を名前に入力するとエラーを返す() {
+                walk("double() : double");
+
+                assertThatThrownBy(() -> obj.extractReturnType()).isInstanceOf(InputMismatchException.class);
             }
         }
     }
