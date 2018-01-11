@@ -2,6 +2,7 @@ package usage;
 
 import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -127,6 +128,70 @@ class OperationEvaluationTest {
                 assertThat(actual).isEqualTo(expected);
             }
         }
+
+        @Nested
+        class プロパティを含む場合 {
+
+            @Nested
+            class 単純なプロパティが1つであれば {
+
+                final String operation = "operation () {query}";
+
+                @BeforeEach
+                void setup() {
+                    walk(operation);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "query";
+
+                    String actual = obj.extractOperationProperty();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class 単純なプロパティが複数であれば {
+
+                final String operation = "operation() {query, ordered, unique}";
+
+                @BeforeEach
+                void setup() {
+                    walk(operation);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "query, ordered, unique";
+
+                    String actual = obj.extractOperationProperty();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+
+            @Nested
+            class プロパティ名を持つプロパティが1つであれば {
+
+                final String operation = "operation () {redefines method()}";
+
+                @BeforeEach
+                void setup() {
+                    walk(operation);
+                }
+
+                @Test
+                void プロパティを返す() {
+                    String expected = "redefines method()";
+
+                    String actual = obj.extractOperationProperty();
+
+                    assertThat(actual).isEqualTo(expected);
+                }
+            }
+        }
     }
 
     @Nested
@@ -149,7 +214,7 @@ class OperationEvaluationTest {
             }
 
             @Test
-            void 走査したらエラーを返す() {
+            void 走査したら例外を返す() {
                 obj = new OperationEvaluation();
 
                 assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
@@ -157,42 +222,57 @@ class OperationEvaluationTest {
         }
 
         @Nested
-        class 名前の場合 {
+        class 取得する要素が {
 
-            @Test
-            void 空文字を入力するとエラーを返す() {
-                walk("");
+            @Nested
+            class 名前の場合 {
 
-                assertThatThrownBy(() -> obj.extractName()).isInstanceOf(IllegalArgumentException.class);
+                @Test
+                void 空文字を入力するとエラーを返す() {
+                    walk("");
+
+                    assertThatThrownBy(() -> obj.extractName()).isInstanceOf(IllegalArgumentException.class);
+                }
+
+                @Test
+                void 予約語と同じ文字列を入力するとエラーを返す() {
+                    walk("not() : float");
+
+                    assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
+                }
             }
 
-            @Test
-            void 予約語と同じ文字列を入力するとエラーを返す() {
-                walk("not : float");
+            @Nested
+            class 可視性の場合 {
 
-                assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
+                @Test
+                void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
+                    walk("+ int()");
+
+                    assertThat(obj.extractVisibility()).isEqualTo("+");
+                }
             }
-        }
 
-        @Nested
-        class 可視性の場合 {
+            @Nested
+            class 型の場合 {
 
-            @Test
-            void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
-                walk("+ int()");
+                @Test
+                void 予約語と同じ文字列を名前に入力するとエラーを返す() {
+                    walk("double() : double");
 
-                assertThat(obj.extractVisibility()).isEqualTo("+");
+                    assertThatThrownBy(() -> obj.extractReturnType()).isInstanceOf(InputMismatchException.class);
+                }
             }
-        }
 
-        @Nested
-        class 型の場合 {
+            @Nested
+            class プロパティの場合 {
 
-            @Test
-            void 予約語と同じ文字列を名前に入力するとエラーを返す() {
-                walk("double() : double");
+                @Test
+                void 予約語と同じ文字列を名前に入力するとエラーを返す() {
+                    walk("int() {query}");
 
-                assertThatThrownBy(() -> obj.extractReturnType()).isInstanceOf(InputMismatchException.class);
+                    assertThatThrownBy(() -> obj.extractOperationProperty()).isInstanceOf(InputMismatchException.class);
+                }
             }
         }
     }

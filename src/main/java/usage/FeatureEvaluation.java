@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 /**
  * クラスの属性または操作の抽象クラス
  */
-abstract public class ClassEvaluation implements Evaluation {
+abstract public class FeatureEvaluation implements Evaluation {
 
     private boolean isSameBetweenNameAndKeyword = false;
     private InputMismatchException inputMismatchException;
@@ -94,9 +94,9 @@ abstract public class ClassEvaluation implements Evaluation {
      * @param tree 走査対象の構文木
      * @return 走査済みリスナ
      */
-    protected ClassesEvalListener walk(ParseTree tree) {
+    protected FeatureEvalListener walk(ParseTree tree) {
         ParseTreeWalker walker = new ParseTreeWalker();
-        ClassesEvalListener listener = new ClassesEvalListener();
+        FeatureEvalListener listener = new FeatureEvalListener();
         walker.walk(listener, tree);
 
         return listener;
