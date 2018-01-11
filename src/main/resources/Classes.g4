@@ -9,7 +9,7 @@ property
     ;
 
 operation
-    :   visibility? name parameterList
+    :   visibility? name parameterList returnType?
     ;
 
 visibility
@@ -74,6 +74,10 @@ parameterList
     :   LPAREN RPAREN
     ;
 
+returnType
+    :   propType
+    ;
+
 propertyName
     :   name
     |   expression
@@ -109,11 +113,6 @@ createdName
 
 classCreatorRest
     :   arguments
-    ;
-
-superSuffix
-    :    arguments
-    |    DOT IDENTIFIER arguments?
     ;
 
 explicitGenericInvocationSuffix
