@@ -64,6 +64,62 @@ class OperationEvaluationTest {
                 assertThat(actual).isEqualTo(expected);
             }
         }
+
+        @Nested
+        class 可視性を含む場合 {
+            final String operation = "+ operation()";
+
+            @BeforeEach
+            void setup() {
+                walk(operation);
+            }
+
+            @Test
+            void 属性を返す() {
+                String expected = "operation";
+
+                String actual = obj.extractName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 可視性を返す() {
+                String expected = "+";
+
+                String actual = obj.extractVisibility();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+
+        @Nested
+        class 型を含む場合 {
+            final String operation = "operation() : int";
+
+            @BeforeEach
+            void setup() {
+                walk(operation);
+            }
+
+            @Test
+            void 名前を返す() {
+                String expected = "operation";
+
+                String actual = obj.extractName();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 型を返す() {
+                String expected = "int";
+
+                String actual = obj.extractReturnType();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
     }
 
     @Nested
