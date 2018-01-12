@@ -1,13 +1,46 @@
 package usage;
 
+import evaluation.FeatureEvalListener;
+import evaluation.FeatureEvaluation;
 import org.antlr.v4.runtime.InputMismatchException;
-import parser.ClassesParser;
+import parser.ClassFeatureParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p> 操作における要素の抽出クラス </p>
+ *
+ * <p> 簡単な使い方を次に示します。</p>
+ *
+ * <pre>
+ *     {@code
+ *     OperationEvaluation evaluation = new OperationEvaluation();
+ *     evaluation.setText("+ operation() : double");
+ *     evaluation.walk();
+ *
+ *     String name = evaluation.extractName();
+ *     String visibility = evaluation.extractVisibility();
+ *     String returnType = evaluation.extractReturnType();
+ *     // ...
+ *     }
+ * </pre>
+ *
+ * <p>
+ *     最初に操作文をセットし、走査してから各項目を抽出してください。
+ *     順番を変えると例外として{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
+ * </p>
+ */
 public class OperationEvaluation extends FeatureEvaluation {
-    private ClassesParser.OperationContext context;
+
+    /**
+     * 操作文コンテキスト
+     */
+    private ClassFeatureParser.OperationContext context;
+
+    /**
+     * 操作文
+     */
     private String operation;
 
     /**
@@ -48,7 +81,7 @@ public class OperationEvaluation extends FeatureEvaluation {
         initIfIsSameBetweenNameAndKeyword();
         if (operation == null) throw new IllegalArgumentException();
 
-        ClassesParser parser = generateParser(operation);
+        ClassFeatureParser parser = generateParser(operation);
         FeatureEvalListener listener = walk(parser.operation());
         context = listener.getOperation();
 
@@ -70,7 +103,7 @@ public class OperationEvaluation extends FeatureEvaluation {
      *     次の場合は例外を投げます。
      *     <ul>
      *         <li>操作文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
-     *         <li>設定した操作文が予約語と同じ文字列の場合 : {@link ClassesParser.OperationContext#exception}</li>
+     *         <li>設定した操作文が予約語と同じ文字列の場合 : {@link ClassFeatureParser.OperationContext#exception}</li>
      *     </ul>
      *
      *     また、処理の最後に{@code null}判定を行っているため（真の場合は上記の1番目の操作を行う）、戻り値が{@code null}の可能性は恐らくありません。
@@ -82,7 +115,7 @@ public class OperationEvaluation extends FeatureEvaluation {
         String name = null;
 
         for (int i = 0; i < context.getChildCount(); i++) {
-            if (context.getChild(i) instanceof ClassesParser.NameContext) {
+            if (context.getChild(i) instanceof ClassFeatureParser.NameContext) {
                 name = context.getChild(i).getText();
                 break;
             }
@@ -110,7 +143,7 @@ public class OperationEvaluation extends FeatureEvaluation {
         String visibility = null;
 
         for (int i = 0; i < context.getChildCount(); i++) {
-            if (context.getChild(i) instanceof ClassesParser.VisibilityContext) {
+            if (context.getChild(i) instanceof ClassFeatureParser.VisibilityContext) {
                 visibility = context.getChild(i).getText();
                 break;
             }
@@ -138,7 +171,7 @@ public class OperationEvaluation extends FeatureEvaluation {
         String returnType = null;
 
         for (int i = 0; i < context.getChildCount(); i++) {
-            if (context.getChild(i) instanceof ClassesParser.ReturnTypeContext) {
+            if (context.getChild(i) instanceof ClassFeatureParser.ReturnTypeContext) {
                 returnType = context.getChild(i).getChild(0).getChild(1).getText();
                 break;
             }
@@ -167,10 +200,10 @@ public class OperationEvaluation extends FeatureEvaluation {
         String operationProperty = null;
 
         for (int i = 0; i < context.getChildCount(); i++) {
-            if (context.getChild(i) instanceof ClassesParser.OperPropertiesContext) {
+            if (context.getChild(i) instanceof ClassFeatureParser.OperPropertiesContext) {
                 List<String> properties = new ArrayList<>();
                 for (int j = 0; j < context.getChild(i).getChildCount(); j++) {
-                    if (context.getChild(i).getChild(j) instanceof ClassesParser.OperPropertyContext) {
+                    if (context.getChild(i).getChild(j) instanceof ClassFeatureParser.OperPropertyContext) {
                         if (context.getChild(i).getChild(j).getChildCount() == 2) {
                             properties.add(context.getChild(i).getChild(j).getChild(0).getText() + " " + context.getChild(i).getChild(j).getChild(1).getText());
                         } else {

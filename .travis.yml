@@ -23,10 +23,10 @@ before_install:
 install:
   - travis_retry curl -O http://www.antlr.org/download/antlr-4.7.1-complete.jar # version4の最新版を導入
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
-  - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ./src/main/resources/Classes.g4 # ./src/main/resources ディレクトリ内に構文解析機を生成
+  - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ./src/main/resources/ClassFeature.g4 # ./src/main/resources ディレクトリ内に構文解析機を生成
   - rm antlr-4.7.1-complete.jar
   - mkdir ./src/main/java/parser/
-  - mv ./src/main/resources/Classes*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
+  - mv ./src/main/resources/ClassFeature*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
   - rm ./src/main/resources/*.interp
 
 

@@ -1,4 +1,4 @@
-package usage;
+package evaluation;
 
 /**
  * 抽出クラスインタフェース
