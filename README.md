@@ -5,17 +5,13 @@
 |![GitHub last commit (master)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/master.svg)|![GitHub last commit (develop)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/develop.svg)|
 
 [![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
-
 [![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
-
 [![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
 
 [![license](https://img.shields.io/github/license/Morichan/ClassesGrammar.svg)](LICENSE)
 
 [![GitHub tag](https://img.shields.io/github/tag/Morichan/ClassesGrammar.svg)](https://github.com/Morichan/ClassesGrammar/tags)
-
 [![GitHub release](https://img.shields.io/github/release/Morichan/ClassesGrammar/all.svg)](https://github.com/Morichan/ClassesGrammar/releases)
-
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/ClassesGrammar.svg)](https://github.com/Morichan/ClassesGrammar/pulls?q=is%3Apr+is%3Aclosed)
 
 # 概要
@@ -96,6 +92,7 @@ class FeatureManager {
 
 それぞれの文法、および各要素について説明します。
 なお、元となる文法はUML2.0仕様書（2.1対応版）を参考にしました。
+詳細は`/src/main/resources/ClassFeature.g4`をご覧ください。
 
 ## 属性
 
@@ -128,7 +125,7 @@ class FeatureManager {
 * name: 操作名
 * parameter-list: パラメータリスト
     * parameter: パラメータ
-    * direction: 方向（例、`'in', 'out, 'return'`）
+    * direction: 方向（例、`'in', 'out', 'return'`）
     * parameter-name: パラメータ名
     * type-expression: パラメータの型
     * multiplicity: 多重度（属性のmultiplicityと同じ）
@@ -136,15 +133,6 @@ class FeatureManager {
     * param-property: パラメータのプロパティ（表記の定義なし）
 * return-type: 戻り値を持っている場合はその型
 * oper-property: プロパティ（例、`'query', 'redefines method()'`）
-
-
-
-# 開発環境
-
-* Windows 10 Pro
-* IntelliJ 2017.3.2
-* Java9
-* Gradle 4.4.1
 
 
 

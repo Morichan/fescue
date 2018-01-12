@@ -8,8 +8,39 @@ import parser.ClassFeatureParser;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p> 操作における要素の抽出クラス </p>
+ *
+ * <p> 簡単な使い方を次に示します。</p>
+ *
+ * <pre>
+ *     {@code
+ *     OperationEvaluation evaluation = new OperationEvaluation();
+ *     evaluation.setText("+ operation() : double");
+ *     evaluation.walk();
+ *
+ *     String name = evaluation.extractName();
+ *     String visibility = evaluation.extractVisibility();
+ *     String returnType = evaluation.extractReturnType();
+ *     // ...
+ *     }
+ * </pre>
+ *
+ * <p>
+ *     最初に操作文をセットし、走査してから各項目を抽出してください。
+ *     順番を変えると例外として{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
+ * </p>
+ */
 public class OperationEvaluation extends FeatureEvaluation {
+
+    /**
+     * 操作文コンテキスト
+     */
     private ClassFeatureParser.OperationContext context;
+
+    /**
+     * 操作文
+     */
     private String operation;
 
     /**

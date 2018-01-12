@@ -16,7 +16,15 @@ import java.util.regex.Pattern;
  */
 abstract public class FeatureEvaluation implements Evaluation {
 
+    /**
+     * 属性または操作の名前が文法ファイルの予約語と同じ場合は真を持つ真偽値
+     */
     private boolean isSameBetweenNameAndKeyword = false;
+
+    /**
+     * {@link ClassFeatureParser.PropertiesContext#exception}または{@link ClassFeatureParser.OperationContext#exception}が持つ{@link InputMismatchException}インスタンス
+     * もし持っていない場合は{@code null}を持つ
+     */
     private InputMismatchException inputMismatchException;
 
     /**

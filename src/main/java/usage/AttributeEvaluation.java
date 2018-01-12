@@ -15,25 +15,31 @@ import java.util.List;
  *
  * <pre>
  *     {@code
- *     AttributeEvaluation attribute = new AttributeEvaluation();
+ *     AttributeEvaluation evaluation = new AttributeEvaluation();
+ *     evaluation.setText("- attribute : int");
+ *     evaluation.walk();
  *
- *     attribute.setAttribute("- attribute : int");
- *     attribute.walk();
- *
- *     String name = attribute.extractName();
- *     String visibility = attribute.extractVisibility();
+ *     String name = evaluation.extractName();
+ *     String visibility = evaluation.extractVisibility();
  *     // ...
  *     }
  * </pre>
  *
  * <p>
  *     最初に属性文をセットし、走査してから各項目を抽出してください。
- *     順番を変えると{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
+ *     順番を変えると例外として{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
  * </p>
  */
 public class AttributeEvaluation extends FeatureEvaluation {
+
+    /**
+     * 属性文コンテキスト
+     */
     private ClassFeatureParser.PropertyContext context;
 
+    /**
+     * 属性文
+     */
     private String attribute;
 
     /**

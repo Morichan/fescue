@@ -10,7 +10,14 @@ import parser.ClassFeatureParser;
  * {@link parser.ClassFeatureBaseListener}およびそのクラスを自動生成するANTLRに依存します。
  */
 public class FeatureEvalListener extends parser.ClassFeatureBaseListener {
+    /**
+     * 属性文コンテキスト
+     */
     private ClassFeatureParser.PropertyContext property = null;
+
+    /**
+     * 操作文コンテキスト
+     */
     private ClassFeatureParser.OperationContext operation = null;
 
     /**
