@@ -26,7 +26,7 @@ ANTLR4を利用した、UMLのクラス図における、属性と操作の文�
 
 各ファイルの機能について説明します。
 
-## Classes.g4
+## ClassFeature.g4
 
 `src/main/resources/ClassFeature.g4`に置いてあります。
 
