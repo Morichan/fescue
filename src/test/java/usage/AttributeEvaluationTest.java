@@ -1457,7 +1457,7 @@ class AttributeEvaluationTest {
             final Generator<Integer> propModifiersSizeGenerator = integers(1, 5);
             final Generator<String> simplePropModifierGenerator = fixedValues("readOnly", "union", "ordered", "unique");
 
-            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new", "query", "in", "out", "inout", "return",
+            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new", "query", "in", "out", "inout", "return", "void",
                     "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
                     "true", "True", "TRUE", "false", "False", "FALSE",
                     "null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");

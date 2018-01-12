@@ -112,6 +112,7 @@ paramProperties
 
 returnType
     :   type
+    |   COLON VOID
     ;
 
 operProperties
@@ -236,6 +237,7 @@ INT:                'i' | 'int' | 'integer';
 LONG:               'l' | 'long';
 FLOAT:              'f' | 'float';
 DOUBLE:             'lf' | 'double';
+VOID:               'void';
 
 LPAREN:             '(';
 RPAREN:             ')';
