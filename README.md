@@ -5,8 +5,9 @@
 |![GitHub last commit (master)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/master.svg)|![GitHub last commit (develop)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/develop.svg)|
 
 [![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
-[![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
 [![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
+[![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
+[![ANTLR version](https://img.shields.io/badge/antlr-4+-ec312e.svg)](http://junit.org/junit5/)
 
 [![license](https://img.shields.io/github/license/Morichan/ClassesGrammar.svg)](LICENSE)
 
