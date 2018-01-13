@@ -66,7 +66,9 @@ class FeatureManager {
         String propType = evaluation.extractPropType();
 
         // "visibility: -, name: attribute, type: int"
-        System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + propType);
+        System.out.println("visibility: " + visibility +
+                ", name: " + name +
+                ", type: " + propType);
     }
 
     private static void printOperation() {
@@ -79,7 +81,9 @@ class FeatureManager {
         String returnType = evaluation.extractReturnType();
 
         // "visibility: +, name: operation, type: double"
-        System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + returnType);
+        System.out.println("visibility: " + visibility +
+                ", name: " + name +
+                ", type: " + returnType);
     }
 }
 ```
@@ -91,7 +95,7 @@ class FeatureManager {
 # 文法
 
 それぞれの文法、および各要素について説明します。
-なお、元となる文法はUML2.0仕様書（2.1対応版）を参考にしました。
+元となる文法は「UML2.0仕様書 2.1対応」 (ISBN: 978-4274066634) を参考にしました。
 詳細は`/src/main/resources/ClassFeature.g4`をご覧ください。
 
 ## 属性
