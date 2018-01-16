@@ -4,11 +4,12 @@
 |[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/master/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/develop/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|
 |![GitHub last commit (master)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/master.svg)|![GitHub last commit (develop)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/develop.svg)|
 
-[![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
-[![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
-[![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
-
 [![license](https://img.shields.io/github/license/Morichan/ClassesGrammar.svg)](LICENSE)
+
+[![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
+[![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
+[![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
+[![ANTLR version](https://img.shields.io/badge/antlr-4+-ec312e.svg)](http://junit.org/junit5/)
 
 [![GitHub tag](https://img.shields.io/github/tag/Morichan/ClassesGrammar.svg)](https://github.com/Morichan/ClassesGrammar/tags)
 [![GitHub release](https://img.shields.io/github/release/Morichan/ClassesGrammar/all.svg)](https://github.com/Morichan/ClassesGrammar/releases)
@@ -16,9 +17,9 @@
 
 # 概要
 
-ANTLR4を利用した、UMLのクラス図における、属性と操作の文法ファイル、およびそれを元に生成した構文解析機を利用する要素抽出ライブラリです。
+[ANTLR v4](https://github.com/antlr/antlr4)を利用した、UMLのクラス図における、属性と操作の文法ファイル、およびそれを元に生成した構文解析機を利用する属性と操作の要素抽出ライブラリです。
 
-現在、属性と操作の抽出に対応（一部未対応）しています。
+現在、文字列として属性と操作の抽出に対応（一部未対応）しています。
 
 
 
@@ -66,7 +67,10 @@ class FeatureManager {
         String propType = evaluation.extractPropType();
 
         // "visibility: -, name: attribute, type: int"
-        System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + propType);
+        System.out.println(
+                "visibility: " + visibility +
+                ", name: " + name +
+                ", type: " + propType);
     }
 
     private static void printOperation() {
@@ -79,7 +83,10 @@ class FeatureManager {
         String returnType = evaluation.extractReturnType();
 
         // "visibility: +, name: operation, type: double"
-        System.out.println("visibility: " + visibility + ", name: " + name + ", type: " + returnType);
+        System.out.println(
+                "visibility: " + visibility +
+                ", name: " + name +
+                ", type: " + returnType);
     }
 }
 ```
@@ -91,7 +98,7 @@ class FeatureManager {
 # 文法
 
 それぞれの文法、および各要素について説明します。
-なお、元となる文法はUML2.0仕様書（2.1対応版）を参考にしました。
+元となる文法は「UML2.0仕様書 2.1対応」 (ISBN: 978-4274066634) を参考にしました。
 詳細は`/src/main/resources/ClassFeature.g4`をご覧ください。
 
 ## 属性
@@ -140,14 +147,25 @@ class FeatureManager {
 
 構文解析機、またはそれを利用したツールの未対応の内容について説明します。
 
-## 構文解析機のみの未対応内容
+## 文法ファイルにおける未対応内容
 
 ### 多重度の下限および上限の間に記述する範囲演算子（`'..'`）と下限または上限と間のスペース無しによる解析ミス
 
 多重度を記述する際に、`'[0..1]'`のように下限および上限と範囲演算子`'..'`の間にスペースを挿入しない場合、構文解析機が正しい構文木を生成できません。
 Jarファイルの方を利用する場合は、文字列置換により間にスペースを挿入する（`'[0..1]' -> '[0 .. 1]'`）ため、問題ありません。
 
-## それ以外の未対応内容
+## Usageパッケージにおける文字列抽出としての未対応内容
+
+### 各要素の抽出文字列の粒度
+
+属性と操作のオプションの文字列や、多重度における文字列など、複数の要素を含む可能性がある要素を個別に抽出できません。
+
+### 操作のパラメータの要素の抽出
+
+操作のパラメータの要素の抽出ができません。
+これは、操作のパラメータに多重度や既定値など、複数の要素を含んでおり、単純な文字列として抽出するべきではないと判断したためです。
+
+## 共通する未対応内容
 
 ### 属性のprop-modifierにおけるOCL文法
 
