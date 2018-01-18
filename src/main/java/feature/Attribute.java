@@ -1,13 +1,16 @@
 package feature;
 
-public class Attribute {
-    private String name;
+import feature.name.Name;
 
-    public void setName(String name) {
+public class Attribute {
+    private Name name;
+
+    public void setName(Name name) {
+        if (name == null) throw new IllegalStateException();
         this.name = name;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 }

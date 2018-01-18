@@ -1,13 +1,16 @@
 package feature;
 
-public class Operation {
-    private String name;
+import feature.name.Name;
 
-    public void setName(String name) {
+public class Operation {
+    private Name name;
+
+    public void setName(Name name) {
+        if (name == null) throw new IllegalStateException();
         this.name = name;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 }

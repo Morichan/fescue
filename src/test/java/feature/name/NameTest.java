@@ -53,4 +53,65 @@ class NameTest {
 
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    void 名前に空文字を設定すると例外を返す() {
+        assertThatThrownBy(() -> obj.setNameText("")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 名前にnullを設定すると例外を返す() {
+        assertThatThrownBy(() -> obj.setNameText(null)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 初期化時に名前を設定するとその名前を返す() {
+        String expected = "name";
+
+        obj = new Name("name");
+        String actual = obj.getNameText();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 初期化時に名前に空文字を設定すると例外を返す() {
+        assertThatThrownBy(() -> obj = new Name("")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 初期化時に名前にnullを設定すると例外を返す() {
+        assertThatThrownBy(() -> obj = new Name(null)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 初期化時に名前を設定した後に別の名前を設定すると最後に設定した名前を返す() {
+        String expected = "changedName";
+
+        obj = new Name("initializedName");
+        obj.setNameText("changedName");
+        String actual = obj.getNameText();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void オブジェクト自体を文字列にするとその名前を返す() {
+        String expected = "name";
+
+        obj.setNameText("name");
+        String actual = obj.toString();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void オブジェクト自体を文字列にする際に名前を設定していなかった場合は例外を返す() {
+        assertThatThrownBy(() -> obj.toString()).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void オブジェクト自体を出力する際に名前を設定していなかった場合は例外を返す() {
+        assertThatThrownBy(() -> System.out.println(obj)).isInstanceOf(IllegalStateException.class);
+    }
 }
