@@ -1,19 +1,19 @@
 |Main|Develop|
 |:--:|:--:|
-|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=master)](https://travis-ci.org/Morichan/ClassesGrammar)|[![Build Status](https://travis-ci.org/Morichan/ClassesGrammar.svg?branch=develop)](https://travis-ci.org/Morichan/ClassesGrammar)|
-|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/master/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|[![codecov](https://codecov.io/gh/Morichan/ClassesGrammar/branch/develop/graph/badge.svg)](https://codecov.io/gh/Morichan/ClassesGrammar)|
-|![GitHub last commit (master)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/master.svg)|![GitHub last commit (develop)](https://img.shields.io/github/last-commit/Morichan/ClassesGrammar/develop.svg)|
+|[![Build Status](https://travis-ci.org/Morichan/fescue.svg?branch=master)](https://travis-ci.org/Morichan/fescue)|[![Build Status](https://travis-ci.org/Morichan/fescue.svg?branch=develop)](https://travis-ci.org/Morichan/fescue)|
+|[![codecov](https://codecov.io/gh/Morichan/fescue/branch/master/graph/badge.svg)](https://codecov.io/gh/Morichan/fescue)|[![codecov](https://codecov.io/gh/Morichan/fescue/branch/develop/graph/badge.svg)](https://codecov.io/gh/Morichan/fescue)|
+|![GitHub last commit (master)](https://img.shields.io/github/last-commit/Morichan/fescue/master.svg)|![GitHub last commit (develop)](https://img.shields.io/github/last-commit/Morichan/fescue/develop.svg)|
 
-[![license](https://img.shields.io/github/license/Morichan/ClassesGrammar.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/Morichan/fescue.svg)](LICENSE)
 
 [![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
 [![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
 [![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
 [![ANTLR version](https://img.shields.io/badge/antlr-4+-ec312e.svg)](http://junit.org/junit5/)
 
-[![GitHub tag](https://img.shields.io/github/tag/Morichan/ClassesGrammar.svg)](https://github.com/Morichan/ClassesGrammar/tags)
-[![GitHub release](https://img.shields.io/github/release/Morichan/ClassesGrammar/all.svg)](https://github.com/Morichan/ClassesGrammar/releases)
-[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/ClassesGrammar.svg)](https://github.com/Morichan/ClassesGrammar/pulls?q=is%3Apr+is%3Aclosed)
+[![GitHub tag](https://img.shields.io/github/tag/Morichan/fescue.svg)](https://github.com/Morichan/fescue/tags)
+[![GitHub release](https://img.shields.io/github/release/Morichan/fescue/all.svg)](https://github.com/Morichan/fescue/releases)
+[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/fescue.svg)](https://github.com/Morichan/fescue/pulls?q=is%3Apr+is%3Aclosed)
 
 # 概要
 
