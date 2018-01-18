@@ -28,7 +28,7 @@ public class Name {
      *
      * <p>
      *     @deprecated
-     *     使ってもいいですが、推奨はしません。
+     *     現在は使ってもいいですが、推奨しません。
      *     {@link Name#Name(String)}をご利用ください。
      * </p>
      */
