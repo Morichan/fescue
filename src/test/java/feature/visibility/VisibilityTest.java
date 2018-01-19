@@ -31,6 +31,15 @@ class VisibilityTest {
                     () -> assertThat(obj.is("~")).isFalse(),
                     () -> assertThat(obj.is("#")).isFalse());
         }
+
+        @Test
+        void 可視性を文字列で出力する() {
+            String expected = "+";
+
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
     }
 
     @Nested
@@ -52,6 +61,15 @@ class VisibilityTest {
                     () -> assertThat(obj.is("+")).isFalse(),
                     () -> assertThat(obj.is("~")).isFalse(),
                     () -> assertThat(obj.is("#")).isFalse());
+        }
+
+        @Test
+        void 可視性を文字列で出力する() {
+            String expected = "-";
+
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
         }
     }
 
@@ -75,6 +93,15 @@ class VisibilityTest {
                     () -> assertThat(obj.is("-")).isFalse(),
                     () -> assertThat(obj.is("#")).isFalse());
         }
+
+        @Test
+        void 可視性を文字列で出力する() {
+            String expected = "~";
+
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
     }
 
     @Nested
@@ -96,6 +123,15 @@ class VisibilityTest {
                     () -> assertThat(obj.is("+")).isFalse(),
                     () -> assertThat(obj.is("-")).isFalse(),
                     () -> assertThat(obj.is("~")).isFalse());
+        }
+
+        @Test
+        void 可視性を文字列で出力する() {
+            String expected = "#";
+
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
         }
     }
 
@@ -160,6 +196,11 @@ class VisibilityTest {
         @Test
         void 可視性の選択にnullを入力すると例外を投げる() {
             assertThatThrownBy(() -> obj.choose(null)).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 可視性のオブジェクト自体を文字列にすると例外を投げる() {
+            assertThatThrownBy(() -> obj.toString()).isInstanceOf(IllegalStateException.class);
         }
     }
 

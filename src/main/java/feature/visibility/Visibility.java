@@ -1,5 +1,9 @@
 package feature.visibility;
 
+import parser.ClassFeatureParser;
+
+import java.awt.image.renderable.ParameterBlock;
+
 /**
  * <p> 可視性クラス </p>
  *
@@ -111,5 +115,27 @@ public enum Visibility {
         }
 
         return visibility;
+    }
+
+    /**
+     * <p> 可視性の文字列を取得します。 </p>
+     *
+     * <p>
+     *     可視性が設定されていない場合は{@link IllegalStateException}を投げます。
+     * </p>
+     *
+     * @return 可視性の文字列 {@code null}および{@code ""}（空文字）無し
+     */
+    @Override
+    public String toString() {
+        String text;
+
+        if (this == Public) text = "+";
+        else if (this == Private) text = "-";
+        else if (this == Package) text = "~";
+        else if (this == Protected) text = "#";
+        else throw new IllegalStateException();
+
+        return text;
     }
 }
