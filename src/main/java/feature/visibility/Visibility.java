@@ -52,6 +52,12 @@ public enum Visibility {
             return isProtected;
         }
     },
+    Undefined {
+        @Override
+        public boolean is(String visibility) {
+            return false;
+        }
+    },
     ;
 
     /**
@@ -66,4 +72,44 @@ public enum Visibility {
      * @return インスタンス状態が判定値と等しい場合は真を返す真偽値
      */
     abstract public boolean is(String visibility);
+
+    /**
+     * <p> インスタンス状態を文字列から選択する。 </p>
+     *
+     * <p>
+     *     インスタンス状態を文字列{@code "+", "-", "~", "#"}から選択し、そのインスタンス状態を返します。
+     *     上記の文字列以外または{@code null}を入力すると{@link IllegalStateException}を投げます。
+     * </p>
+     *
+     * @param visibilityText インスタンス状態の文字列
+     * @return 受取った文字列と等しいインスタンス状態
+     */
+    static public Visibility choose(String visibilityText) {
+        Visibility visibility;
+
+        if (visibilityText == null) throw new IllegalStateException();
+
+        switch (visibilityText) {
+            case "+":
+                visibility = Public;
+                break;
+
+            case "-":
+                visibility = Private;
+                break;
+
+            case "~":
+                visibility = Package;
+                break;
+
+            case "#":
+                visibility = Protected;
+                break;
+
+            default:
+                throw new IllegalStateException();
+        }
+
+        return visibility;
+    }
 }

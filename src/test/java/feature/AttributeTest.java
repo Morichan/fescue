@@ -58,6 +58,16 @@ class AttributeTest {
         }
 
         @Test
+        void 可視性を文字列で設定するとその可視性を返す() {
+            String expected = "-";
+
+            obj.setVisibility(Visibility.choose("-"));
+            Visibility actual = obj.getVisibility();
+
+            assertThat(actual.is(expected)).isTrue();
+        }
+
+        @Test
         void 可視性にnullを設定すると例外を返す() {
             assertThatThrownBy(() -> obj.setVisibility(null)).isInstanceOf(IllegalStateException.class);
         }

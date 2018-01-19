@@ -100,7 +100,71 @@ class VisibilityTest {
     }
 
     @Nested
-    class インスタンス状態を定義していない場合 {
+    class インスタンス状態が未定義の場合 {
+
+        @BeforeEach
+        void setup() {
+            obj = Visibility.Undefined;
+        }
+
+        @Test
+        void どの状態でも偽を返す() {
+            assertAll(
+                    () -> assertThat(obj.is("+")).isFalse(),
+                    () -> assertThat(obj.is("-")).isFalse(),
+                    () -> assertThat(obj.is("~")).isFalse(),
+                    () -> assertThat(obj.is("#")).isFalse());
+        }
+
+        @Test
+        void Publicの文字列を選択するとPublicを返す() {
+            Visibility expected = Visibility.Public;
+
+            Visibility actual = obj.choose("+");
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void Privateの文字列を選択するとPrivateを返す() {
+            Visibility expected = Visibility.Private;
+
+            Visibility actual = obj.choose("-");
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void Packageの文字列を選択するとPackageを返す() {
+            Visibility expected = Visibility.Package;
+
+            Visibility actual = obj.choose("~");
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void Protectedの文字列を選択するとProtectedを返す() {
+            Visibility expected = Visibility.Protected;
+
+            Visibility actual = obj.choose("#");
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 可視性の文字列以外を選択すると例外を投げる() {
+            assertThatThrownBy(() -> obj.choose("E")).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 可視性の選択にnullを入力すると例外を投げる() {
+            assertThatThrownBy(() -> obj.choose(null)).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class インスタンスを生成していない場合 {
 
         @Test
         void 判定しようとすると例外を返す() {
