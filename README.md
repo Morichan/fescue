@@ -15,7 +15,7 @@
 [![GitHub release](https://img.shields.io/github/release/Morichan/fescue/all.svg)](https://github.com/Morichan/fescue/releases)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/fescue.svg)](https://github.com/Morichan/fescue/pulls?q=is%3Apr+is%3Aclosed)
 
-# 概要
+# fescue
 
 [ANTLR v4](https://github.com/antlr/antlr4)を利用した、UMLのクラス図における、属性と操作の文法ファイル、およびそれを元に生成した構文解析機を利用する属性と操作の要素抽出ライブラリです。
 
@@ -34,7 +34,7 @@
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
 
-## classes-0.2.0.jar
+## fescue-0.3.0.jar
 
 上記の構文解析機を利用した、属性の各要素抽出器です。
 
@@ -47,8 +47,8 @@ import usage.OperationEvaluation;
 /**
  * クラスの属性または機能マネージャ
  *
- * $ javac -cp classes-0.2.0.jar FeatureManager.java
- * $ java -cp ./;classes-0.2.0.jar;antlr.jar FeatureManager
+ * $ javac -cp fescue-0.3.0.jar FeatureManager.java
+ * $ java -cp ./;fescue-0.3.0.jar;antlr.jar FeatureManager
  */
 class FeatureManager {
 

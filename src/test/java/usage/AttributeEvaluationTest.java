@@ -1442,7 +1442,7 @@ class AttributeEvaluationTest {
 
         @Nested
         class ランダムテストの場合 {
-            final Generator<String> textGenerator = letterStrings();
+            final Generator<String> textGenerator = letterStrings(1, 1);
             final Generator<String> visibilityGenerator = fixedValues("", "-", "+", "#", "~");
             final Generator<Boolean> genuinenessGenerator = booleans();
             final Generator<String> propTypeGenerator = fixedValues("bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double");
@@ -1457,8 +1457,9 @@ class AttributeEvaluationTest {
             final Generator<Integer> propModifiersSizeGenerator = integers(1, 5);
             final Generator<String> simplePropModifierGenerator = fixedValues("readOnly", "union", "ordered", "unique");
 
-            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new", "query", "in", "out", "inout", "return", "void",
-                    "bool", "boolean", "c", "char", "character", "byte", "s", "short", "i", "int", "integer", "l", "long", "f", "float", "lf", "double",
+            final List<String> keywords = Arrays.asList("and", "AND", "or", "OR", "not", "NOT", "new", "query", "in", "out", "inout", "return",
+                    "bool", "boolean", "c", "char", "character", "i8", "int8", "int8_t", "byte", "i16", "int16", "int16_t", "short", "i32", "int32", "int32_t", "int", "integer",
+                    "i64", "int64", "int64_t", "long", "f32", "float", "lf", "f64", "double", "void",
                     "true", "True", "TRUE", "false", "False", "FALSE",
                     "null", "NULL", "Null", "nul", "NUL", "Nul", "nil", "NIL", "Nil", "none", "NONE", "None", "undef", "UNDEF", "Undef");
 
@@ -1646,7 +1647,7 @@ class AttributeEvaluationTest {
 
                 do {
                     text = textGenerator.next();
-                } while (text.length() <= 0 || keywords.contains(text));
+                } while (keywords.contains(text));
 
                 return text;
             }
