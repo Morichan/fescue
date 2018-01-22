@@ -9,12 +9,8 @@ package feature.name;
  *
  * <pre>
  *     {@code
- *     Name name = new Name();
+ *     Name name = new Name("initializedName");
  *
- *     name.setName("originalName");
- *     System.out.println(name); // "originalName"
- *
- *     name = new Name("initializedName");
  *     System.out.println(name); // "initializedName"
  *     }
  * </pre>
@@ -29,7 +25,7 @@ public class Name {
      * <p>
      *     @deprecated
      *     現在は使ってもいいですが、推奨しません。
-     *     {@link Name#Name(String)}をご利用ください。
+     *     {@link #Name(String)}をご利用ください。
      * </p>
      */
     @Deprecated

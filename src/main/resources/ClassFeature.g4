@@ -231,12 +231,12 @@ NEW:                'new';
 
 BOOLEAN:            'bool' | 'boolean';
 CHAR:               'c' | 'char' | 'character';
-BYTE:               'byte';
-SHORT:              'short';
-INT:                'i' | 'int' | 'integer';
-LONG:               'l' | 'long';
-FLOAT:              'f' | 'float';
-DOUBLE:             'lf' | 'double';
+BYTE:               'i8' | 'int8' | 'int8_t' | 'byte';
+SHORT:              'i16' | 'int16' | 'int16_t' | 'short';
+INT:                'i32' | 'int32' | 'int32_t' | 'int' | 'integer';
+LONG:               'i64' | 'int64' | 'int64_t' | 'long';
+FLOAT:              'f32' | 'float';
+DOUBLE:             'lf' | 'f64' | 'double';
 VOID:               'void';
 
 LPAREN:             '(';
