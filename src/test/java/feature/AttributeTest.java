@@ -1,10 +1,14 @@
 package feature;
 
 import feature.name.Name;
+import feature.type.Type;
 import feature.visibility.Visibility;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -36,6 +40,11 @@ class AttributeTest {
         @Test
         void 名前にnullを設定すると例外を返す() {
             assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 名前を設定せずに取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getName()).isInstanceOf(NoSuchElementException.class);
         }
     }
 
@@ -70,6 +79,40 @@ class AttributeTest {
         @Test
         void 可視性にnullを設定すると例外を返す() {
             assertThatThrownBy(() -> obj.setVisibility(null)).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 可視性を設定せずに取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getVisibility()).isInstanceOf(NoSuchElementException.class);
+        }
+    }
+
+    @Nested
+    class 型に関して {
+
+        @BeforeEach
+        void setup() {
+            obj = new Attribute();
+        }
+
+        @Test
+        void 型を設定するとその型を返す() {
+            String expected = "int";
+
+            obj.setType(new Type("int"));
+            String actual = obj.getType().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 型にnullを設定すると例外を返す() {
+            assertThatThrownBy(() -> obj.setType(null)).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 型を設定せずに取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getType()).isInstanceOf(NoSuchElementException.class);
         }
     }
 }
