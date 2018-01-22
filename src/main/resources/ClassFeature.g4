@@ -100,6 +100,7 @@ direction
 
 parameterName
     :   name
+    |   expression
     ;
 
 typeExpression
