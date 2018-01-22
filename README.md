@@ -117,6 +117,23 @@ class FeatureManager {
 * default: 既定値（例、`'true', '3 + x'`）
 * prop-modifier: プロパティ（例、`'readOnly', 'subsets instance'`）
 
+```text:入力例
+- projectId : char [0 .. *] = id + 001 {readOnly, subsets id}
+```
+
+
+```lisp:出力結果
+(property
+    (visibility -)
+    (name projectId)
+    (propType (type : (primitiveType char)))
+    (multiplicityRange [ (lower (integerLiteral 0)) .. (upper *) ])
+    (defaultValue = (expression (expression id) + (expression (literal (integerLiteral 001)))))
+    (propModifiers (properties { (propModifier readOnly) , (propModifier subsets (propertyName (name id))) })))
+```
+
+![example_attribute](https://user-images.githubusercontent.com/20200292/35249331-eb8265e2-0014-11e8-84ec-0b27b0325618.PNG)
+
 ## 操作
 
 操作の文法は次の通りです。
@@ -140,6 +157,44 @@ class FeatureManager {
     * param-property: パラメータのプロパティ（表記の定義なし）
 * return-type: 戻り値を持っている場合はその型
 * oper-property: プロパティ（例、`'query', 'redefines method()'`）
+
+```text:入力例
++ selectProjectData(in projectId : char [*] = "hogehoge001", getDataList(dataId, count).get(Project.number) : Data [(lowCount - 1) .. *]) : Data {query, redefines selectProjectDataImpl}
+```
+
+```lisp:出力結果
+(operation
+    (visibility +)
+    (name selectProjectData)
+    (parameterList (
+        (parameter
+            (direction in)
+            (parameterName (name projectId))
+            (typeExpression (type : (primitiveType char)))
+            (multiplicityRange [ (upper *) ])
+            (defaultValue = (expression (literal "hogehoge001")))) ,
+        (parameter
+            (parameterName
+                (expression
+                    (expression
+                        (expression
+                            (expression getDataList)
+                            (arguments (
+                                (expressionList (expression dataId) , (expression count)) ))) . get)
+                    (arguments (
+                        (expressionList (expression (expression Project) . number)) ))))
+            (typeExpression (type : Data))
+            (multiplicityRange
+                [
+                    (lower
+                        (valueSpecification (
+                            (expression
+                                (expression lowCount) - (expression (literal (integerLiteral 1)))) ))) .. (upper *) ])) ))
+    (returnType (type : Data))
+    (operProperties { (operProperty query) , (operProperty redefines (operName (name selectProjectDataImpl))) }))
+```
+
+![example_operation](https://user-images.githubusercontent.com/20200292/35249796-c7096074-0016-11e8-8387-ca090ced7855.png)
 
 
 
