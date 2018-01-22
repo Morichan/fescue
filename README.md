@@ -109,6 +109,8 @@ class FeatureManager {
 <property> ::= [<visibility>] ['/'] <name> [':' <prop-type>] ['[' <multiplicity> ']'] ['=' <default>] ['{' <prop-modifier> [',' <prop-modifier>]*'}']
 ```
 
+### 各要素の説明
+
 * visibility: 可視性（例、`'+', '-'`）
 * '/': 派生
 * name: 属性名
@@ -116,6 +118,8 @@ class FeatureManager {
 * multiplicity: 多重度（例、`'*', '0 .. 1'`）
 * default: 既定値（例、`'true', '3 + x'`）
 * prop-modifier: プロパティ（例、`'readOnly', 'subsets instance'`）
+
+### 入力例と出力結果
 
 ```text:入力例
 - projectId : char [0 .. *] = id + 001 {readOnly, subsets id}
@@ -145,6 +149,8 @@ class FeatureManager {
 <parameter> ::= [<direction>] <parameter-name> ':' <type-expression> ['[' <multiplicity> ']'] ['=' <default'>] ['{' <param-property> [',' <param-property>]* '}']
 ```
 
+### 各要素の説明
+
 * visibility: 可視性（例、`'+', '-'`）
 * name: 操作名
 * parameter-list: パラメータリスト
@@ -157,6 +163,8 @@ class FeatureManager {
     * param-property: パラメータのプロパティ（表記の定義なし）
 * return-type: 戻り値を持っている場合はその型
 * oper-property: プロパティ（例、`'query', 'redefines method()'`）
+
+### 入力例と出力結果
 
 ```text:入力例
 + selectProjectData(in projectId : char [*] = "hogehoge001", getDataList(dataId, count).get(Project.number) : Data [(lowCount - 1) .. *]) : Data {query, redefines selectProjectDataImpl}
