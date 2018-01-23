@@ -34,7 +34,7 @@
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
 
-## fescue-0.3.0.jar
+## fescue-0.3.1.jar
 
 上記の構文解析機を利用した、属性の各要素抽出器です。
 
@@ -47,8 +47,8 @@ import usage.OperationEvaluation;
 /**
  * クラスの属性または機能マネージャ
  *
- * $ javac -cp fescue-0.3.0.jar FeatureManager.java
- * $ java -cp ./;fescue-0.3.0.jar;antlr.jar FeatureManager
+ * $ javac -cp fescue-0.3.1.jar FeatureManager.java
+ * $ java -cp ./;fescue-0.3.1.jar;antlr.jar FeatureManager
  */
 class FeatureManager {
 

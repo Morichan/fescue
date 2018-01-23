@@ -78,7 +78,7 @@ public enum Visibility {
     abstract public boolean is(String visibility);
 
     /**
-     * <p> インスタンス状態を文字列から選択する。 </p>
+     * <p> インスタンス状態を文字列から選択します。 </p>
      *
      * <p>
      *     インスタンス状態を文字列{@code "+", "-", "~", "#"}から選択し、そのインスタンス状態を返します。
