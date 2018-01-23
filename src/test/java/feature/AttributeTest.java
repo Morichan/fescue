@@ -88,6 +88,60 @@ class AttributeTest {
     }
 
     @Nested
+    class 派生に関して {
+
+        @BeforeEach
+        void setup() {
+            obj = new Attribute();
+        }
+
+        @Test
+        void 派生に真を設定すると真を返す() {
+
+            obj.setDerived(true);
+            boolean actual = obj.isDerived();
+
+            assertThat(actual).isTrue();
+        }
+
+        @Test
+        void 派生に偽を設定すると偽を返す() {
+
+            obj.setDerived(false);
+            boolean actual = obj.isDerived();
+
+            assertThat(actual).isFalse();
+        }
+
+        @Test
+        void 派生を文字列で設定すると真を返す() {
+
+            obj.setDerived("/");
+            boolean actual = obj.isDerived();
+
+            assertThat(actual).isTrue();
+        }
+
+        @Test
+        void 派生を設定していない場合は偽を返す() {
+
+            boolean actual = obj.isDerived();
+
+            assertThat(actual).isFalse();
+        }
+
+        @Test
+        void 派生を文字列で設定する際に別の文字列を入力すると例外を返す() {
+            assertThatThrownBy(() -> obj.setDerived("notDerivedText")).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 派生を文字列で設定する際にnullを入力すると例外を返す() {
+            assertThatThrownBy(() -> obj.setDerived(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
     class 型に関して {
 
         @BeforeEach
