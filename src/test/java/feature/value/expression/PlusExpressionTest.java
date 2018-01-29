@@ -10,20 +10,59 @@ class PlusExpressionTest {
 
     PlusExpression obj;
 
-    @BeforeEach
-    void setup() {
-        obj = new PlusExpression();
-    }
-
     @Test
     void 数値同士の足し算を設定すると式を返す() {
         String expected = "1 + 2";
-        Expression added = new OneIdentifier();
-        Expression adding = new OneIdentifier();
-        added.set(new Identifier(1));
-        adding.set(new Identifier(2));
 
-        obj.set(added, adding);
+        obj = new PlusExpression(new OneIdentifier(1), new OneIdentifier(2));
+        String actual = obj.toString();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 足し算を1つ目に設定すると足し算が3つ繋がった式を返す() {
+        String expected = "1 + 2 + 3";
+
+        obj = new PlusExpression(
+                new PlusExpression(new OneIdentifier(1), new OneIdentifier(2)),
+                new OneIdentifier(3));
+        String actual = obj.toString();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 足し算を2つ目に設定すると足し算が3つ繋がった式を返す() {
+        String expected = "1 + 2 + 3";
+
+        obj = new PlusExpression(
+                new OneIdentifier(1),
+                new PlusExpression(new OneIdentifier(2), new OneIdentifier(3)));
+        String actual = obj.toString();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 括弧で囲んだ足し算を1つ目に設定すると足し算が3つ繋がった式を返す() {
+        String expected = "(1 + 2) + 3";
+
+        obj = new PlusExpression(
+                new ExpressionWithParen(new PlusExpression(new OneIdentifier(1), new OneIdentifier(2))),
+                new OneIdentifier(3));
+        String actual = obj.toString();
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 括弧で足し算を2つ目に設定すると足し算が3つ繋がった式を返す() {
+        String expected = "1 + (2 + 3)";
+
+        obj = new PlusExpression(
+                new OneIdentifier(1),
+                new ExpressionWithParen(new PlusExpression(new OneIdentifier(2), new OneIdentifier(3))));
         String actual = obj.toString();
 
         assertThat(actual).isEqualTo(expected);

@@ -1,9 +1,14 @@
 package feature.value.expression;
 
-public class ExpressionWithParen extends Expression {
+public class ExpressionWithParen implements Expression {
+    private Expression expression;
+
+    public ExpressionWithParen(Expression exp) {
+        expression = exp;
+    }
 
     @Override
     public String toString() {
-        return "(" + identifier.toString() + ")";
+        return "(" + expression.toString() + ")";
     }
 }

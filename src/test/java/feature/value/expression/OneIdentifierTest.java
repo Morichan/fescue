@@ -10,36 +10,31 @@ class OneIdentifierTest {
 
     OneIdentifier obj;
 
-    @BeforeEach
-    void setup() {
-        obj = new OneIdentifier();
-    }
-
     @Test
-    void 数値を設定すると数値を返す() {
+    void 初期化時に数値を直接設定すると数値を返す() {
         String expected = "1";
 
-        obj.set(new Identifier(1));
+        obj = new OneIdentifier(1);
         String actual = obj.toString();
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void 文字列を設定すると文字列を返す() {
+    void 初期化時に文字列を直接設定すると文字列を返す() {
         String expected = "\"string value\"";
 
-        obj.set(new Identifier("\"string value\""));
+        obj = new OneIdentifier("\"string value\"");
         String actual = obj.toString();
 
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void 変数名を設定すると変数名を返す() {
+    void 初期化時に変数名を直接設定すると変数名を返す() {
         String expected = "stringName";
 
-        obj.set(new Identifier("stringName"));
+        obj = new OneIdentifier("stringName");
         String actual = obj.toString();
 
         assertThat(actual).isEqualTo(expected);
