@@ -3,6 +3,25 @@ package feature.value.expression;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * <p> 演算子クラス </p>
+ *
+ * <p>
+ *     使い方を次に示します。
+ * </p>
+ *
+ * <pre>
+ *     {@code
+ *     Symbol symbol = Symbol.Plus;
+ *
+ *     // オブジェクトでの比較
+ *     if (symbol == Symbol.Plus) System.out.println("Symbol is Plus");
+ *
+ *     // 文字列での比較
+ *     if (symbol.is("+")) System.out.println("Symbol is " + symbol);
+ *     }
+ * </pre>
+ */
 public enum Symbol {
     Add {
         @Override
@@ -70,10 +89,22 @@ public enum Symbol {
             return "!=";
         }
     },
+
     And {
         private List<String> symbolStrings = Arrays.asList("&&", "and", "AND");
         private String symbolText = symbolStrings.get(0);
 
+        /**
+         * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行います。 </p>
+         *
+         * <p>
+         *     インスタンス状態であるかどうかを文字列で判定できます。
+         *     {@link Symbol#is(String)}をオーバーライドしていますが、ここでは実引数である{@code text}の文字列を{@link #symbolText}に格納しています。
+         * </p>
+         *
+         * @param text インスタンス状態であるかどうかの文字列
+         * @return インスタンス状態が判定値と等しい場合は真を返す真偽値
+         */
         @Override
         public boolean is(String text) {
             boolean isThisSymbol = false;
@@ -84,20 +115,51 @@ public enum Symbol {
             return isThisSymbol;
         }
 
+        /**
+         * <p> 演算子の文字列のリストを返します。 </p>
+         *
+         * <p>
+         *     インスタンス状態における演算子が一意に求まらないため、複数の要素を持つリストを返します。
+         * </p>
+         *
+         * @return インスタンス状態における演算子
+         */
         @Override
         public List<String> adjustSymbolStrings() {
             return symbolStrings;
         }
 
+        /**
+         * <p> 演算子の文字列を取得します。 </p>
+         *
+         * <p>
+         *     {@link #is(String)}を実行後にこのメソッドを呼出した場合は、{@link #is(String)}で受取った文字列を返します。
+         *     もし{@link #is(String)}を実行せずにこのメソッドを呼出した場合は、{@link #symbolStrings}の0番目の要素を返します。
+         * </p>
+         *
+         * @return 演算子の文字列 {@code null}および{@code ""}（空文字）無し
+         */
         @Override
         public String toString() {
             return symbolText;
         }
     },
+
     Or {
         private List<String> symbolStrings = Arrays.asList("||", "or", "OR");
         private String symbolText = symbolStrings.get(0);
 
+        /**
+         * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行います。 </p>
+         *
+         * <p>
+         *     インスタンス状態であるかどうかを文字列で判定できます。
+         *     {@link Symbol#is(String)}をオーバーライドしていますが、ここでは実引数である{@code text}の文字列を{@link #symbolText}に格納しています。
+         * </p>
+         *
+         * @param text インスタンス状態であるかどうかの文字列
+         * @return インスタンス状態が判定値と等しい場合は真を返す真偽値
+         */
         @Override
         public boolean is(String text) {
             boolean isThisSymbol = false;
@@ -108,20 +170,51 @@ public enum Symbol {
             return isThisSymbol;
         }
 
+        /**
+         * <p> 演算子の文字列のリストを返します。 </p>
+         *
+         * <p>
+         *     インスタンス状態における演算子が一意に求まらないため、複数の要素を持つリストを返します。
+         * </p>
+         *
+         * @return インスタンス状態における演算子
+         */
         @Override
         public List<String> adjustSymbolStrings() {
             return symbolStrings;
         }
 
+        /**
+         * <p> 演算子の文字列を取得します。 </p>
+         *
+         * <p>
+         *     {@link #is(String)}を実行後にこのメソッドを呼出した場合は、{@link #is(String)}で受取った文字列を返します。
+         *     もし{@link #is(String)}を実行せずにこのメソッドを呼出した場合は、{@link #symbolStrings}の0番目の要素を返します。
+         * </p>
+         *
+         * @return 演算子の文字列 {@code null}および{@code ""}（空文字）無し
+         */
         @Override
         public String toString() {
             return symbolText;
         }
     },
+
     Not {
         private List<String> symbolStrings = Arrays.asList("!", "not", "NOT");
         private String symbolText = symbolStrings.get(0);
 
+        /**
+         * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行います。 </p>
+         *
+         * <p>
+         *     インスタンス状態であるかどうかを文字列で判定できます。
+         *     {@link Symbol#is(String)}をオーバーライドしていますが、ここでは実引数である{@code text}の文字列を{@link #symbolText}に格納しています。
+         * </p>
+         *
+         * @param text インスタンス状態であるかどうかの文字列
+         * @return インスタンス状態が判定値と等しい場合は真を返す真偽値
+         */
         @Override
         public boolean is(String text) {
             boolean isThisSymbol = false;
@@ -132,17 +225,38 @@ public enum Symbol {
             return isThisSymbol;
         }
 
+        /**
+         * <p> 演算子の文字列のリストを返します。 </p>
+         *
+         * <p>
+         *     インスタンス状態における演算子が一意に求まらないため、複数の要素を持つリストを返します。
+         * </p>
+         *
+         * @return インスタンス状態における演算子
+         */
         @Override
         public List<String> adjustSymbolStrings() {
             return symbolStrings;
         }
 
+        /**
+         * <p> 演算子の文字列を取得します。 </p>
+         *
+         * <p>
+         *     {@link #is(String)}を実行後にこのメソッドを呼出した場合は、{@link #is(String)}で受取った文字列を返します。
+         *     もし{@link #is(String)}を実行せずにこのメソッドを呼出した場合は、{@link #symbolStrings}の0番目の要素を返します。
+         * </p>
+         *
+         * @return 演算子の文字列 {@code null}および{@code ""}（空文字）無し
+         */
         @Override
         public String toString() {
             return symbolText;
         }
     },
     ;
+
+
 
     /**
      * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行います。 </p>
@@ -165,7 +279,7 @@ public enum Symbol {
      *
      * <p>
      *     インスタンス状態における演算子が一意に求まる場合は、1要素のみのリストを返します。
-     *     もし複数の演算子を持つインスタンス状態の場合は、@overrideしてください。
+     *     もし複数の演算子を持つインスタンス状態の場合は、このメソッドをオーバーライドしてください。
      * </p>
      *
      * @return インスタンス状態における演算子
@@ -177,7 +291,7 @@ public enum Symbol {
     /**
      * <p> 演算子の文字列を取得します。 </p>
      *
-     * @return 演算子の文字列 {@code null}および{@code ""}（空文字）無し
+     * @return 演算子の文字列 {@code null}および{@code ""}は実装に依存します。
      */
     @Override
     abstract public String toString();

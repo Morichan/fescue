@@ -19,7 +19,7 @@ import java.awt.image.renderable.ParameterBlock;
  *     if (visibility == Visibility.Private) System.out.println("Visibility is Private");
  *
  *     // 文字列での比較
- *     if (visibility.is("-")) System.out.println("Visibility is Private");
+ *     if (visibility.is("-")) System.out.println("Visibility is " + visibility);
  *     }
  * </pre>
  */
