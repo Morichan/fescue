@@ -1,16 +1,17 @@
 package feature.value.expression;
 
-public class PlusExpression implements Expression {
+public class Binomial implements Expression {
     private Expression first;
     private Expression second;
+    private String symbol = "+";
 
-    public PlusExpression(Expression first, Expression second) {
+    public Binomial(Expression first, Expression second) {
         this.first = first;
         this.second = second;
     }
 
     @Override
     public String toString() {
-        return first + " + " + second;
+        return first + " " + symbol + " " + second;
     }
 }
