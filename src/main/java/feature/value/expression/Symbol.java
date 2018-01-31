@@ -1,7 +1,11 @@
 package feature.value.expression;
 
+import com.ibm.icu.text.PluralFormat;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p> 演算子クラス </p>
@@ -12,10 +16,10 @@ import java.util.List;
  *
  * <pre>
  *     {@code
- *     Symbol symbol = Symbol.Plus;
+ *     Symbol symbol = Symbol.choose("+");
  *
  *     // オブジェクトでの比較
- *     if (symbol == Symbol.Plus) System.out.println("Symbol is Plus");
+ *     if (symbol == Symbol.Add) System.out.println("Symbol is Add");
  *
  *     // 文字列での比較
  *     if (symbol.is("+")) System.out.println("Symbol is " + symbol);
@@ -258,6 +262,29 @@ public enum Symbol {
 
 
 
+    final static Map<String, Symbol> string2symbol = new HashMap<>() {{
+        put("+", Add);
+        put("-", Sub);
+        put("*", Multi);
+        put("/", Divide);
+        put("%", Mod);
+        put("<=", LessEqual);
+        put(">=", GreaterEqual);
+        put("<", Less);
+        put(">", Greater);
+        put("==", Equal);
+        put("!=", NotEqual);
+        put("&&", And);
+        put("and", And);
+        put("AND", And);
+        put("||", Or);
+        put("or", Or);
+        put("OR", Or);
+        put("!", Not);
+        put("not", Not);
+        put("NOT", Not);
+    }};
+
     /**
      * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行います。 </p>
      *
@@ -295,4 +322,22 @@ public enum Symbol {
      */
     @Override
     abstract public String toString();
+
+
+
+    /**
+     * <p> インスタンス状態を文字列から選択します。 </p>
+     *
+     * <p>
+     *     インスタンス状態を{@link #string2symbol}から選択し、そのインスタンス状態を返します。
+     *     {@link #string2symbol}に含まれていない文字列または{@code null}を入力すると{@link IllegalStateException}を投げます。
+     * </p>
+     *
+     * @param symbolText インスタンス状態の文字列
+     * @return 受取った文字列と等しいインスタンス状態
+     */
+    static public Symbol choose(String symbolText) {
+        if (symbolText == null || !string2symbol.containsKey(symbolText)) throw new IllegalStateException();
+        return string2symbol.get(symbolText);
+    }
 }

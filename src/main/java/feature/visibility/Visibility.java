@@ -13,7 +13,7 @@ import java.awt.image.renderable.ParameterBlock;
  *
  * <pre>
  *     {@code
- *     Visibility visibility = Visibility.Private;
+ *     Visibility visibility = Visibility.choose("-");
  *
  *     // オブジェクトでの比較
  *     if (visibility == Visibility.Private) System.out.println("Visibility is Private");
