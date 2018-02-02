@@ -1,5 +1,6 @@
-package feature.value.expression;
+package feature.value.expression.symbol;
 
+import feature.value.expression.symbol.Symbol;
 import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
@@ -22,11 +23,11 @@ class SymbolTest {
                 "!", "not", "NOT"
         );
         final List<Symbol> symbols = Arrays.asList(
-                Symbol.Add, Symbol.Sub, Symbol.Multi, Symbol.Divide, Symbol.Mod,
-                Symbol.LessEqual, Symbol.GreaterEqual, Symbol.Less, Symbol.Greater, Symbol.Equal, Symbol.NotEqual,
-                Symbol.And, Symbol.And, Symbol.And,
-                Symbol.Or, Symbol.Or, Symbol.Or,
-                Symbol.Not, Symbol.Not, Symbol.Not
+                new Add(), new Sub(), new Multi(), new Divide(), new Mod(),
+                new LessEqual(), new GreaterEqual(), new Less(), new Greater(), new Equal(), new NotEqual(),
+                new And(), new And(), new And(),
+                new Or(), new Or(), new Or(),
+                new Not(), new Not(), new Not()
         );
         final int symbolCount = 20;
 
@@ -48,7 +49,7 @@ class SymbolTest {
 
             for (String symbolString : symbolStrings) {
                 count++;
-                if (symbols.get(count) == withoutSymbol) continue;
+                if (symbols.get(count).is(withoutSymbol.toString())) continue;
                 assertThat(obj.is(symbolString)).isFalse();
             }
         }
@@ -68,8 +69,9 @@ class SymbolTest {
             Symbol expected = symbols.get(info.getCurrentRepetition() - 1);
 
             Symbol actual = Symbol.choose(symbolStrings.get(info.getCurrentRepetition() - 1));
+            actual.is(symbols.get(info.getCurrentRepetition() - 1).toString());
 
-            assertThat(actual).isEqualTo(expected);
+            assertThat(actual).hasToString(expected.toString());
         }
     }
 
