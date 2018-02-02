@@ -40,6 +40,16 @@ abstract public class Symbol {
     }};
 
     /**
+     * <p> 演算子の文字列を取得します。 </p>
+     *
+     * @return 演算子の文字列 {@code null}および{@code ""}は実装に依存します。
+     */
+    @Override
+    abstract public String toString();
+
+
+
+    /**
      * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行います。 </p>
      *
      * <p>
@@ -68,14 +78,6 @@ abstract public class Symbol {
     public List<String> adjustSymbolStrings() {
         return Arrays.asList(toString());
     }
-
-    /**
-     * <p> 演算子の文字列を取得します。 </p>
-     *
-     * @return 演算子の文字列 {@code null}および{@code ""}は実装に依存します。
-     */
-    @Override
-    abstract public String toString();
 
 
 

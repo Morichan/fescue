@@ -46,7 +46,7 @@ public class Binomial implements Expression {
     /**
      * <p> 2項式の文字列を取得します。 </p>
      *
-     * @return 2項式の文字列 {@code null}および{@code ""}は実装に依存します。
+     * @return 2項式の文字列 {@code null}および{@code ""}なし
      */
     @Override
     public String toString() {

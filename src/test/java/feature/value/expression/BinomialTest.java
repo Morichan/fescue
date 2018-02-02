@@ -69,11 +69,11 @@ class BinomialTest {
 
         @RepeatedTest(symbolCount * symbolCount)
         void 足し算を2つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
-            String expected = "1 + 2 + 3";
+            String expected = "1 "+firstSymbol+" 2 "+secondSymbol+" 3";
 
-            obj = new Binomial("+",
+            obj = new Binomial(firstSymbol,
                     new OneIdentifier(1),
-                    new Binomial("+", new OneIdentifier(2), new OneIdentifier(3)));
+                    new Binomial(secondSymbol, new OneIdentifier(2), new OneIdentifier(3)));
             String actual = obj.toString();
 
             assertThat(actual).isEqualTo(expected);
@@ -81,10 +81,10 @@ class BinomialTest {
 
         @RepeatedTest(symbolCount * symbolCount)
         void 括弧で囲んだ足し算を1つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
-            String expected = "(1 + 2) + 3";
+            String expected = "(1 "+firstSymbol+" 2) "+secondSymbol+" 3";
 
-            obj = new Binomial("+",
-                    new ExpressionWithParen(new Binomial("+", new OneIdentifier(1), new OneIdentifier(2))),
+            obj = new Binomial(secondSymbol,
+                    new ExpressionWithParen(new Binomial(firstSymbol, new OneIdentifier(1), new OneIdentifier(2))),
                     new OneIdentifier(3));
             String actual = obj.toString();
 
@@ -93,11 +93,11 @@ class BinomialTest {
 
         @RepeatedTest(symbolCount * symbolCount)
         void 括弧で足し算を2つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
-            String expected = "1 + (2 + 3)";
+            String expected = "1 "+firstSymbol+" (2 "+secondSymbol+" 3)";
 
-            obj = new Binomial("+",
+            obj = new Binomial(firstSymbol,
                     new OneIdentifier(1),
-                    new ExpressionWithParen(new Binomial("+", new OneIdentifier(2), new OneIdentifier(3))));
+                    new ExpressionWithParen(new Binomial(secondSymbol, new OneIdentifier(2), new OneIdentifier(3))));
             String actual = obj.toString();
 
             assertThat(actual).isEqualTo(expected);
