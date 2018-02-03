@@ -20,16 +20,18 @@ class SymbolTest {
                 "<=", ">=", "<", ">", "==", "!=",
                 "&&", "and", "AND",
                 "||", "or", "OR",
-                "!", "not", "NOT"
+                "!", "not", "NOT",
+                "."
         );
         final List<Symbol> symbols = Arrays.asList(
                 new Add(), new Sub(), new Multi(), new Divide(), new Mod(),
                 new LessEqual(), new GreaterEqual(), new Less(), new Greater(), new Equal(), new NotEqual(),
                 new And(), new And(), new And(),
                 new Or(), new Or(), new Or(),
-                new Not(), new Not(), new Not()
+                new Not(), new Not(), new Not(),
+                new Dot()
         );
-        final int symbolCount = 20;
+        final int symbolCount = 21;
 
         @BeforeEach
         void setup(RepetitionInfo info) {

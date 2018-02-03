@@ -105,6 +105,20 @@ class BinomialTest {
     }
 
     @Nested
+    class ドット演算子の場合 {
+
+        @Test
+        void ドットと両端の間にスペースを空けず文字列を返す() {
+            String expected = "String.value";
+
+            obj = new Binomial(".", new OneIdentifier("String"), new OneIdentifier("value"));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+    }
+
+    @Nested
     class 初期設定が正しくない場合 {
 
         @Test

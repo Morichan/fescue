@@ -1,5 +1,7 @@
 package feature.value.expression.symbol;
 
+import feature.value.expression.Identifier;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,7 @@ abstract public class Symbol {
         put("!", new Not());
         put("not", new Not());
         put("NOT", new Not());
+        put(".", new Dot());
     }};
 
     /**
@@ -46,6 +49,15 @@ abstract public class Symbol {
      */
     @Override
     abstract public String toString();
+
+    /**
+     * <p> 演算子の両端にスペースを保持している場合は真を返す真偽値判定を行う。 </p>
+     *
+     * @return 演算子の両端にスペースを保持している場合は真を返す真偽値判定
+     */
+    public boolean isHadSpaceBothSides() {
+        return ! (this instanceof Dot);
+    }
 
 
 

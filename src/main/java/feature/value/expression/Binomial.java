@@ -23,6 +23,7 @@ public class Binomial implements Expression {
     private Expression first;
     private Expression second;
     private Symbol symbol;
+    private boolean isHadSpaceBothSides;
 
     /**
      * <p> 2項式コンストラクタ </p>
@@ -41,6 +42,7 @@ public class Binomial implements Expression {
         this.second = second;
         this.symbol = Symbol.choose(symbolText);
         symbol.is(symbolText);
+        isHadSpaceBothSides = this.symbol.isHadSpaceBothSides();
     }
 
     /**
@@ -50,6 +52,7 @@ public class Binomial implements Expression {
      */
     @Override
     public String toString() {
-        return first + " " + symbol + " " + second;
+        if (isHadSpaceBothSides) return first + " " + symbol + " " + second;
+        return first + symbol.toString() + second;
     }
 }
