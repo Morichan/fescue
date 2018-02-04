@@ -22,7 +22,7 @@ public class LessEqual extends Symbol {
     /**
      * <p> 小なりイコール演算子の文字列を取得します。 </p>
      *
-     * @return "<="
+     * @return "&lt;="
      */
     @Override
     public String toString() {

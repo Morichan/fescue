@@ -22,7 +22,7 @@ public class Less extends Symbol {
     /**
      * <p> 小なり演算子の文字列を取得します。 </p>
      *
-     * @return "<"
+     * @return "&lt;"
      */
     @Override
     public String toString() {

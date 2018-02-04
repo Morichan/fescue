@@ -101,11 +101,14 @@ public class OperationEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は例外を投げます。
-     *     <ul>
-     *         <li>操作文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
-     *         <li>設定した操作文が予約語と同じ文字列の場合 : {@link ClassFeatureParser.OperationContext#exception}</li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li>操作文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
+     *     <li>設定した操作文が予約語と同じ文字列の場合 : {@link ClassFeatureParser.OperationContext#exception}</li>
+     * </ul>
+     *
+     * <p>
      *     また、処理の最後に{@code null}判定を行っているため（真の場合は上記の1番目の操作を行う）、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
      *
@@ -131,11 +134,12 @@ public class OperationEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 操作文を設定していない場合 </li>
-     *         <li> 設定した操作文に操作名を含んでいない場合 </li>
-     *     </ul>
      * </p>
+     *
+     * <ul>
+     *     <li> 操作文を設定していない場合 </li>
+     *     <li> 設定した操作文に操作名を含んでいない場合 </li>
+     * </ul>
      *
      * @return 可視性 {@code null}の可能性あり
      */
@@ -157,11 +161,14 @@ public class OperationEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 操作文を設定していない場合 </li>
-     *         <li> 設定した操作文に操作名を含んでいない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 操作文を設定していない場合 </li>
+     *     <li> 設定した操作文に操作名を含んでいない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、設定した操作名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
@@ -186,11 +193,14 @@ public class OperationEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 操作文を設定していない場合 </li>
-     *         <li> 設定した操作文に操作名を含んでいない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 操作文を設定していない場合 </li>
+     *     <li> 設定した操作文に操作名を含んでいない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、操作名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
