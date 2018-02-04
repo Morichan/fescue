@@ -24,6 +24,15 @@ import java.awt.image.renderable.ParameterBlock;
  * </pre>
  */
 public enum Visibility {
+
+    /**
+     * <p> パブリック列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "+"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Public {
         @Override
         public boolean is(String visibility) {
@@ -32,6 +41,15 @@ public enum Visibility {
             return isPublic;
         }
     },
+
+    /**
+     * <p> プライベート列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "-"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Private {
         @Override
         public boolean is(String visibility) {
@@ -40,6 +58,15 @@ public enum Visibility {
             return isPrivate;
         }
     },
+
+    /**
+     * <p> パッケージ列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "~"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Package {
         @Override
         public boolean is(String visibility) {
@@ -48,6 +75,15 @@ public enum Visibility {
             return isPackage;
         }
     },
+
+    /**
+     * <p> プロテクテッド列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "#"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Protected {
         @Override
         public boolean is(String visibility) {
@@ -56,6 +92,15 @@ public enum Visibility {
             return isProtected;
         }
     },
+
+    /**
+     * <p> 未定義列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     常に偽を返します。
+     * </p>
+     */
     Undefined {
         @Override
         public boolean is(String visibility) {
