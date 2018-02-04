@@ -55,9 +55,7 @@ abstract public class Symbol {
      *
      * @return 演算子の両端にスペースを保持している場合は真を返す真偽値判定
      */
-    public boolean isHadSpaceBothSides() {
-        return ! (this instanceof Dot);
-    }
+    abstract public boolean isHadSpaceBothSides();
 
 
 

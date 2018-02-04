@@ -16,6 +16,16 @@ package feature.value.expression.symbol;
 public class Dot extends Symbol {
 
     /**
+     * <p> 演算子の両端にスペースを保持している場合は真を返す真偽値判定を行う。 </p>
+     *
+     * @return 偽
+     */
+    @Override
+    public boolean isHadSpaceBothSides() {
+        return false;
+    }
+
+    /**
      * <p> 加算演算子の文字列を取得します。 </p>
      *
      * @return "."
