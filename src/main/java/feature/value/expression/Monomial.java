@@ -35,10 +35,15 @@ public class Monomial implements Expression {
     public Monomial(String symbolText, Expression exp) {
         if (symbolText == null || exp == null) throw new IllegalArgumentException();
         symbol = Symbol.choose(symbolText);
-        expression = exp;
         symbol.is(symbolText);
+        expression = exp;
     }
 
+    /**
+     * <p> 単項式の文字列を取得します。 </p>
+     *
+     * @return 単項式の文字列 {@code null}および{@code ""}なし
+     */
     @Override
     public String toString() {
         return symbol + " " + expression;
