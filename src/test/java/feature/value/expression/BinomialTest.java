@@ -18,13 +18,12 @@ class BinomialTest {
                 "+", "-", "*", "/", "%",
                 "<=", ">=", "<", ">", "==", "!=",
                 "&&", "and", "AND",
-                "||", "or", "OR",
-                "!", "not", "NOT"
+                "||", "or", "OR"
         );
-        final int symbolCount = 20;
+        final int symbolCount = 17;
 
         @RepeatedTest(symbolCount)
-        void 数値同士の足し算を設定すると式を返す(RepetitionInfo info) {
+        void 数値と演算子を設定すると式を返す(RepetitionInfo info) {
             int index = info.getCurrentRepetition() - 1;
             String expected = "1 " + symbolStrings.get(index) + " 2";
 
@@ -41,10 +40,9 @@ class BinomialTest {
                 "+", "-", "*", "/", "%",
                 "<=", ">=", "<", ">", "==", "!=",
                 "&&", "and", "AND",
-                "||", "or", "OR",
-                "!", "not", "NOT"
+                "||", "or", "OR"
         );
-        final int symbolCount = 20;
+        final int symbolCount = 17;
         String firstSymbol;
         String secondSymbol;
 
@@ -56,7 +54,7 @@ class BinomialTest {
         }
 
         @RepeatedTest(symbolCount * symbolCount)
-        void 足し算を1つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
+        void 式を1つ目に設定すると式が3つ繋がった式を返す(RepetitionInfo info) {
             String expected = "1 "+firstSymbol+" 2 "+secondSymbol+" 3";
 
             obj = new Binomial(secondSymbol,
@@ -68,7 +66,7 @@ class BinomialTest {
         }
 
         @RepeatedTest(symbolCount * symbolCount)
-        void 足し算を2つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
+        void 式を2つ目に設定すると式が3つ繋がった式を返す(RepetitionInfo info) {
             String expected = "1 "+firstSymbol+" 2 "+secondSymbol+" 3";
 
             obj = new Binomial(firstSymbol,
@@ -80,7 +78,7 @@ class BinomialTest {
         }
 
         @RepeatedTest(symbolCount * symbolCount)
-        void 括弧で囲んだ足し算を1つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
+        void 括弧で囲んだ式を1つ目に設定すると式が2つ繋がった式を返す(RepetitionInfo info) {
             String expected = "(1 "+firstSymbol+" 2) "+secondSymbol+" 3";
 
             obj = new Binomial(secondSymbol,
@@ -92,7 +90,7 @@ class BinomialTest {
         }
 
         @RepeatedTest(symbolCount * symbolCount)
-        void 括弧で足し算を2つ目に設定すると足し算が3つ繋がった式を返す(RepetitionInfo info) {
+        void 括弧で式を2つ目に設定すると式が2つ繋がった式を返す(RepetitionInfo info) {
             String expected = "1 "+firstSymbol+" (2 "+secondSymbol+" 3)";
 
             obj = new Binomial(firstSymbol,

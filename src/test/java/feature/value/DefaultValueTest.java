@@ -5,8 +5,8 @@ import feature.value.expression.Expression;
 import feature.value.expression.OneIdentifier;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultValueTest {
