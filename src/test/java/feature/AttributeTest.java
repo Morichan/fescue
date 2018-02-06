@@ -2,6 +2,8 @@ package feature;
 
 import feature.name.Name;
 import feature.type.Type;
+import feature.value.DefaultValue;
+import feature.value.expression.OneIdentifier;
 import feature.visibility.Visibility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -167,6 +169,35 @@ class AttributeTest {
         @Test
         void 型を設定せずに取得しようとすると例外を返す() {
             assertThatThrownBy(() -> obj.getType()).isInstanceOf(NoSuchElementException.class);
+        }
+    }
+
+    @Nested
+    class 既定値に関して {
+
+        @BeforeEach
+        void setup() {
+            obj = new Attribute();
+        }
+
+        @Test
+        void 設定すると既定値を返す() {
+            String expected = "1";
+
+            obj.setDefaultValue(new DefaultValue(new OneIdentifier(1)));
+            String actual = obj.getDefaultValue().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を返す() {
+            assertThatThrownBy(() -> obj.setDefaultValue(null)).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 設定せずに取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getDefaultValue()).isInstanceOf(NoSuchElementException.class);
         }
     }
 }

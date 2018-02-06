@@ -2,6 +2,7 @@ package feature;
 
 import feature.name.Name;
 import feature.type.Type;
+import feature.value.DefaultValue;
 import feature.visibility.Visibility;
 
 import java.util.NoSuchElementException;
@@ -35,6 +36,7 @@ public class Attribute {
     private Visibility visibility;
     private Type type;
     private boolean isDerived = false;
+    private DefaultValue value;
 
     /**
      * <p> 名前を設定します。 </p>
@@ -165,6 +167,36 @@ public class Attribute {
      */
     public boolean isDerived() {
         return isDerived;
+    }
+
+    /**
+     * <p> 既定値を設定します。 </p>
+     *
+     * <p>
+     *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalStateException}を投げます（{@link #checkNullPointer(Object)}参照）。
+     * </p>
+     *
+     * @param defaultValue 既定値 {@code null}不可
+     */
+    public void setDefaultValue(DefaultValue defaultValue) {
+        checkNullPointer(defaultValue);
+        this.value = defaultValue;
+    }
+
+    /**
+     * <p> 既定値を取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、フィールドとして既定値インスタンスを保持しているかどうかを判定します。
+     *     保持していない場合は{@link NoSuchElementException}を投げます（{@link #checkNoSuchElement(Object)}参照）。
+     * </p>
+     *
+     * @return 既定値
+     * @throws NoSuchElementException 既定値が存在しないことを示す要素不所持例外
+     */
+    public DefaultValue getDefaultValue() throws NoSuchElementException {
+        checkNoSuchElement(value);
+        return value;
     }
 
 
