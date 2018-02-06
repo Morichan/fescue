@@ -1,6 +1,7 @@
 package feature.value.expression.symbol;
 
 import feature.value.expression.symbol.Symbol;
+import org.antlr.v4.parse.GrammarTreeVisitor;
 import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
@@ -30,6 +31,14 @@ class SymbolTest {
                 new Or(), new Or(), new Or(),
                 new Not(), new Not(), new Not(),
                 new Dot()
+        );
+        final List<Boolean> isHadSpaceBothSidesList = Arrays.asList(
+                true, true, true, true, true,
+                true, true, true, true, true, true,
+                true, true, true,
+                true, true, true,
+                true, true, true,
+                false
         );
         final int symbolCount = 21;
 
@@ -74,6 +83,16 @@ class SymbolTest {
             actual.is(symbols.get(info.getCurrentRepetition() - 1).toString());
 
             assertThat(actual).hasToString(expected.toString());
+        }
+
+        @RepeatedTest(symbolCount)
+        void オブジェクトの両端にスペースを保持しているかどうか正しい真偽値判定を返す(RepetitionInfo info) {
+            boolean expected = isHadSpaceBothSidesList.get(info.getCurrentRepetition() - 1);
+
+            Symbol actual = Symbol.choose(symbolStrings.get(info.getCurrentRepetition() - 1));
+            actual.is(symbols.get(info.getCurrentRepetition() - 1).toString());
+
+            assertThat(actual.isHadSpaceBothSides()).isEqualTo(expected);
         }
     }
 
