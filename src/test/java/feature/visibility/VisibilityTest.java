@@ -156,7 +156,7 @@ class VisibilityTest {
         void Publicの文字列を選択するとPublicを返す() {
             Visibility expected = Visibility.Public;
 
-            Visibility actual = obj.choose("+");
+            Visibility actual = Visibility.choose("+");
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -165,7 +165,7 @@ class VisibilityTest {
         void Privateの文字列を選択するとPrivateを返す() {
             Visibility expected = Visibility.Private;
 
-            Visibility actual = obj.choose("-");
+            Visibility actual = Visibility.choose("-");
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -174,7 +174,7 @@ class VisibilityTest {
         void Packageの文字列を選択するとPackageを返す() {
             Visibility expected = Visibility.Package;
 
-            Visibility actual = obj.choose("~");
+            Visibility actual = Visibility.choose("~");
 
             assertThat(actual).isEqualTo(expected);
         }
@@ -183,19 +183,19 @@ class VisibilityTest {
         void Protectedの文字列を選択するとProtectedを返す() {
             Visibility expected = Visibility.Protected;
 
-            Visibility actual = obj.choose("#");
+            Visibility actual = Visibility.choose("#");
 
             assertThat(actual).isEqualTo(expected);
         }
 
         @Test
         void 可視性の文字列以外を選択すると例外を投げる() {
-            assertThatThrownBy(() -> obj.choose("E")).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> Visibility.choose("E")).isInstanceOf(IllegalStateException.class);
         }
 
         @Test
         void 可視性の選択にnullを入力すると例外を投げる() {
-            assertThatThrownBy(() -> obj.choose(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> Visibility.choose(null)).isInstanceOf(IllegalStateException.class);
         }
 
         @Test
