@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.NoSuchElementException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,12 +39,12 @@ class AttributeTest {
 
         @Test
         void 名前にnullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 名前を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getName()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getName()).isInstanceOf(IllegalStateException.class);
         }
     }
 
@@ -80,12 +78,12 @@ class AttributeTest {
 
         @Test
         void 可視性にnullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setVisibility(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setVisibility(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 可視性を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getVisibility()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getVisibility()).isInstanceOf(IllegalStateException.class);
         }
     }
 
@@ -163,12 +161,12 @@ class AttributeTest {
 
         @Test
         void 型にnullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setType(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setType(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 型を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getType()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getType()).isInstanceOf(IllegalStateException.class);
         }
     }
 
@@ -192,12 +190,12 @@ class AttributeTest {
 
         @Test
         void nullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setDefaultValue(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setDefaultValue(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getDefaultValue()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getDefaultValue()).isInstanceOf(IllegalStateException.class);
         }
     }
 }
