@@ -106,11 +106,14 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は例外を投げます。
-     *     <ul>
-     *         <li>属性文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
-     *         <li>設定した属性文が予約語と同じ文字列の場合 : {@link ClassFeatureParser.PropertyContext#exception}</li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li>属性文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
+     *     <li>設定した属性文が予約語と同じ文字列の場合 : {@link ClassFeatureParser.PropertyContext#exception}</li>
+     * </ul>
+     *
+     * <p>
      *     また、処理の最後に{@code null}判定を行っているため（真の場合は上記の1番目の操作を行う）、戻り値が{@code null}の可能性は恐らくありません。
      * </p>
      *
@@ -136,11 +139,12 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *     </ul>
      * </p>
+     *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     * </ul>
      *
      * @return 可視性 {@code null}の可能性あり
      */
@@ -162,11 +166,12 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *     </ul>
      * </p>
+     *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     * </ul>
      *
      * @return 派生 {@code null}の可能性あり
      */
@@ -188,11 +193,14 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、設定した属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
@@ -217,12 +225,15 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *         <li> 下限が存在しない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     *     <li> 下限が存在しない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、設定した属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
@@ -249,11 +260,14 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、設定した属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
@@ -282,11 +296,14 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
@@ -320,11 +337,14 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合は{@code null}を返します。
-     *     <ul>
-     *         <li> 属性文を設定していない場合 </li>
-     *         <li> 設定した属性文に属性名を含んでいない場合 </li>
-     *     </ul>
+     * </p>
      *
+     * <ul>
+     *     <li> 属性文を設定していない場合 </li>
+     *     <li> 設定した属性文に属性名を含んでいない場合 </li>
+     * </ul>
+     *
+     * <p>
      *     また、属性名が予約語と同じ文字列の場合は{@link org.antlr.v4.runtime.InputMismatchException}を投げます（{@link #extractName()}参照）。
      * </p>
      *
@@ -361,11 +381,12 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *
      * <p>
      *     次の場合、トークン間にスペースを挿入します。
-     *     <ul>
-     *         <li> {@code numberOrExpression ([+*%/-] | '<=' | '>=' | '>' | '<' | '==' | '!=' | '&&' | 'and' | 'AND' | '||' | 'or' | 'OR') numberOrExpression} </li>
-     *         <li> {@code ('!' | 'not' | 'NOT') numberOrExpression} </li>
-     *     </ul>
      * </p>
+     *
+     * <ul>
+     *     <li> {@code numberOrExpression ([+*%/-] | '<=' | '>=' | '>' | '<' | '==' | '!=' | '&&' | 'and' | 'AND' | '||' | 'or' | 'OR') numberOrExpression} </li>
+     *     <li> {@code ('!' | 'not' | 'NOT') numberOrExpression} </li>
+     * </ul>
      *
      * @param ctx 式のコンテキスト
      * @return 式の文章
@@ -401,12 +422,10 @@ public class AttributeEvaluation extends FeatureEvaluation {
     /**
      * <p> 多重度における下限の文章を整形します。 </p>
      *
-     * <p>
-     *     <ul>
-     *         <li> value-specificationの場合は"()"で囲んだ文字列を返します（{@link #formatMultiplicityRangeExpression(ClassFeatureParser.ValueSpecificationContext)}を参照）。 </li>
-     *         <li> 数値の場合は数値の文字列を返します。 </li>
-     *     </ul>
-     * </p>
+     * <ul>
+     *     <li> value-specificationの場合は"()"で囲んだ文字列を返します（{@link #formatMultiplicityRangeExpression(ClassFeatureParser.ValueSpecificationContext)}を参照）。 </li>
+     *     <li> 数値の場合は数値の文字列を返します。 </li>
+     * </ul>
      *
      * @param ctx 多重度における下限のコンテキスト
      * @return 多重度における下限の文章
@@ -426,13 +445,11 @@ public class AttributeEvaluation extends FeatureEvaluation {
     /**
      * <p> 多重度における上限の文章を整形します。 </p>
      *
-     * <p>
-     *     <ul>
-     *         <li> value-specificationの場合は"()"で囲んだ文字列を返します（{@link #formatMultiplicityRangeExpression(ClassFeatureParser.ValueSpecificationContext)}を参照）。 </li>
-     *         <li> {@code "*"}の場合はそのものを返します。 </li>
-     *         <li> 数値の場合は数値の文字列を返します。 </li>
-     *     </ul>
-     * </p>
+     * <ul>
+     *     <li> value-specificationの場合は"()"で囲んだ文字列を返します（{@link #formatMultiplicityRangeExpression(ClassFeatureParser.ValueSpecificationContext)}を参照）。 </li>
+     *     <li> {@code "*"}の場合はそのものを返します。 </li>
+     *     <li> 数値の場合は数値の文字列を返します。 </li>
+     * </ul>
      *
      * @param ctx 多重度における上限のコンテキスト
      * @return 多重度における上限の文章

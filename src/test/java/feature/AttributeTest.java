@@ -2,13 +2,13 @@ package feature;
 
 import feature.name.Name;
 import feature.type.Type;
+import feature.value.DefaultValue;
+import feature.value.expression.OneIdentifier;
 import feature.visibility.Visibility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,12 +39,12 @@ class AttributeTest {
 
         @Test
         void 名前にnullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 名前を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getName()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getName()).isInstanceOf(IllegalStateException.class);
         }
     }
 
@@ -78,12 +78,12 @@ class AttributeTest {
 
         @Test
         void 可視性にnullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setVisibility(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setVisibility(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 可視性を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getVisibility()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getVisibility()).isInstanceOf(IllegalStateException.class);
         }
     }
 
@@ -161,12 +161,41 @@ class AttributeTest {
 
         @Test
         void 型にnullを設定すると例外を返す() {
-            assertThatThrownBy(() -> obj.setType(null)).isInstanceOf(IllegalStateException.class);
+            assertThatThrownBy(() -> obj.setType(null)).isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test
         void 型を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getType()).isInstanceOf(NoSuchElementException.class);
+            assertThatThrownBy(() -> obj.getType()).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class 既定値に関して {
+
+        @BeforeEach
+        void setup() {
+            obj = new Attribute();
+        }
+
+        @Test
+        void 設定すると既定値を返す() {
+            String expected = "1";
+
+            obj.setDefaultValue(new DefaultValue(new OneIdentifier(1)));
+            String actual = obj.getDefaultValue().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を返す() {
+            assertThatThrownBy(() -> obj.setDefaultValue(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 設定せずに取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getDefaultValue()).isInstanceOf(IllegalStateException.class);
         }
     }
 }

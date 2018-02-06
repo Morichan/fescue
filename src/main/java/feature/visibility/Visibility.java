@@ -3,6 +3,8 @@ package feature.visibility;
 import parser.ClassFeatureParser;
 
 import java.awt.image.renderable.ParameterBlock;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p> 可視性クラス </p>
@@ -13,17 +15,26 @@ import java.awt.image.renderable.ParameterBlock;
  *
  * <pre>
  *     {@code
- *     Visibility visibility = Visibility.Private;
+ *     Visibility visibility = Visibility.choose("-");
  *
  *     // オブジェクトでの比較
  *     if (visibility == Visibility.Private) System.out.println("Visibility is Private");
  *
  *     // 文字列での比較
- *     if (visibility.is("-")) System.out.println("Visibility is Private");
+ *     if (visibility.is("-")) System.out.println("Visibility is " + visibility);
  *     }
  * </pre>
  */
 public enum Visibility {
+
+    /**
+     * <p> パブリック列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "+"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Public {
         @Override
         public boolean is(String visibility) {
@@ -31,7 +42,21 @@ public enum Visibility {
             if (visibility.equals("+")) isPublic = true;
             return isPublic;
         }
+
+        @Override
+        public String toString() {
+            return "+";
+        }
     },
+
+    /**
+     * <p> プライベート列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "-"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Private {
         @Override
         public boolean is(String visibility) {
@@ -39,7 +64,21 @@ public enum Visibility {
             if (visibility.equals("-")) isPrivate = true;
             return isPrivate;
         }
+
+        @Override
+        public String toString() {
+            return "-";
+        }
     },
+
+    /**
+     * <p> パッケージ列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "~"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Package {
         @Override
         public boolean is(String visibility) {
@@ -47,7 +86,21 @@ public enum Visibility {
             if (visibility.equals("~")) isPackage = true;
             return isPackage;
         }
+
+        @Override
+        public String toString() {
+            return "~";
+        }
     },
+
+    /**
+     * <p> プロテクテッド列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     {@code "#"}を入力した場合のみ真を返します。
+     * </p>
+     */
     Protected {
         @Override
         public boolean is(String visibility) {
@@ -55,14 +108,44 @@ public enum Visibility {
             if (visibility.equals("#")) isProtected = true;
             return isProtected;
         }
+
+        @Override
+        public String toString() {
+            return "#";
+        }
     },
+
+    /**
+     * <p> 未定義列挙子 </p>
+     *
+     * <p>
+     *     {@link #is(String)}をオーバーライドしています。
+     *     常に偽を返します。
+     * </p>
+     */
     Undefined {
         @Override
         public boolean is(String visibility) {
             return false;
         }
+
+        @Override
+        public String toString() {
+            throw new IllegalStateException();
+        }
     },
     ;
+
+
+
+    final static private Map<String, Visibility> string2visibility = new HashMap<>() {{
+        put("+", Public);
+        put("-", Private);
+        put("~", Package);
+        put("#", Protected);
+    }};
+
+
 
     /**
      * <p> インスタンス状態が最初に設定した状態であれば真を返す真偽値判定を行う抽象メソッドです。 </p>
@@ -89,32 +172,9 @@ public enum Visibility {
      * @return 受取った文字列と等しいインスタンス状態
      */
     static public Visibility choose(String visibilityText) {
-        Visibility visibility;
+        if (visibilityText == null || !string2visibility.containsKey(visibilityText)) throw new IllegalStateException();
 
-        if (visibilityText == null) throw new IllegalStateException();
-
-        switch (visibilityText) {
-            case "+":
-                visibility = Public;
-                break;
-
-            case "-":
-                visibility = Private;
-                break;
-
-            case "~":
-                visibility = Package;
-                break;
-
-            case "#":
-                visibility = Protected;
-                break;
-
-            default:
-                throw new IllegalStateException();
-        }
-
-        return visibility;
+        return string2visibility.get(visibilityText);
     }
 
     /**
@@ -124,18 +184,8 @@ public enum Visibility {
      *     可視性が設定されていない場合は{@link IllegalStateException}を投げます。
      * </p>
      *
-     * @return 可視性の文字列 {@code null}および{@code ""}（空文字）無し
+     * @return 可視性の文字列 {@code null}および{@code ""}（空文字）は実装に依存します。
      */
     @Override
-    public String toString() {
-        String text;
-
-        if (this == Public) text = "+";
-        else if (this == Private) text = "-";
-        else if (this == Package) text = "~";
-        else if (this == Protected) text = "#";
-        else throw new IllegalStateException();
-
-        return text;
-    }
+    abstract public String toString();
 }
