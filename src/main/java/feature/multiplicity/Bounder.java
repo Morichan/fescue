@@ -11,15 +11,15 @@ import feature.value.expression.Expression;
  *
  * <pre>
  *     {@code
- *     Upper upperOfExpression = new Upper(new OneIdentifier(1));
+ *     Bounder upperOfExpression = new Bounder(new OneIdentifier(1));
  *     System.out.println(upperOfExpression); // "1"
  *
- *     Upper upperOfAsterisk = new Upper("*");
+ *     Bounder upperOfAsterisk = new Bounder("*");
  *     System.out.println(upperOfExpression); // "*"
  *     }
  * </pre>
  */
-public class Upper {
+public class Bounder {
 
     private Expression expression;
     private String asterisk;
@@ -31,9 +31,9 @@ public class Upper {
      *     上限を式の{@link Expression}インスタンスで設定します。
      * </p>
      *
-     * @param exp 式<br>別のコンストラクタがオブジェクトを引数に取るため{@code null}不可（{@link #Upper(String)}参照）
+     * @param exp 式<br>別のコンストラクタがオブジェクトを引数に取るため{@code null}不可（{@link #Bounder(String)}参照）
      */
-    public Upper(Expression exp) {
+    public Bounder(Expression exp) {
         expression = exp;
     }
 
@@ -44,9 +44,9 @@ public class Upper {
      *     上限を文字列の{@link Expression}インスタンスで設定します。
      * </p>
      *
-     * @param text 文字列<br>別のコンストラクタがオブジェクトを引数に取るため{@code null}不可（{@link #Upper(Expression)}参照）
+     * @param text 文字列<br>別のコンストラクタがオブジェクトを引数に取るため{@code null}不可（{@link #Bounder(Expression)}参照）
      */
-    public Upper(String text) {
+    public Bounder(String text) {
         if (text.length() <= 0) throw new IllegalArgumentException();
         asterisk = text;
     }
@@ -55,7 +55,7 @@ public class Upper {
      * <p> 式を取得します。 </p>
      *
      * <p>
-     *     式が{@code null}の場合（例えば{@link #Upper(String)}によるインスタンス生成後にこのメソッドを実行した場合）には、{@link IllegalStateException}を投げます。
+     *     式が{@code null}の場合（例えば{@link #Bounder(String)}によるインスタンス生成後にこのメソッドを実行した場合）には、{@link IllegalStateException}を投げます。
      * </p>
      *
      * @return 式<br>{@code null}なし<br>式が{@code null}の場合は{@link IllegalStateException}
@@ -69,9 +69,9 @@ public class Upper {
      * <p> 上限の文字列を取得します。 </p>
      *
      * <p>
-     *     上限のインスタンス生成には必ず{@link #Upper(String)}または{@link #Upper(Expression)}を利用する必要があります。
+     *     上限のインスタンス生成には必ず{@link #Bounder(String)}または{@link #Bounder(Expression)}を利用する必要があります。
      *     2つのコンストラクタはどちらも{@link Object}型を引数に取るため、{@code null}を引数としたコンストラクタはコンパイルエラーとなります。
-     *     また、{@link Expression}は{@code null}不可、{@link #Upper(String)}の引数は空文字不可のため、必ず何か文字列を含んでいます。
+     *     また、{@link Expression}は{@code null}不可、{@link #Bounder(String)}の引数は空文字不可のため、必ず何か文字列を含んでいます。
      * </p>
      *
      * @return 既定値の文字列<br>{@code null}および{@code ""}なし
