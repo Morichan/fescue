@@ -22,7 +22,7 @@ import feature.value.expression.Expression;
 public class Bounder {
 
     private Expression expression;
-    private String asterisk;
+    private String bounderText;
 
     /**
      * <p> 式による上限コンストラクタ </p>
@@ -48,7 +48,7 @@ public class Bounder {
      */
     public Bounder(String text) {
         if (text.length() <= 0) throw new IllegalArgumentException();
-        asterisk = text;
+        bounderText = text;
     }
 
     /**
@@ -80,8 +80,8 @@ public class Bounder {
     public String toString() {
         String text;
 
-        if (asterisk == null) text = expression.toString();
-        else text = asterisk;
+        if (bounderText == null) text = expression.toString();
+        else text = bounderText;
 
         return text;
     }
