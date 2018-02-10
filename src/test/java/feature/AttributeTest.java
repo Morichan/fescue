@@ -1,5 +1,7 @@
 package feature;
 
+import feature.multiplicity.Bounder;
+import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.type.Type;
 import feature.value.DefaultValue;
@@ -196,6 +198,45 @@ class AttributeTest {
         @Test
         void 設定せずに取得しようとすると例外を返す() {
             assertThatThrownBy(() -> obj.getDefaultValue()).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class 多重度に関して {
+
+        @BeforeEach
+        void setup() {
+            obj = new Attribute();
+        }
+
+        @Test
+        void 上限のみの多重度を設定すると多重度を返す() {
+            String expected = "*";
+
+            obj.setMultiplicityRange(new MultiplicityRange(new Bounder("*")));
+            String actual = obj.getMultiplicityRange().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 下限と上限を持つ多重度を設定すると多重度を返す() {
+            String expected = "1..*";
+
+            obj.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(1)), new Bounder("*")));
+            String actual = obj.getMultiplicityRange().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を返す() {
+            assertThatThrownBy(() -> obj.setMultiplicityRange(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 設定せずに取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getMultiplicityRange()).isInstanceOf(IllegalStateException.class);
         }
     }
 }

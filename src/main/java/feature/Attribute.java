@@ -1,5 +1,6 @@
 package feature;
 
+import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.type.Type;
 import feature.value.DefaultValue;
@@ -35,6 +36,7 @@ public class Attribute {
     private Type type;
     private boolean isDerived = false;
     private DefaultValue value;
+    private MultiplicityRange multiplicityRange;
 
     /**
      * <p> 名前を設定します。 </p>
@@ -43,7 +45,7 @@ public class Attribute {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param name 名前 {@code null}不可
+     * @param name 名前<br>{@code null}不可
      */
     public void setName(Name name) {
         checkIllegalArgument(name);
@@ -58,7 +60,7 @@ public class Attribute {
      *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
      * </p>
      *
-     * @return 名前
+     * @return 名前<br>{@code null}なし
      * @throws IllegalStateException 名前が存在しないことを示す要素不所持例外
      */
     public Name getName() throws IllegalStateException {
@@ -73,7 +75,7 @@ public class Attribute {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param visibility 可視性 {@code null}不可
+     * @param visibility 可視性<br>{@code null}不可
      */
     public void setVisibility(Visibility visibility) {
         checkIllegalArgument(visibility);
@@ -88,7 +90,7 @@ public class Attribute {
      *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
      * </p>
      *
-     * @return 可視性
+     * @return 可視性<br>{@code null}なし
      * @throws IllegalStateException 可視性が存在しないことを示す要素不所持例外
      */
     public Visibility getVisibility() throws IllegalStateException {
@@ -103,7 +105,7 @@ public class Attribute {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param type 型 {@code null}不可
+     * @param type 型<br>{@code null}不可
      */
     public void setType(Type type) {
         checkIllegalArgument(type);
@@ -118,7 +120,7 @@ public class Attribute {
      *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
      * </p>
      *
-     * @return 型
+     * @return 型<br>{@code null}なし
      * @throws IllegalStateException 型が存在しないことを示す要素不所持例外
      */
     public Type getType() throws IllegalStateException {
@@ -147,7 +149,7 @@ public class Attribute {
      *     真偽値で設定する場合は{@link #setDerived(boolean)}を実行してください。
      * </p>
      *
-     * @param derivedText 派生の文字列 {@code null}不可
+     * @param derivedText 派生の文字列<br>{@code null}不可
      */
     public void setDerived(String derivedText) {
         if (derivedText == null || ! derivedText.equals("/")) throw new IllegalArgumentException();
@@ -174,7 +176,7 @@ public class Attribute {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param defaultValue 既定値 {@code null}不可
+     * @param defaultValue 既定値<br>{@code null}不可
      */
     public void setDefaultValue(DefaultValue defaultValue) {
         checkIllegalArgument(defaultValue);
@@ -189,12 +191,42 @@ public class Attribute {
      *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
      * </p>
      *
-     * @return 既定値
+     * @return 既定値<br>{@code null}なし
      * @throws IllegalStateException 既定値が存在しないことを示す要素不所持例外
      */
     public DefaultValue getDefaultValue() throws IllegalStateException {
         checkIllegalState(value);
         return value;
+    }
+
+    /**
+     * <p> 多重度を設定します。 </p>
+     *
+     * <p>
+     *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     *
+     * @param multiplicityRange 多重度<br>{@code null}不可
+     */
+    public void setMultiplicityRange(MultiplicityRange multiplicityRange) {
+        checkIllegalArgument(multiplicityRange);
+        this.multiplicityRange = multiplicityRange;
+    }
+
+    /**
+     * <p> 多重度を取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、フィールドとして多重度インスタンスを保持しているかどうかを判定します。
+     *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
+     * </p>
+     *
+     * @return 多重度<br>{@code null}なし
+     * @throws IllegalStateException 多重度が存在しないことを示す要素不所持例外
+     */
+    public MultiplicityRange getMultiplicityRange() throws IllegalStateException {
+        checkIllegalState(multiplicityRange);
+        return multiplicityRange;
     }
 
 
