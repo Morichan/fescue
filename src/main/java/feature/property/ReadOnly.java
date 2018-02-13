@@ -7,7 +7,7 @@ package feature.property;
  *     プロパティにおけるReadOnlyクラスです。
  * </p>
  */
-public class ReadOnly {
+public class ReadOnly implements Property {
 
     /**
      * <p> readOnlyプロパティの文字列を取得します。 </p>
