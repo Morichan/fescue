@@ -30,7 +30,7 @@ public class Redefines implements Property {
     /**
      * <p> redefinesプロパティの文字列を取得します。 </p>
      *
-     * @return {@code "redefines " + }{@link #propertyName}
+     * @return {@code "redefines " + }{@link #propertyName}<br>{@code null}および空文字なし
      */
     @Override
     public String toString() {

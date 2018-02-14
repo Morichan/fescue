@@ -12,7 +12,7 @@ public class Ordered implements Property {
     /**
      * <p> orderedプロパティの文字列を取得します。 </p>
      *
-     * @return {@code "ordered"}
+     * @return {@code "ordered"}<br>{@code null}および空文字なし
      */
     @Override
     public String toString() {

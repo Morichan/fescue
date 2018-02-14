@@ -12,7 +12,7 @@ public class Unique implements Property {
     /**
      * <p> uniqueプロパティの文字列を取得します。 </p>
      *
-     * @return {@code "unique"}
+     * @return {@code "unique"}<br>{@code null}および空文字なし
      */
     @Override
     public String toString() {

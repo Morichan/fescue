@@ -12,7 +12,7 @@ public class ReadOnly implements Property {
     /**
      * <p> readOnlyプロパティの文字列を取得します。 </p>
      *
-     * @return {@code "readOnly"}
+     * @return {@code "readOnly"}<br>{@code null}および空文字なし
      */
     @Override
     public String toString() {

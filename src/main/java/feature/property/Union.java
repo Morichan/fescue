@@ -12,7 +12,7 @@ public class Union implements Property {
     /**
      * <p> unionプロパティの文字列を取得します。 </p>
      *
-     * @return {@code "union"}
+     * @return {@code "union"}<br>{@code null}および空文字なし
      */
     @Override
     public String toString() {

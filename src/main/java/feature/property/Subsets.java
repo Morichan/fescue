@@ -30,7 +30,7 @@ public class Subsets implements Property {
     /**
      * <p> subsetsプロパティの文字列を取得します。 </p>
      *
-     * @return {@code "subsets " + }{@link #propertyName}
+     * @return {@code "subsets " + }{@link #propertyName}<br>{@code null}および空文字なし
      */
     @Override
     public String toString() {
