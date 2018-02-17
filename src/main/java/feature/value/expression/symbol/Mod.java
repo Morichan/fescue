@@ -22,7 +22,7 @@ public class Mod extends Symbol {
     /**
      * <p> 法演算子の文字列を取得します。 </p>
      *
-     * @return "%"
+     * @return {@code "%"}
      */
     @Override
     public String toString() {

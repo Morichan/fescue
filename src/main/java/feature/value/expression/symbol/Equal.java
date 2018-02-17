@@ -22,7 +22,7 @@ public class Equal extends Symbol {
     /**
      * <p> 等号演算子の文字列を取得します。 </p>
      *
-     * @return "=="
+     * @return {@code "=="}
      */
     @Override
     public String toString() {

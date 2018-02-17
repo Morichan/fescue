@@ -28,7 +28,7 @@ public class Dot extends Symbol {
     /**
      * <p> 加算演算子の文字列を取得します。 </p>
      *
-     * @return "."
+     * @return {@code "."}
      */
     @Override
     public String toString() {

@@ -184,7 +184,7 @@ public enum Visibility {
      *     可視性が設定されていない場合は{@link IllegalStateException}を投げます。
      * </p>
      *
-     * @return 可視性の文字列 {@code null}および{@code ""}（空文字）は実装に依存します。
+     * @return 可視性の文字列<br>{@code null}および{@code ""}（空文字）は実装に依存します。
      */
     @Override
     abstract public String toString();

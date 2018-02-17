@@ -45,7 +45,7 @@ abstract public class Symbol {
     /**
      * <p> 演算子の文字列を取得します。 </p>
      *
-     * @return 演算子の文字列 {@code null}および{@code ""}は実装に依存します。
+     * @return 演算子の文字列<br>{@code null}および{@code ""}は実装に依存します。
      */
     @Override
     abstract public String toString();

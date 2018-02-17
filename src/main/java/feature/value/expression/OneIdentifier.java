@@ -52,7 +52,7 @@ public class OneIdentifier implements Expression {
     /**
      * <p> 識別子の文字列を取得します。 </p>
      *
-     * @return 識別子の文字列 {@code null}および{@code ""}なし
+     * @return 識別子の文字列<br>{@code null}および{@code ""}なし
      */
     @Override
     public String toString() {

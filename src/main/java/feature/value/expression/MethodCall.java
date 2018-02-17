@@ -38,8 +38,8 @@ public class MethodCall implements Expression {
      *     また、メソッドの引数に1つでも{@code null}を設定した場合は{@link IllegalArgumentException}を投げます。
      * </p>
      *
-     * @param text 式におけるメソッド名 {@code null}および{@code ""}（空文字）不可
-     * @param expressions メソッド引数（0こ以上の複数を設定可能） {@code null}不可
+     * @param text 式におけるメソッド名<br>{@code null}および{@code ""}（空文字）不可
+     * @param expressions メソッド引数（0こ以上の複数を設定可能）<br>{@code null}不可
      */
     public MethodCall(String text, Expression... expressions) {
         for (Expression exp : expressions)
@@ -53,7 +53,7 @@ public class MethodCall implements Expression {
     /**
      * <p> メソッド呼出しの文字列を取得します。 </p>
      *
-     * @return メソッド呼出しの文字列 {@code null}および{@code ""}なし
+     * @return メソッド呼出しの文字列<br>{@code null}および{@code ""}なし
      */
     @Override
     public String toString() {

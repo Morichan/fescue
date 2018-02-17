@@ -22,7 +22,7 @@ public class NotEqual extends Symbol {
     /**
      * <p> 不等号演算子の文字列を取得します。 </p>
      *
-     * @return "!="
+     * @return {@code "!="}
      */
     @Override
     public String toString() {

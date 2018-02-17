@@ -40,7 +40,7 @@ public class Operation {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param name 名前 {@code null}不可
+     * @param name 名前<br>{@code null}不可
      */
     public void setName(Name name) {
         checkIllegalArgument(name);
@@ -70,7 +70,7 @@ public class Operation {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param visibility 可視性 {@code null}不可
+     * @param visibility 可視性<br>{@code null}不可
      */
     public void setVisibility(Visibility visibility) {
         checkIllegalArgument(visibility);
@@ -100,7 +100,7 @@ public class Operation {
      *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
      * </p>
      *
-     * @param type 戻り値の型 {@code null}不可
+     * @param type 戻り値の型<br>{@code null}不可
      */
     public void setReturnType(Type type) {
         checkIllegalArgument(type);
