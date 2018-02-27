@@ -2,7 +2,6 @@ package feature.parameter;
 
 import feature.name.Name;
 import feature.type.Type;
-import feature.value.expression.Expression;
 
 /**
  * <p> パラメータクラス </p>
