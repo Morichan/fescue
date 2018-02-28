@@ -3,8 +3,13 @@ package feature.parameter;
 import feature.direction.Direction;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
+import feature.property.Property;
 import feature.type.Type;
 import feature.value.DefaultValue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * <p> パラメータクラス </p>
@@ -36,6 +41,7 @@ public class Parameter {
     private Type parameterType;
     private MultiplicityRange multiplicityRange;
     private DefaultValue value;
+    private List<Property> properties = new ArrayList<>();
 
     /**
      * <p> 方向を設定します。 </p>
@@ -185,6 +191,69 @@ public class Parameter {
     public DefaultValue getDefaultValue() throws IllegalStateException {
         checkIllegalState(value);
         return value;
+    }
+
+    /**
+     * <p> プロパティを追加します。 </p>
+     *
+     * <p>
+     *     追加する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     * @param property プロパティ<br>{@code null}不可
+     */
+    public void addProperty(Property property) {
+        checkIllegalArgument(property);
+        properties.add(property);
+    }
+
+    /**
+     * <p> 任意のプロパティを取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、設定値のインデックスをリストとして保持しているかどうかを判定します。
+     *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
+     * </p>
+     *
+     * @param index プロパティリストのインデックス
+     * @return プロパティ<br>{@code null}なし
+     * @throws IllegalStateException プロパティが存在しないことを示す要素不所持例外
+     */
+    public Property getProperty(int index) throws IllegalStateException {
+        try {
+            return properties.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * <p> プロパティのリストを設定します。 </p>
+     *
+     * <p>
+     *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     *
+     * @param properties プロパティのリスト<br>{@code null}不可
+     */
+    public void setProperties(List<Property> properties) {
+        checkIllegalArgument(properties);
+        this.properties = properties;
+    }
+
+    /**
+     * <p> プロパティのリストを取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、プロパティのリストの要素数として1つ以上保持しているかどうかを判定します。
+     *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
+     * </p>
+     *
+     * @return プロパティのリスト<br>{@code null}なし
+     * @throws IllegalStateException プロパティのリストが存在しないことを示す要素不所持例外
+     */
+    public List<Property> getProperties() throws IllegalStateException {
+        if (properties.size() == 0) throw new IllegalStateException();
+        return properties;
     }
 
 
