@@ -247,4 +247,23 @@ class ParameterTest {
             }
         }
     }
+
+    @Nested
+    class 出力文字列について {
+
+        @Nested
+        class 名前のみの場合 {
+
+            @Test
+            void 名前を出力する() {
+                String expected = "name";
+
+                obj = new Parameter();
+                obj.setName(new Name("name"));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+        }
+    }
 }

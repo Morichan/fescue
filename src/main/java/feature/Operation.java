@@ -1,6 +1,7 @@
 package feature;
 
 import feature.name.Name;
+import feature.parameter.Parameter;
 import feature.property.Property;
 import feature.type.Type;
 import feature.visibility.Visibility;
@@ -36,6 +37,7 @@ import java.util.Properties;
 public class Operation {
     private Name name;
     private Visibility visibility;
+    private List<Parameter> parameters = new ArrayList<>();
     private Type returnType;
     private List<Property> properties = new ArrayList<>();
 
@@ -97,6 +99,69 @@ public class Operation {
     public Visibility getVisibility() throws IllegalStateException {
         checkIllegalState(visibility);
         return visibility;
+    }
+
+    /**
+     * <p> パラメータを追加します。 </p>
+     *
+     * <p>
+     *     追加する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     * @param parameter パラメータ<br>{@code null}不可
+     */
+    public void addParameter(Parameter parameter) {
+        checkIllegalArgument(parameter);
+        parameters.add(parameter);
+    }
+
+    /**
+     * <p> 任意のパラメータを取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、設定値のインデックスをリストとして保持しているかどうかを判定します。
+     *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
+     * </p>
+     *
+     * @param index パラメータリストのインデックス
+     * @return パラメータ<br>{@code null}なし
+     * @throws IllegalStateException パラメータが存在しないことを示す要素不所持例外
+     */
+    public Parameter getParameter(int index) throws IllegalStateException {
+        try {
+            return parameters.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * <p> パラメータのリストを設定します。 </p>
+     *
+     * <p>
+     *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     *
+     * @param parameters パラメータのリスト<br>{@code null}不可
+     */
+    public void setParameters(List<Parameter> parameters) {
+        checkIllegalArgument(parameters);
+        this.parameters = parameters;
+    }
+
+    /**
+     * <p> パラメータのリストを取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、パラメータのリストの要素数として1つ以上保持しているかどうかを判定します。
+     *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
+     * </p>
+     *
+     * @return パラメータのリスト<br>{@code null}なし
+     * @throws IllegalStateException パラメータのリストが存在しないことを示す要素不所持例外
+     */
+    public List<Parameter> getParameters() throws IllegalStateException {
+        if (parameters.size() == 0) throw new IllegalStateException();
+        return parameters;
     }
 
     /**

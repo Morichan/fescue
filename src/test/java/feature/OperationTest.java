@@ -1,6 +1,7 @@
 package feature;
 
 import feature.name.Name;
+import feature.parameter.Parameter;
 import feature.property.Property;
 import feature.property.ReadOnly;
 import feature.property.Subsets;
@@ -8,6 +9,7 @@ import feature.type.Type;
 import feature.value.expression.OneIdentifier;
 import feature.visibility.Visibility;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +89,88 @@ class OperationTest {
         @Test
         void 設定せずに取得しようとすると例外を返す() {
             assertThatThrownBy(() -> obj.getVisibility()).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class パラメータについて {
+        Parameter parameter1;
+        Parameter parameter2;
+
+        @Nested
+        class 単数の場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Operation();
+                parameter1 = new Parameter();
+                parameter2 = new Parameter();
+                parameter1.setName(new Name("arg1"));
+                parameter2.setName(new Name("arg2"));
+            }
+
+            @Test
+            void 追加するとパラメータを返す() {
+                String expected = "arg1";
+
+                obj.addParameter(parameter1);
+                String actual = obj.getParameter(0).toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 複数追加するとパラメータを返す() {
+                String expected = "arg2";
+
+                obj.addParameter(parameter1);
+                obj.addParameter(parameter2);
+                String actual = obj.getParameter(1).toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void nullを設定すると例外を投げる() {
+                assertThatThrownBy(() -> obj.addParameter(null)).isInstanceOf(IllegalArgumentException.class);
+            }
+
+            @Test
+            void リスト以上のインデックスを設定して取得しようとすると例外を投げる() {
+                assertThatThrownBy(() -> obj.getParameter(1)).isInstanceOf(IllegalStateException.class);
+            }
+        }
+
+        @Nested
+        class リストの場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Operation();
+                parameter1 = new Parameter();
+                parameter2 = new Parameter();
+                parameter1.setName(new Name("arg1"));
+                parameter2.setName(new Name("arg2"));
+            }
+
+            @Test
+            void 複数同時に追加するとプロパティのリストを返す() {
+
+                obj.setParameters(Arrays.asList(parameter1, parameter2));
+                List<Parameter> actual = obj.getParameters();
+
+                assertThat(actual).containsExactly(parameter1, parameter2);
+            }
+
+            @Test
+            void nullを設定すると例外を投げる() {
+                assertThatThrownBy(() -> obj.setParameters(null)).isInstanceOf(IllegalArgumentException.class);
+            }
+
+            @Test
+            void リストが空の場合に取得しようとすると例外を投げる() {
+                assertThatThrownBy(() -> obj.getParameters()).isInstanceOf(IllegalStateException.class);
+            }
         }
     }
 

@@ -256,6 +256,11 @@ public class Parameter {
         return properties;
     }
 
+    @Override
+    public String toString() {
+        return parameterName.toString();
+    }
+
 
 
     /**
