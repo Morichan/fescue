@@ -254,6 +254,11 @@ class ParameterTest {
 
             assertThat(actual).isEqualTo(expected);
         }
+
+        @Test
+        void nullを設定すると例外を投げる() {
+            assertThatThrownBy(() -> obj = new Parameter(null)).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     @Nested

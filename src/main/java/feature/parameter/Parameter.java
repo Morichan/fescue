@@ -282,6 +282,10 @@ public class Parameter {
     /**
      * <p> プロパティの文字列を取得します。 </p>
      *
+     * <p>
+     *     文字列はUML2.0仕様書に準拠します。
+     * </p>
+     *
      * @return プロパティの文字列<br>{@code null}および{@code ""}なし
      */
     @Override
@@ -320,7 +324,7 @@ public class Parameter {
             sb.append("}");
         }
 
-        return new String(sb);
+        return sb.toString();
     }
 
     /**

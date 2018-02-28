@@ -9,6 +9,7 @@ import feature.visibility.Visibility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * <p> 属性クラス </p>
@@ -42,6 +43,21 @@ public class Attribute {
     private DefaultValue value;
     private MultiplicityRange multiplicityRange;
     private List<Property> properties = new ArrayList<>();
+
+    /**
+     * <p> 名前設定コンストラクタ </p>
+     *
+     * <p>
+     *     名前を最初に設定します。
+     *     設定時に{@code null}判定と空文字判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     *
+     * @param name プロパティ名<br>{@code null}および{@code ""}（空文字）不可
+     */
+    public Attribute(Name name) {
+        checkIllegalArgument(name);
+        this.name = name;
+    }
 
     /**
      * <p> 名前を設定します。 </p>
@@ -295,6 +311,58 @@ public class Attribute {
     public List<Property> getProperties() throws IllegalStateException {
         if (properties.size() == 0) throw new IllegalStateException();
         return properties;
+    }
+
+    /**
+     * <p> 属性の文字列を取得します。 </p>
+     *
+     * <p>
+     *     文字列はUML2.0仕様書に準拠します。
+     * </p>
+     *
+     * @return 属性の文字列<br>{@code null}および{@code ""}なし
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        if (visibility != null) {
+            sb.append(visibility);
+            sb.append(" ");
+        }
+
+        if (isDerived) {
+            sb.append("/");
+        }
+
+        sb.append(name);
+
+        if (type != null) {
+            sb.append(" : ");
+            sb.append(type);
+        }
+
+        if (multiplicityRange != null) {
+            sb.append(" [");
+            sb.append(multiplicityRange);
+            sb.append("]");
+        }
+
+        if (value != null) {
+            sb.append(" = ");
+            sb.append(value);
+        }
+
+        if (properties.size() > 0) {
+            StringJoiner sj = new StringJoiner(", ");
+            for (Property prop : properties) sj.add(prop.toString());
+
+            sb.append(" {");
+            sb.append(sj);
+            sb.append("}");
+        }
+
+        return sb.toString();
     }
 
 

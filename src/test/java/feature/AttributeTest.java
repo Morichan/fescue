@@ -1,13 +1,14 @@
 package feature;
 
+import feature.direction.Direction;
+import feature.direction.In;
 import feature.multiplicity.Bounder;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
-import feature.property.Property;
-import feature.property.ReadOnly;
-import feature.property.Subsets;
+import feature.property.*;
 import feature.type.Type;
 import feature.value.DefaultValue;
+import feature.value.expression.Binomial;
 import feature.value.expression.OneIdentifier;
 import feature.visibility.Visibility;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ class AttributeTest {
 
         @BeforeEach
         void setup() {
-            obj = new Attribute();
+            obj = new Attribute(new Name("name"));
         }
 
         @Test
@@ -48,11 +49,6 @@ class AttributeTest {
         void 名前にnullを設定すると例外を返す() {
             assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalArgumentException.class);
         }
-
-        @Test
-        void 名前を設定せずに取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getName()).isInstanceOf(IllegalStateException.class);
-        }
     }
 
     @Nested
@@ -60,7 +56,7 @@ class AttributeTest {
 
         @BeforeEach
         void setup() {
-            obj = new Attribute();
+            obj = new Attribute(new Name("name"));
         }
 
         @Test
@@ -99,7 +95,7 @@ class AttributeTest {
 
         @BeforeEach
         void setup() {
-            obj = new Attribute();
+            obj = new Attribute(new Name("name"));
         }
 
         @Test
@@ -153,7 +149,7 @@ class AttributeTest {
 
         @BeforeEach
         void setup() {
-            obj = new Attribute();
+            obj = new Attribute(new Name("name"));
         }
 
         @Test
@@ -182,7 +178,7 @@ class AttributeTest {
 
         @BeforeEach
         void setup() {
-            obj = new Attribute();
+            obj = new Attribute(new Name("name"));
         }
 
         @Test
@@ -211,7 +207,7 @@ class AttributeTest {
 
         @BeforeEach
         void setup() {
-            obj = new Attribute();
+            obj = new Attribute(new Name("name"));
         }
 
         @Test
@@ -255,7 +251,7 @@ class AttributeTest {
 
             @BeforeEach
             void setup() {
-                obj = new Attribute();
+                obj = new Attribute(new Name("name"));
                 property1 = new ReadOnly();
                 property2 = new Subsets(new OneIdentifier("instance"));
             }
@@ -297,7 +293,7 @@ class AttributeTest {
 
             @BeforeEach
             void setup() {
-                obj = new Attribute();
+                obj = new Attribute(new Name("name"));
                 property1 = new ReadOnly();
                 property2 = new Subsets(new OneIdentifier("instance"));
             }
@@ -320,6 +316,130 @@ class AttributeTest {
             void リストが空の場合に取得しようとすると例外を投げる() {
                 assertThatThrownBy(() -> obj.getProperties()).isInstanceOf(IllegalStateException.class);
             }
+        }
+    }
+
+    @Nested
+    class 名前設定コンストラクタについて {
+
+        @Test
+        void 設定すると名前を返す() {
+            String expected = "name";
+
+            obj = new Attribute(new Name("name"));
+            String actual = obj.getName().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を投げる() {
+            assertThatThrownBy(() -> obj = new Attribute(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    class 出力文字列について {
+
+        @Test
+        void 名前を出力する() {
+            String expected = "name";
+
+            obj = new Attribute(new Name("name"));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と可視性を出力する() {
+            String expected = "# name";
+
+            obj = new Attribute(new Name("name"));
+            obj.setVisibility(Visibility.Protected);
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と派生を出力する() {
+            String expected = "/name";
+
+            obj = new Attribute(new Name("name"));
+            obj.setDerived(true);
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と型を出力する() {
+            String expected = "name : char";
+
+            obj = new Attribute(new Name("name"));
+            obj.setType(new Type("char"));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と多重度を出力する() {
+            String expected = "name [*]";
+
+            obj = new Attribute(new Name("name"));
+            obj.setMultiplicityRange(new MultiplicityRange(new Bounder("*")));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と既定値を出力する() {
+            String expected = "name = \"string text\"";
+
+            obj = new Attribute(new Name("name"));
+            obj.setDefaultValue(new DefaultValue(new OneIdentifier("\"string text\"")));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前とプロパティ1つを出力する() {
+            String expected = "name {union}";
+
+            obj = new Attribute(new Name("name"));
+            obj.addProperty(new Union());
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 可視性と派生と名前と型と多重度と既定値とプロパティ2つを出力する() {
+            String expected = "- /numberId : int [0..*] = id + '001' {readOnly, redefines id}";
+
+            Name name = new Name("numberId");
+            Visibility visibility = Visibility.Private;
+            String derived = "/";
+            Type type = new Type("int");
+            MultiplicityRange range = new MultiplicityRange(new Bounder(new OneIdentifier(0)), new Bounder("*"));
+            DefaultValue value = new DefaultValue(
+                    new Binomial("+", new OneIdentifier("id"), new OneIdentifier("'001'")));
+            List<Property> properties = Arrays.asList(new ReadOnly(), new Redefines(new OneIdentifier("id")));
+
+            obj = new Attribute(name);
+            obj.setVisibility(visibility);
+            obj.setDerived(derived);
+            obj.setType(type);
+            obj.setMultiplicityRange(range);
+            obj.setDefaultValue(value);
+            obj.setProperties(properties);
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
         }
     }
 }
