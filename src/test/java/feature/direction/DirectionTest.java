@@ -59,6 +59,16 @@ class DirectionTest {
 
             assertThat(actual).isFalse();
         }
+
+        @Test
+        void コンストラクタで出力する設定を行う場合は入力文字列を返す() {
+            String expected = "in";
+
+            obj = new In(true);
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
     }
 
     @Nested

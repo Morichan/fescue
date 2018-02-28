@@ -12,6 +12,24 @@ public class In implements Direction {
     private boolean isOuted = false;
 
     /**
+     * デフォルトコンストラクタ
+     */
+    public In() {}
+
+    /**
+     * <p> 入力方向の文字列を出力するかどうかの真偽値を設定するコンストラクタ </p>
+     *
+     * <p>
+     *     {@link #setOuted(boolean)}を呼出しています。
+     * </p>
+     *
+     * @param isOuted 入力方向の文字列を出力する場合は真である真偽値
+     */
+    public In(boolean isOuted) {
+        setOuted(isOuted);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
