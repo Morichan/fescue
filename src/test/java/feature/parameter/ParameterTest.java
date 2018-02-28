@@ -1,7 +1,11 @@
 package feature.parameter;
 
+import feature.multiplicity.Bounder;
+import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.type.Type;
+import feature.value.DefaultValue;
+import feature.value.expression.OneIdentifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -69,6 +73,64 @@ class ParameterTest {
         @Test
         void 設定前に取得しようとすると例外を返す() {
             assertThatThrownBy(() -> obj.getType()).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class 多重度について {
+
+        @BeforeEach
+        void setup() {
+            obj = new Parameter();
+        }
+
+        @Test
+        void 設定すると型を返す() {
+            String expected = "*";
+
+            obj.setMultiplicityRange(new MultiplicityRange(new Bounder("*")));
+            String actual = obj.getMultiplicityRange().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を投げる() {
+            assertThatThrownBy(() -> obj.setMultiplicityRange(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 設定前に取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getMultiplicityRange()).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class 既定値について {
+
+        @BeforeEach
+        void setup() {
+            obj = new Parameter();
+        }
+
+        @Test
+        void 設定すると型を返す() {
+            String expected = "10";
+
+            obj.setDefaultValue(new DefaultValue(new OneIdentifier(10)));
+            String actual = obj.getDefaultValue().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を投げる() {
+            assertThatThrownBy(() -> obj.setDefaultValue(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 設定前に取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getDefaultValue()).isInstanceOf(IllegalStateException.class);
         }
     }
 }
