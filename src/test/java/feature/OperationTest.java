@@ -1,11 +1,18 @@
 package feature;
 
 import feature.name.Name;
+import feature.property.Property;
+import feature.property.ReadOnly;
+import feature.property.Subsets;
 import feature.type.Type;
+import feature.value.expression.OneIdentifier;
 import feature.visibility.Visibility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -109,6 +116,84 @@ class OperationTest {
         @Test
         void 設定せずに取得しようとすると例外を返す() {
             assertThatThrownBy(() -> obj.getReturnType()).isInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    class プロパティについて {
+        Property property1;
+        Property property2;
+
+        @Nested
+        class 単数の場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Operation();
+                property1 = new ReadOnly();
+                property2 = new Subsets(new OneIdentifier("instance"));
+            }
+
+            @Test
+            void 追加するとプロパティを返す() {
+                String expected = "readOnly";
+
+                obj.addProperty(property1);
+                String actual = obj.getProperty(0).toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 複数追加するとプロパティを返す() {
+                String expected = "subsets instance";
+
+                obj.addProperty(property1);
+                obj.addProperty(property2);
+                String actual = obj.getProperty(1).toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void nullを設定すると例外を投げる() {
+                assertThatThrownBy(() -> obj.addProperty(null)).isInstanceOf(IllegalArgumentException.class);
+            }
+
+            @Test
+            void リスト以上のインデックスを設定して取得しようとすると例外を投げる() {
+                assertThatThrownBy(() -> obj.getProperty(1)).isInstanceOf(IllegalStateException.class);
+            }
+        }
+
+        @Nested
+        class リストの場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new Operation();
+                property1 = new ReadOnly();
+                property2 = new Subsets(new OneIdentifier("instance"));
+            }
+
+            @Test
+            void 複数同時に追加するとプロパティのリストを返す() {
+
+                obj.setProperties(Arrays.asList(property1, property2));
+                List<Property> actual = obj.getProperties();
+
+                assertThat(actual).containsExactly(property1, property2);
+            }
+
+            @Test
+            void nullを設定すると例外を投げる() {
+                assertThatThrownBy(() -> obj.setProperties(null)).isInstanceOf(IllegalArgumentException.class);
+            }
+
+            @Test
+            void リストが空の場合に取得しようとすると例外を投げる() {
+                assertThatThrownBy(() -> obj.getProperties()).isInstanceOf(IllegalStateException.class);
+            }
         }
     }
 }
