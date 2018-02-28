@@ -10,14 +10,18 @@ package feature.direction;
 public interface Direction {
 
     /**
-     * 方向の文字列を出力する設定を行います。
+     * <p> 方向の文字列を出力する場合は真を返す真偽値判定を行います。 </p>
+     *
+     * @return 方向の文字列を出力する場合は真を返す真偽値
      */
-    void isOuted();
+    boolean isOuted();
 
     /**
-     * 方向の文字列を出力しない設定を行います。
+     * <p> 方向の文字列を出力かどうかの真偽値を設定します。 </p>
+     *
+     * @param isOuted 方向の文字列を出力する場合は真である真偽値
      */
-    void isNotOuted();
+    void setOuted(boolean isOuted);
 
     /**
      * <p> 方向の文字列を取得します。 </p>

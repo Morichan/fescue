@@ -32,7 +32,7 @@ class DirectionTest {
         void 出力する際は入力文字列を返す() {
             String expected = "in";
 
-            obj.isOuted();
+            obj.setOuted(true);
             String actual = obj.toString();
 
             assertThat(actual).isEqualTo(expected);
@@ -41,10 +41,23 @@ class DirectionTest {
         @Test
         void 出力しない際は空文字を返す() {
 
-            obj.isNotOuted();
+            obj.setOuted(false);
             String actual = obj.toString();
 
             assertThat(actual).isEmpty();
+        }
+
+        @Test
+        void 出力するかどうかは既定値として偽を返す() {
+            assertThat(obj.isOuted()).isFalse();
+        }
+
+        @Test
+        void 出力するかどうかを設定するとその設定値を返す() {
+            obj.setOuted(false);
+            boolean actual = obj.isOuted();
+
+            assertThat(actual).isFalse();
         }
     }
 
@@ -69,7 +82,7 @@ class DirectionTest {
         void 出力する際は出力文字列を返す() {
             String expected = "out";
 
-            obj.isOuted();
+            obj.setOuted(true);
             String actual = obj.toString();
 
             assertThat(actual).isEqualTo(expected);
@@ -77,7 +90,12 @@ class DirectionTest {
 
         @Test
         void 出力しない際は例外を投げる() {
-            assertThatThrownBy(() -> obj.isNotOuted()).isInstanceOf(IllegalCallerException.class);
+            assertThatThrownBy(() -> obj.setOuted(false)).isInstanceOf(IllegalCallerException.class);
+        }
+
+        @Test
+        void 出力するかどうかは既定値として真を返す() {
+            assertThat(obj.isOuted()).isTrue();
         }
     }
 
@@ -102,7 +120,7 @@ class DirectionTest {
         void 出力する際は入出力文字列を返す() {
             String expected = "inout";
 
-            obj.isOuted();
+            obj.setOuted(true);
             String actual = obj.toString();
 
             assertThat(actual).isEqualTo(expected);
@@ -110,7 +128,12 @@ class DirectionTest {
 
         @Test
         void 出力しない際は例外を投げる() {
-            assertThatThrownBy(() -> obj.isNotOuted()).isInstanceOf(IllegalCallerException.class);
+            assertThatThrownBy(() -> obj.setOuted(false)).isInstanceOf(IllegalCallerException.class);
+        }
+
+        @Test
+        void 出力するかどうかは既定値として真を返す() {
+            assertThat(obj.isOuted()).isTrue();
         }
     }
 
@@ -135,7 +158,7 @@ class DirectionTest {
         void 出力する際は戻り値文字列を返す() {
             String expected = "return";
 
-            obj.isOuted();
+            obj.setOuted(true);
             String actual = obj.toString();
 
             assertThat(actual).isEqualTo(expected);
@@ -143,7 +166,12 @@ class DirectionTest {
 
         @Test
         void 出力しない際は例外を投げる() {
-            assertThatThrownBy(() -> obj.isNotOuted()).isInstanceOf(IllegalCallerException.class);
+            assertThatThrownBy(() -> obj.setOuted(false)).isInstanceOf(IllegalCallerException.class);
+        }
+
+        @Test
+        void 出力するかどうかは既定値として真を返す() {
+            assertThat(obj.isOuted()).isTrue();
         }
     }
 }

@@ -103,10 +103,8 @@ class OperationTest {
             @BeforeEach
             void setup() {
                 obj = new Operation();
-                parameter1 = new Parameter();
-                parameter2 = new Parameter();
-                parameter1.setName(new Name("arg1"));
-                parameter2.setName(new Name("arg2"));
+                parameter1 = new Parameter(new Name("arg1"));
+                parameter2 = new Parameter(new Name("arg2"));
             }
 
             @Test
@@ -147,10 +145,8 @@ class OperationTest {
             @BeforeEach
             void setup() {
                 obj = new Operation();
-                parameter1 = new Parameter();
-                parameter2 = new Parameter();
-                parameter1.setName(new Name("arg1"));
-                parameter2.setName(new Name("arg2"));
+                parameter1 = new Parameter(new Name("arg1"));
+                parameter2 = new Parameter(new Name("arg2"));
             }
 
             @Test

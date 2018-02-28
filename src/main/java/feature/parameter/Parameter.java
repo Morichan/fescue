@@ -1,6 +1,7 @@
 package feature.parameter;
 
 import feature.direction.Direction;
+import feature.direction.In;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.property.Property;
@@ -10,6 +11,7 @@ import feature.value.DefaultValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 /**
  * <p> パラメータクラス </p>
@@ -42,6 +44,27 @@ public class Parameter {
     private MultiplicityRange multiplicityRange;
     private DefaultValue value;
     private List<Property> properties = new ArrayList<>();
+
+    /**
+     * <p> プロパティ名設定コンストラクタ </p>
+     *
+     * <p>
+     *     プロパティ名を最初に設定します。
+     *     設定時に{@code null}判定と空文字判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     *
+     * <p>
+     *     同時に、方向も初期化します。
+     *     初期値は{@link Direction#isOuted()}が偽である{@link feature.direction.In}インスタンスです。
+     * </p>
+     *
+     * @param name プロパティ名<br>{@code null}および{@code ""}（空文字）不可
+     */
+    public Parameter(Name name) {
+        checkIllegalArgument(name);
+        parameterName = name;
+        direction = new In();
+    }
 
     /**
      * <p> 方向を設定します。 </p>
@@ -256,12 +279,49 @@ public class Parameter {
         return properties;
     }
 
+    /**
+     * <p> プロパティの文字列を取得します。 </p>
+     *
+     * @return プロパティの文字列<br>{@code null}および{@code ""}なし
+     */
     @Override
     public String toString() {
-        return parameterName.toString();
+        StringBuilder sb = new StringBuilder();
+
+        if (direction.isOuted()) {
+            sb.append(direction);
+            sb.append(" ");
+        }
+
+        sb.append(parameterName);
+
+        if (parameterType != null) {
+            sb.append(" : ");
+            sb.append(parameterType);
+        }
+
+        if (multiplicityRange != null) {
+            sb.append(" [");
+            sb.append(multiplicityRange);
+            sb.append("]");
+        }
+
+        if (value != null) {
+            sb.append(" = ");
+            sb.append(value);
+        }
+
+        if (properties.size() > 0) {
+            StringJoiner sj = new StringJoiner(", ");
+            for (Property prop : properties) sj.add(prop.toString());
+
+            sb.append(" {");
+            sb.append(sj);
+            sb.append("}");
+        }
+
+        return new String(sb);
     }
-
-
 
     /**
      * <p> 外部から入力するオブジェクトの{@code null}判定を行います。 </p>

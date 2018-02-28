@@ -1,5 +1,7 @@
 package feature.parameter;
 
+import feature.direction.Direction;
+import feature.direction.In;
 import feature.direction.InOut;
 import feature.multiplicity.Bounder;
 import feature.multiplicity.MultiplicityRange;
@@ -9,7 +11,9 @@ import feature.property.ReadOnly;
 import feature.property.Subsets;
 import feature.type.Type;
 import feature.value.DefaultValue;
+import feature.value.expression.Binomial;
 import feature.value.expression.OneIdentifier;
+import feature.value.expression.symbol.Multi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,7 +34,7 @@ class ParameterTest {
 
         @BeforeEach
         void setup() {
-            obj = new Parameter();
+            obj = new Parameter(new Name("name"));
         }
 
         @Test
@@ -47,11 +51,6 @@ class ParameterTest {
         void nullを設定すると例外を投げる() {
             assertThatThrownBy(() -> obj.setDirection(null)).isInstanceOf(IllegalArgumentException.class);
         }
-
-        @Test
-        void 設定前に取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getDirection()).isInstanceOf(IllegalStateException.class);
-        }
     }
 
     @Nested
@@ -59,7 +58,7 @@ class ParameterTest {
 
         @BeforeEach
         void setup() {
-            obj = new Parameter();
+            obj = new Parameter(new Name("name"));
         }
 
         @Test
@@ -76,11 +75,6 @@ class ParameterTest {
         void nullを設定すると例外を投げる() {
             assertThatThrownBy(() -> obj.setName(null)).isInstanceOf(IllegalArgumentException.class);
         }
-
-        @Test
-        void 設定前に取得しようとすると例外を返す() {
-            assertThatThrownBy(() -> obj.getName()).isInstanceOf(IllegalStateException.class);
-        }
     }
 
     @Nested
@@ -88,7 +82,7 @@ class ParameterTest {
 
         @BeforeEach
         void setup() {
-            obj = new Parameter();
+            obj = new Parameter(new Name("name"));
         }
 
         @Test
@@ -117,7 +111,7 @@ class ParameterTest {
 
         @BeforeEach
         void setup() {
-            obj = new Parameter();
+            obj = new Parameter(new Name("name"));
         }
 
         @Test
@@ -146,7 +140,7 @@ class ParameterTest {
 
         @BeforeEach
         void setup() {
-            obj = new Parameter();
+            obj = new Parameter(new Name("name"));
         }
 
         @Test
@@ -180,7 +174,7 @@ class ParameterTest {
 
             @BeforeEach
             void setup() {
-                obj = new Parameter();
+                obj = new Parameter(new Name("name"));
                 property1 = new ReadOnly();
                 property2 = new Subsets(new OneIdentifier("instance"));
             }
@@ -222,7 +216,7 @@ class ParameterTest {
 
             @BeforeEach
             void setup() {
-                obj = new Parameter();
+                obj = new Parameter(new Name("name"));
                 property1 = new ReadOnly();
                 property2 = new Subsets(new OneIdentifier("instance"));
             }
@@ -249,21 +243,110 @@ class ParameterTest {
     }
 
     @Nested
+    class プロパティ名設定コンストラクタについて {
+
+        @Test
+        void 設定するとプロパティ名を返す() {
+            String expected = "name";
+
+            obj = new Parameter(new Name("name"));
+            String actual = obj.getName().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+    }
+
+    @Nested
     class 出力文字列について {
+        @Test
+        void 名前を出力する() {
+            String expected = "name";
 
-        @Nested
-        class 名前のみの場合 {
+            obj = new Parameter(new Name("name"));
+            String actual = obj.toString();
 
-            @Test
-            void 名前を出力する() {
-                String expected = "name";
+            assertThat(actual).isEqualTo(expected);
+        }
 
-                obj = new Parameter();
-                obj.setName(new Name("name"));
-                String actual = obj.toString();
+        @Test
+        void 名前と型を出力する() {
+            String expected = "name : char";
 
-                assertThat(actual).isEqualTo(expected);
-            }
+            obj = new Parameter(new Name("name"));
+            obj.setType(new Type("char"));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と方向を出力する() {
+            String expected = "inout name";
+
+            obj = new Parameter(new Name("name"));
+            obj.setDirection(new InOut());
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と多重度を出力する() {
+            String expected = "name [0..1]";
+
+            obj = new Parameter(new Name("name"));
+            obj.setMultiplicityRange(new MultiplicityRange(
+                    new Bounder(new OneIdentifier(0)),
+                    new Bounder(new OneIdentifier(1))));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前と既定値を出力する() {
+            String expected = "name = 'name text'";
+
+            obj = new Parameter(new Name("name"));
+            obj.setDefaultValue(new DefaultValue(new OneIdentifier("'name text'")));
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 名前とプロパティ1つを出力する() {
+            String expected = "name {readOnly}";
+
+            obj = new Parameter(new Name("name"));
+            obj.addProperty(new ReadOnly());
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void 方向と名前と型と多重度と既定値とプロパティ2つを出力する() {
+            String expected = "in number : int [*] = 10 {readOnly, subsets super.number}";
+
+            Name name = new Name("number");
+            Direction in = new In();
+            in.setOuted(true);
+            Type type = new Type("int");
+            MultiplicityRange range = new MultiplicityRange(new Bounder("*"));
+            DefaultValue value = new DefaultValue(new OneIdentifier(10));
+            List<Property> properties = Arrays.asList(new ReadOnly(), new Subsets(
+                    new Binomial(".", new OneIdentifier("super"), new OneIdentifier("number"))));
+
+            obj = new Parameter(name);
+            obj.setDirection(in);
+            obj.setType(type);
+            obj.setMultiplicityRange(range);
+            obj.setDefaultValue(value);
+            obj.setProperties(properties);
+            String actual = obj.toString();
+
+            assertThat(actual).isEqualTo(expected);
         }
     }
 }

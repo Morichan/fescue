@@ -12,19 +12,19 @@ public class In implements Direction {
     private boolean isOuted = false;
 
     /**
-     * 入力方向の文字列を出力する設定を行います。
+     * {@inheritDoc}
      */
     @Override
-    public void isOuted() {
-        isOuted = true;
+    public boolean isOuted() {
+        return isOuted;
     }
 
     /**
-     * 入力方向の文字列を出力しない設定を行います。
+     * {@inheritDoc}
      */
     @Override
-    public void isNotOuted() {
-        isOuted = false;
+    public void setOuted(boolean isOuted) {
+        this.isOuted = isOuted;
     }
 
     /**

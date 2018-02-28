@@ -9,22 +9,32 @@ package feature.direction;
  */
 public class Return implements Direction {
 
-    private boolean isOuted = true;
-
     /**
-     * 戻り値方向の文字列を出力する設定を行います。
+     * <p> 戻り値方向の文字列を出力する設定を行います。 </p>
+     *
+     * <p>
+     *     変更はできないため、常に真を返します。
+     * </p>
+     *
+     * @return {@code true}
      */
     @Override
-    public void isOuted() {
-        isOuted = true;
+    public boolean isOuted() {
+        return true;
     }
 
     /**
-     * 戻り値方向の文字列を出力しない設定は行えないため、例外を投げます。
+     * {@inheritDoc}
+     *
+     * <p>
+     *     @deprecated
+     *     戻り値方向の文字列を出力しない設定は行えないため、{@code false}を設定した場合は例外を投げます。
+     * </p>
      */
+    @Deprecated
     @Override
-    public void isNotOuted() {
-        throw new IllegalCallerException();
+    public void setOuted(boolean isOuted) {
+        if (! isOuted) throw new IllegalCallerException();
     }
 
     /**
