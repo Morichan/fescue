@@ -1,5 +1,6 @@
 package feature.parameter;
 
+import feature.direction.Direction;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.type.Type;
@@ -30,10 +31,41 @@ import feature.value.DefaultValue;
  * </pre>
  */
 public class Parameter {
+    private Direction direction;
     private Name parameterName;
     private Type parameterType;
     private MultiplicityRange multiplicityRange;
     private DefaultValue value;
+
+    /**
+     * <p> 方向を設定します。 </p>
+     *
+     * <p>
+     *     設定する前に{@code null}判定を行い、{@code null}の場合は{@link IllegalArgumentException}を投げます（{@link #checkIllegalArgument(Object)}参照）。
+     * </p>
+     *
+     * @param direction 方向<br>{@code null}不可
+     */
+    public void setDirection(Direction direction) {
+        checkIllegalArgument(direction);
+        this.direction = direction;
+    }
+
+    /**
+     * <p> 方向を取得します。 </p>
+     *
+     * <p>
+     *     取得する前に、フィールドとして方向インスタンスを保持しているかどうかを判定します。
+     *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
+     * </p>
+     *
+     * @return 方向<br>{@code null}なし
+     * @throws IllegalStateException 方向が存在しないことを示す要素不所持例外
+     */
+    public Direction getDirection() throws IllegalStateException {
+        checkIllegalState(direction);
+        return direction;
+    }
 
     /**
      * <p> パラメータ名を設定します。 </p>
@@ -53,7 +85,7 @@ public class Parameter {
      * <p> パラメータ名を取得します。 </p>
      *
      * <p>
-     *     取得する前に、フィールドとして名前インスタンスを保持しているかどうかを判定します。
+     *     取得する前に、フィールドとしてパラメータ名インスタンスを保持しているかどうかを判定します。
      *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
      * </p>
      *
@@ -83,7 +115,7 @@ public class Parameter {
      * <p> パラメータの型を取得します。 </p>
      *
      * <p>
-     *     取得する前に、フィールドとして型インスタンスを保持しているかどうかを判定します。
+     *     取得する前に、フィールドとしてパラメータの型インスタンスを保持しているかどうかを判定します。
      *     保持していない場合は{@link IllegalStateException}を投げます（{@link #checkIllegalState(Object)}参照）。
      * </p>
      *

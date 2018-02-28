@@ -1,5 +1,6 @@
 package feature.parameter;
 
+import feature.direction.InOut;
 import feature.multiplicity.Bounder;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
@@ -17,6 +18,35 @@ import static org.junit.jupiter.api.Assertions.*;
 class ParameterTest {
 
     Parameter obj;
+
+    @Nested
+    class 方向について {
+
+        @BeforeEach
+        void setup() {
+            obj = new Parameter();
+        }
+
+        @Test
+        void 設定すると方向を返す() {
+            String expected = "inout";
+
+            obj.setDirection(new InOut());
+            String actual = obj.getDirection().toString();
+
+            assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        void nullを設定すると例外を投げる() {
+            assertThatThrownBy(() -> obj.setDirection(null)).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 設定前に取得しようとすると例外を返す() {
+            assertThatThrownBy(() -> obj.getDirection()).isInstanceOf(IllegalStateException.class);
+        }
+    }
 
     @Nested
     class パラメータ名について {
