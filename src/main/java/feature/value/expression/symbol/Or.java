@@ -69,7 +69,7 @@ public class Or extends Symbol {
      *     もし{@link #is(String)}を実行せずにこのメソッドを呼出した場合は、{@link #symbolStrings}の0番目の要素を返します。
      * </p>
      *
-     * @return 演算子の文字列 {@code null}および{@code ""}（空文字）無し
+     * @return 演算子の文字列<br>{@code null}および{@code ""}（空文字）無し
      */
     @Override
     public String toString() {

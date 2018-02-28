@@ -22,7 +22,7 @@ public class Divide extends Symbol {
     /**
      * <p> 除算演算子の文字列を取得します。 </p>
      *
-     * @return "/"
+     * @return {@code "/"}
      */
     @Override
     public String toString() {

@@ -39,7 +39,7 @@ public class Name {
      *     設定時に{@code null}判定と空文字判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link #checkStateBy(String)}参照）。
      * </p>
      *
-     * @param text 名前の文字列 {@code null}および{@code ""}（空文字）不可
+     * @param text 名前の文字列<br>{@code null}および{@code ""}（空文字）不可
      */
     public Name(String text) {
         checkStateBy(text);
@@ -56,7 +56,7 @@ public class Name {
      *     設定時に{@code null}判定と空文字判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link #checkStateBy(String)}参照）。
      * </p>
      *
-     * @param text 名前の文字列 {@code null}および{@code ""}（空文字）不可
+     * @param text 名前の文字列<br>{@code null}および{@code ""}（空文字）不可
      */
     public void setNameText(String text) {
         checkStateBy(text);
@@ -73,7 +73,7 @@ public class Name {
      *     名前の文字列が設定されていない等の異常状態である場合は{@link IllegalStateException}を投げます（{@link #checkState()}参照）。
      * </p>
      *
-     * @return 名前の文字列 {@code null}および{@code ""}（空文字）無し
+     * @return 名前の文字列<br>{@code null}および{@code ""}（空文字）無し
      */
     public String getNameText() {
         checkState();
@@ -88,7 +88,7 @@ public class Name {
      *     {@link #getNameText()}を呼び出しています。
      * </p>
      *
-     * @return 名前の文字列 {@code null}および{@code ""}（空文字）無し（{@link #getNameText()}参照）
+     * @return 名前の文字列<br>{@code null}および{@code ""}（空文字）無し（{@link #getNameText()}参照）
      */
     @Override
     public String toString() {

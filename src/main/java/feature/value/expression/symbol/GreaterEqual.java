@@ -22,7 +22,7 @@ public class GreaterEqual extends Symbol {
     /**
      * <p> 大なりイコール演算子の文字列を取得します。 </p>
      *
-     * @return "&gt;="
+     * @return {@code ">="}
      */
     @Override
     public String toString() {

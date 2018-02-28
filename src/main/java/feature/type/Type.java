@@ -60,7 +60,7 @@ public class Type {
      *     設定時に{@code null}判定と空文字判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link Name#Name(String)}および{@link #setName(Name)}参照）。
      * </p>
      *
-     * @param text 型の名前の文字列 {@code null}および{@code ""}（空文字）不可
+     * @param text 型の名前の文字列<br>{@code null}および{@code ""}（空文字）不可
      */
     public Type(String text) {
         Name name = new Name(text);
@@ -75,7 +75,7 @@ public class Type {
      *     設定時に{@code null}判定と定義済み型判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link #checkTypeName(Name)}参照）。
      * </p>
      *
-     * @param name 型の名前 {@code null}不可
+     * @param name 型の名前<br>{@code null}不可
      */
     public void setName(Name name) {
         checkTypeName(name);
@@ -90,7 +90,7 @@ public class Type {
      *     名前が設定されていない場合（{@link #setName(Name)}または{@link #Type(String)}未実行の場合）は{@link IllegalStateException}を投げます。
      * </p>
      *
-     * @return 型の名前 {@code null}および{@code ""}（空文字）無し
+     * @return 型の名前<br>{@code null}および{@code ""}（空文字）無し
      */
     public Name getName() {
         if (name == null) throw new IllegalStateException();
@@ -104,7 +104,7 @@ public class Type {
      *     {@link #getName()}を呼び出しています。
      * </p>
      *
-     * @return 型の名前の文字列 {@code null}および{@code ""}（空文字）無し（{@link #getName()}参照）
+     * @return 型の名前の文字列<br>{@code null}および{@code ""}（空文字）無し（{@link #getName()}参照）
      */
     @Override
     public String toString() {

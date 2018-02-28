@@ -18,6 +18,8 @@
 [![GitHub release](https://img.shields.io/github/release/Morichan/fescue/all.svg)](https://github.com/Morichan/fescue/releases)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/Morichan/fescue.svg)](https://github.com/Morichan/fescue/pulls?q=is%3Apr+is%3Aclosed)
 
+
+
 # fescue
 
 [ANTLR v4](https://github.com/antlr/antlr4)を利用した、UMLのクラス図における、属性と操作の文法ファイル、およびそれを元に生成した構文解析機を利用する属性と操作の要素抽出ライブラリです。
@@ -50,8 +52,12 @@ import usage.OperationEvaluation;
 /**
  * クラスの属性または機能マネージャ
  *
- * $ javac -cp fescue-0.3.1.jar FeatureManager.java
- * $ java -cp ./;fescue-0.3.1.jar;antlr.jar FeatureManager
+ * <pre>
+ *     {@code
+ *     $ javac -cp fescue-0.3.1.jar FeatureManager.java
+ *     $ java -cp ./;fescue-0.3.1.jar;antlr.jar FeatureManager
+ *     }
+ * </pre>
  */
 class FeatureManager {
 
@@ -129,7 +135,7 @@ class FeatureManager {
 ```
 
 
-```lisp:出力結果
+```elisp:出力結果
 (property
     (visibility -)
     (name projectId)
@@ -170,12 +176,11 @@ class FeatureManager {
 ### 入力例と出力結果
 
 ```text:入力例
-+ selectProjectData(in projectId : char [*] = "hogehoge001", getDataList(dataId, count).get(Project.number) : Data [(lowCount - 1) .. *]) : Data {query, redefines selectProjectDataImpl}
++ selectProjectData(in projectId : char [*] = "hogehoge001", data : Data [(lowCount - 1)..*] = getDataList(dataId, count).get(Project.number) {readOnly}) : Data {query, redefines selectProjectDataImpl}
 ```
 
-```lisp:出力結果
-(operation
-    (visibility +)
+```elisp:出力結果
+(operation (visibility +)
     (name selectProjectData)
     (parameterList (
         (parameter
@@ -185,27 +190,25 @@ class FeatureManager {
             (multiplicityRange [ (upper *) ])
             (defaultValue = (expression (literal "hogehoge001")))) ,
         (parameter
-            (parameterName
+            (parameterName (name data))
+            (typeExpression (type : Data))
+            (multiplicityRange [
+                (lower (valueSpecification ( (expression (expression lowCount) - (expression (literal (integerLiteral 1)))) )))
+                ..
+                (upper *) ])
+            (defaultValue =
                 (expression
                     (expression
                         (expression
                             (expression getDataList)
-                            (arguments (
-                                (expressionList (expression dataId) , (expression count)) ))) . get)
-                    (arguments (
-                        (expressionList (expression (expression Project) . number)) ))))
-            (typeExpression (type : Data))
-            (multiplicityRange
-                [
-                    (lower
-                        (valueSpecification (
-                            (expression
-                                (expression lowCount) - (expression (literal (integerLiteral 1)))) ))) .. (upper *) ])) ))
+                            (arguments ( (expressionList (expression dataId) , (expression count)) ))) . get)
+                            (arguments ( (expressionList (expression (expression Project) . number)) ))))
+            (paramProperties (properties { (propModifier readOnly) }))) ))
     (returnType (type : Data))
     (operProperties { (operProperty query) , (operProperty redefines (operName (name selectProjectDataImpl))) }))
 ```
 
-![example_operation](https://user-images.githubusercontent.com/20200292/35249796-c7096074-0016-11e8-8387-ca090ced7855.png)
+![example_operation](https://user-images.githubusercontent.com/20200292/36794366-76f3f2fe-1ce3-11e8-9dd6-9a670f347e7a.png)
 
 
 

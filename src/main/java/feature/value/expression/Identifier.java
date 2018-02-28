@@ -62,7 +62,7 @@ public class Identifier {
      *     内部的には{@link #set(String)}を呼出しています。
      * </p>
      *
-     * @param text 設定する変数名または文字列 {@code null}および{@code ""}（空文字）不可
+     * @param text 設定する変数名または文字列<br>{@code null}および{@code ""}（空文字）不可
      */
     public Identifier(String text) {
         set(text);
@@ -95,7 +95,7 @@ public class Identifier {
      *     どちらか一方が真の場合は{@link IllegalArgumentException}を投げます。
      * </p>
      *
-     * @param text 設定する変数名または文字列 {@code null}および{@code ""}（空文字）不可
+     * @param text 設定する変数名または文字列<br>{@code null}および{@code ""}（空文字）不可
      */
     public void set(String text) {
         if (text == null || text.length() <= 0) throw new IllegalArgumentException();
@@ -120,7 +120,7 @@ public class Identifier {
      *     真の場合は{@link IllegalStateException}を投げます。
      * </p>
      *
-     * @return 識別子の文字列 {@code null}および{@code ""}（空文字）無し
+     * @return 識別子の文字列<br>{@code null}および{@code ""}（空文字）無し
      */
     @Override
     public String toString() {

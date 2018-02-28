@@ -40,7 +40,7 @@ public class DefaultValue {
     /**
      * <p> 式を取得します。 </p>
      *
-     * @return 式 {@code null}なし
+     * @return 式<br>{@code null}なし
      */
     public Expression getExpression() {
         return value;
@@ -49,7 +49,7 @@ public class DefaultValue {
     /**
      * <p> 既定値の文字列を取得します。 </p>
      *
-     * @return 既定値の文字列 {@code null}および{@code ""}なし
+     * @return 既定値の文字列<br>{@code null}および{@code ""}なし
      */
     @Override
     public String toString() {
