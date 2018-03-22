@@ -1,6 +1,7 @@
 ![fescue_logo_mini](https://user-images.githubusercontent.com/20200292/35912038-d45a7a86-0c3e-11e8-8b4c-d660d0d6db48.png)
 
 
+
 |Main|Develop|
 |:--:|:--:|
 |[![Build Status](https://travis-ci.org/Morichan/fescue.svg?branch=master)](https://travis-ci.org/Morichan/fescue)|[![Build Status](https://travis-ci.org/Morichan/fescue.svg?branch=develop)](https://travis-ci.org/Morichan/fescue)|
@@ -45,7 +46,7 @@ UMLのクラス図における属性の文章を入力すると、構文木を�
 
 次のように利用してください。
 
-```java:FeatureManager.java
+```java
 import usage.AttributeEvaluation;
 import usage.OperationEvaluation;
 
@@ -114,7 +115,7 @@ class FeatureManager {
 
 属性の文法は次の通りです。
 
-```EBNF:AttributeGrammar
+```EBNF
 <property> ::= [<visibility>] ['/'] <name> [':' <prop-type>] ['[' <multiplicity> ']'] ['=' <default>] ['{' <prop-modifier> [',' <prop-modifier>]*'}']
 ```
 
@@ -130,12 +131,12 @@ class FeatureManager {
 
 ### 入力例と出力結果
 
-```text:入力例
+```text
 - projectId : char [0 .. *] = id + 001 {readOnly, subsets id}
 ```
 
 
-```elisp:出力結果
+```elisp
 (property
     (visibility -)
     (name projectId)
@@ -151,7 +152,7 @@ class FeatureManager {
 
 操作の文法は次の通りです。
 
-```EBNF:OperationGrammar
+```EBNF
 <operation> ::= [<visibility>] <name> '(' <parameter-list> ')' [':' <return-type>] ['{' <oper-property> [',' <oper-property>]* '}']
 
 <parameter-list> ::= <parameter> [',' <parameter>]*
@@ -175,11 +176,11 @@ class FeatureManager {
 
 ### 入力例と出力結果
 
-```text:入力例
+```text
 + selectProjectData(in projectId : char [*] = "hogehoge001", data : Data [(lowCount - 1)..*] = getDataList(dataId, count).get(Project.number) {readOnly}) : Data {query, redefines selectProjectDataImpl}
 ```
 
-```elisp:出力結果
+```elisp
 (operation (visibility +)
     (name selectProjectData)
     (parameterList (
