@@ -12,7 +12,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * クラスの属性または操作の抽象クラス
+ * <p> クラスの属性文または操作文の評価クラス </p>
+ *
+ * <p>
+ *     抽象クラスですが、このクラス内で定義している抽象メソッドはありません。
+ *     このクラスを実装する場合は、Evaluationインタフェースで定義している抽象メソッドを実装してください。
+ * </p>
  */
 abstract public class FeatureEvaluation implements Evaluation {
 
@@ -22,8 +27,11 @@ abstract public class FeatureEvaluation implements Evaluation {
     private boolean isSameBetweenNameAndKeyword = false;
 
     /**
-     * {@link ClassFeatureParser.PropertiesContext#exception}または{@link ClassFeatureParser.OperationContext#exception}が持つ{@link InputMismatchException}インスタンス
-     * もし持っていない場合は{@code null}を持つ
+     * <p> {@link ClassFeatureParser.PropertiesContext#exception}または{@link ClassFeatureParser.OperationContext#exception}が持つ{@link InputMismatchException}インスタンス </p>
+     *
+     * <p>
+     *     もし持っていない場合は{@code null}を持ちます。
+     * </p>
      */
     private InputMismatchException inputMismatchException;
 

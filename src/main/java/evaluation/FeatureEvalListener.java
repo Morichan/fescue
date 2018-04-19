@@ -5,9 +5,11 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import parser.ClassFeatureParser;
 
 /**
- * 構文解析木の走査クラス
+ * <p> 構文解析木の評価クラス </p>
  *
- * {@link parser.ClassFeatureBaseListener}およびそのクラスを自動生成するANTLRに依存します。
+ * <p>
+ *     {@link parser.ClassFeatureBaseListener}およびそのクラスを自動生成するANTLRに依存します。
+ * </p>
  */
 public class FeatureEvalListener extends parser.ClassFeatureBaseListener {
     /**
@@ -54,7 +56,7 @@ public class FeatureEvalListener extends parser.ClassFeatureBaseListener {
      * 属性文コンテキストを取得します。
      * {@link #enterProperty(ClassFeatureParser.PropertyContext)}が実行されなかった場合は{@code null}を返します。
      *
-     * @return 属性文コンテキスト {@code null}の可能性あり
+     * @return 属性文コンテキスト <br> {@code null}の可能性あり
      */
     public ClassFeatureParser.PropertyContext getProperty() {
         return property;
@@ -64,7 +66,7 @@ public class FeatureEvalListener extends parser.ClassFeatureBaseListener {
      * 操作文コンテキストを取得します。
      * {@link #enterOperation(ClassFeatureParser.OperationContext)}が実行されなかった場合は{@code null}を返します。
      *
-     * @return 操作文コンテキスト {@code null}の可能性あり
+     * @return 操作文コンテキスト <br> {@code null}の可能性あり
      */
     public ClassFeatureParser.OperationContext getOperation() {
         return operation;

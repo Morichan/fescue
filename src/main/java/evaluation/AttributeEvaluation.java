@@ -12,12 +12,14 @@ import parser.ClassFeatureParser;
  *     AttributeEvaluation evaluation = new AttributeEvaluation();
  *     evaluation.setText("- attribute : int");
  *     evaluation.walk();
+ *
+ *     ClassFeatureParser.PropertyContext context = evaluation.getContext();
  *     // ...
  *     }
  * </pre>
  *
  * <p>
- *     最初に属性文をセットし、走査してから各項目を抽出してください。
+ *     最初に属性文をセットし、走査してからコンテキストを取得してください。
  *     順番を変えると例外として{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
  * </p>
  */
@@ -42,7 +44,8 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *     詳しくは{@link #insertSpaceBothEndsOfRangeOperator(String)}を参照してください。
      * </p>
      *
-     * @param text 設定する属性文 {@code null}不可（{@link #insertSpaceBothEndsOfRangeOperator(String)}で{@link IllegalArgumentException}を投げる。）
+     * @param text 設定する属性文 <br>
+     *     {@code null}不可（{@link #insertSpaceBothEndsOfRangeOperator(String)}で{@link IllegalArgumentException}を投げます。）
      */
     @Override
     public void setText(String text) {
@@ -56,7 +59,7 @@ public class AttributeEvaluation extends FeatureEvaluation {
      *     {@link #setText(String)}を実行する前にこのメソッドを実行した場合は{@link IllegalStateException}を投げます。
      * </p>
      *
-     * @return 属性文 {@code null}なし
+     * @return 属性文 <br> {@code null}なし
      */
     @Override
     public String getText() {
@@ -68,10 +71,6 @@ public class AttributeEvaluation extends FeatureEvaluation {
 
     /**
      * <p> 字句解析と構文解析を行い、構文解析木を走査します。 </p>
-     *
-     * <p>
-     *     属性文を設定していない場合は{@link IllegalArgumentException}を投げます。
-     * </p>
      *
      * <p>
      *     次の場合は例外を投げます。
