@@ -47,7 +47,7 @@ class AttributeEvaluationTest {
         void 文を設定して走査するとコンテキストを返す() {
             ClassFeatureParser.PropertyContext actual;
 
-            obj.setText("attribute");
+            obj.setText("- /attribute");
             obj.walk();
             actual = obj.getContext();
 
