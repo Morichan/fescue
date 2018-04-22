@@ -1,6 +1,8 @@
 package sculptor;
 
 import evaluation.AttributeEvaluation;
+import feature.Attribute;
+import feature.name.Name;
 import org.antlr.v4.runtime.ParserRuleContext;
 import parser.ClassFeatureParser;
 
@@ -49,5 +51,18 @@ public class AttributeSculptor {
     public ParserRuleContext getContext() {
         if (attribute == null) throw new IllegalStateException();
         return attribute;
+    }
+
+    public Attribute carve() {
+        Attribute feature = new Attribute(new Name("attribute"));
+
+        for (int i = 0; i < attribute.getChildCount(); i++) {
+            if (attribute.getChild(i) instanceof ClassFeatureParser.NameContext) {
+                feature.setName(new Name(attribute.getChild(i).getText()));
+                break;
+            }
+        }
+
+        return feature;
     }
 }

@@ -1,5 +1,7 @@
 package sculptor;
 
+import feature.Attribute;
+import feature.name.Name;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +17,7 @@ class AttributeSculptorTest {
     AttributeSculptor obj;
 
     @Nested
-    class 正しい属性文の場合 {
+    class 正しい属性文の際 {
 
         @BeforeEach
         void setup() {
@@ -31,10 +33,29 @@ class AttributeSculptorTest {
 
             assertThat(actual).isInstanceOf(ClassFeatureParser.PropertyContext.class);
         }
+
+        @Nested
+        class 名前のみの場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new AttributeSculptor();
+            }
+
+            @Test
+            void 設定した文字列を返す() {
+                Attribute expected = new Attribute(new Name("name"));
+
+                obj.parse("name");
+                Attribute actual = obj.carve();
+
+                assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+            }
+        }
     }
 
     @Nested
-    class 不正な属性文の場合 {
+    class 不正な属性文の際 {
 
         @BeforeEach
         void setup() {
