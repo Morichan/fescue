@@ -60,6 +60,15 @@ class IdentifierTest {
         }
 
         @Test
+        void 数値のみの文字列を入力すると文字列を返す() {
+            String expected = "1";
+
+            obj.set("1");
+
+            assertThat(obj).hasToString(expected);
+        }
+
+        @Test
         void ダブルクオーテーションで囲んだ文字列を入力すると文字列を返す() {
             String expected = "\"stringName\"";
 
@@ -93,6 +102,14 @@ class IdentifierTest {
             obj.set("''");
 
             assertThat(obj).hasToString(expected);
+        }
+
+        @Test
+        void 数値のみの文字列は値である() {
+
+            obj.set("1");
+
+            assertThat(obj.isValue()).isTrue();
         }
 
         @Test

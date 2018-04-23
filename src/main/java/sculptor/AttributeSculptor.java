@@ -2,9 +2,17 @@ package sculptor;
 
 import evaluation.AttributeEvaluation;
 import feature.Attribute;
+import feature.multiplicity.Bounder;
+import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
+import feature.type.Type;
+import feature.value.DefaultValue;
+import feature.value.expression.OneIdentifier;
+import feature.visibility.Visibility;
 import org.antlr.v4.runtime.ParserRuleContext;
 import parser.ClassFeatureParser;
+
+import java.util.concurrent.Callable;
 
 /**
  * <p> 属性彫刻家 </p>
@@ -53,13 +61,39 @@ public class AttributeSculptor {
         return attribute;
     }
 
+    /**
+     * <p> 属性文コンテキストから{@link Attribute}インスタンスを形成します。 </p>
+     *
+     * @return 属性文コンテキストから生成した {@link Attribute}インスタンス
+     */
     public Attribute carve() {
         Attribute feature = new Attribute(new Name("attribute"));
 
         for (int i = 0; i < attribute.getChildCount(); i++) {
-            if (attribute.getChild(i) instanceof ClassFeatureParser.NameContext) {
-                feature.setName(new Name(attribute.getChild(i).getText()));
-                break;
+            ParserRuleContext ctx = (ParserRuleContext) attribute.getChild(i);
+
+            if (ctx instanceof ClassFeatureParser.VisibilityContext) {
+                feature.setVisibility(Visibility.choose(ctx.getText()));
+
+            } else if (ctx instanceof ClassFeatureParser.NameContext) {
+                feature.setName(new Name(ctx.getText()));
+
+            } else if (ctx instanceof ClassFeatureParser.DividedContext) {
+                feature.setDerived(true);
+
+            } else if (ctx instanceof ClassFeatureParser.PropTypeContext) {
+                feature.setType(new Type(ctx.getChild(0).getChild(1).getText()));
+
+            } else if (ctx instanceof ClassFeatureParser.MultiplicityRangeContext) {
+                if (ctx.getChild(1) instanceof ClassFeatureParser.UpperContext) {
+                    feature.setMultiplicityRange(new MultiplicityRange(new Bounder(ctx.getChild(1).getText())));
+                } else {
+                    feature.setMultiplicityRange(new MultiplicityRange(
+                            new Bounder(ctx.getChild(1).getText()), new Bounder(ctx.getChild(3).getText())));
+                }
+
+            } else if (ctx instanceof ClassFeatureParser.DefaultValueContext) {
+                feature.setDefaultValue(new DefaultValue(new OneIdentifier(ctx.getChild(1).getText())));
             }
         }
 
