@@ -7,11 +7,14 @@ import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.type.Type;
 import feature.value.DefaultValue;
-import feature.value.expression.OneIdentifier;
+import feature.value.expression.*;
+import feature.value.expression.symbol.Symbol;
 import feature.visibility.Visibility;
 import org.antlr.v4.runtime.ParserRuleContext;
 import parser.ClassFeatureParser;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -86,17 +89,94 @@ public class AttributeSculptor {
 
             } else if (ctx instanceof ClassFeatureParser.MultiplicityRangeContext) {
                 if (ctx.getChild(1) instanceof ClassFeatureParser.UpperContext) {
-                    feature.setMultiplicityRange(new MultiplicityRange(new Bounder(ctx.getChild(1).getText())));
+                    feature.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(ctx.getChild(1).getText()))));
                 } else {
                     feature.setMultiplicityRange(new MultiplicityRange(
-                            new Bounder(ctx.getChild(1).getText()), new Bounder(ctx.getChild(3).getText())));
+                            new Bounder(new OneIdentifier(ctx.getChild(1).getText())), new Bounder(new OneIdentifier(ctx.getChild(3).getText()))));
                 }
 
             } else if (ctx instanceof ClassFeatureParser.DefaultValueContext) {
-                feature.setDefaultValue(new DefaultValue(new OneIdentifier(ctx.getChild(1).getText())));
+                feature.setDefaultValue(new DefaultValue(
+                        createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1))));
             }
         }
 
         return feature;
+    }
+
+    /**
+     * <p> 式インスタンスを生成します。 </p>
+     *
+     * <p>
+     *     式インスタンスを再帰的に生成します。
+     *     途中で{@link #extractExpressionFromArguments(ClassFeatureParser.ArgumentsContext)}を使う可能性があります。
+     *     ClassFeature.g4ファイルにおけるexpressionの項目を参考にしました。
+     * </p>
+     *
+     * @param ctx 式コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @return 式インスタンス
+     */
+    private Expression createExpression(ClassFeatureParser.ExpressionContext ctx) {
+        Expression expression = null;
+
+        if (ctx.getChildCount() == 1) {
+            expression = new OneIdentifier(ctx.getText());
+
+        } else if (ctx.getChildCount() == 2) {
+            if (Symbol.isIncluded(ctx.getChild(0).getText())) {
+                expression = new Monomial(ctx.getChild(0).getText(),
+                        createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1)));
+            // } else if (ctx.getChild(0).getClass() == ClassFeatureParser.ExpressionContext.class) {
+            } else {
+                expression = new MethodCall(ctx.getChild(0).getText(),
+                        extractExpressionFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(1)));
+            }
+
+        } else {
+            if (ctx.getChild(1).getClass() == ClassFeatureParser.ExpressionContext.class) {
+                expression = new ExpressionWithParen(createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1)));
+            } else if (ctx.getChild(1).getText().equals(".")) {
+                if (ctx.getChild(2).getClass() == ClassFeatureParser.ExplicitGenericInvocationSuffixContext.class) {
+                    expression = new Binomial(ctx.getChild(1).getText(),
+                            createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
+                            new MethodCall(ctx.getChild(2).getChild(0).getText(),
+                                    extractExpressionFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(2).getChild(1))));
+                } else {
+                    expression = new Binomial(ctx.getChild(1).getText(),
+                            createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
+                            new OneIdentifier(ctx.getChild(2).getText()));
+                }
+            } else {
+                expression = new Binomial(ctx.getChild(1).getText(),
+                        createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
+                        createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(2)));
+            }
+        }
+
+        return expression;
+    }
+
+    /**
+     * <p> メソッドにおける各引数の式リストを抽出する。 </p>
+     *
+     * <p>
+     *     メソッドにおける各引数の式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて再帰的に抽出します。
+     * </p>
+     *
+     * @param ctx 引数コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @return 式インスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
+     */
+    private List<Expression> extractExpressionFromArguments(ClassFeatureParser.ArgumentsContext ctx) {
+        List<Expression> expressions = new ArrayList<>();
+
+        if (ctx.getChild(1).getClass() != ClassFeatureParser.ExpressionListContext.class) return expressions;
+
+        ClassFeatureParser.ExpressionListContext ctxList = (ClassFeatureParser.ExpressionListContext) ctx.getChild(1);
+
+        for(int i = 0; i < ctxList.getChildCount(); i += 2) {
+            expressions.add(createExpression((ClassFeatureParser.ExpressionContext) ctxList.getChild(i)));
+        }
+
+        return expressions;
     }
 }

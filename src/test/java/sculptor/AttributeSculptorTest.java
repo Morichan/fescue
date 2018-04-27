@@ -6,7 +6,7 @@ import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
 import feature.type.Type;
 import feature.value.DefaultValue;
-import feature.value.expression.OneIdentifier;
+import feature.value.expression.*;
 import feature.visibility.Visibility;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import parser.ClassFeatureParser;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -131,9 +133,9 @@ class AttributeSculptorTest {
             @Test
             void 上限のみを設定したインスタンスを返す() {
                 Attribute expected = new Attribute(new Name("number"));
-                expected.setMultiplicityRange(new MultiplicityRange(new Bounder("*")));
+                expected.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier("*"))));
 
-                obj.parse("number[*]");
+                obj.parse("number [*]");
                 Attribute actual = obj.carve();
 
                 assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
@@ -142,9 +144,9 @@ class AttributeSculptorTest {
             @Test
             void 上限および下限を設定したインスタンスを返す() {
                 Attribute expected = new Attribute(new Name("number"));
-                expected.setMultiplicityRange(new MultiplicityRange(new Bounder("0"), new Bounder("1")));
+                expected.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(0)), new Bounder(new OneIdentifier(1))));
 
-                obj.parse("number[0..1]");
+                obj.parse("number [0..1]");
                 Attribute actual = obj.carve();
 
                 assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
@@ -152,7 +154,7 @@ class AttributeSculptorTest {
         }
 
         @Nested
-        class 名前と既定値の場合 {
+        class 名前と既定値において {
 
             @Nested
             class 項が1つの場合 {
@@ -168,6 +170,183 @@ class AttributeSculptorTest {
                     expected.setDefaultValue(new DefaultValue(new OneIdentifier(0)));
 
                     obj.parse("number = 0");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void プラス数値のインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(new Monomial("+", new OneIdentifier(1))));
+
+                    obj.parse("number = +1");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 否定式のインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(new Monomial("not", new OneIdentifier("true"))));
+
+                    obj.parse("number = not true");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+            }
+
+            @Nested
+            class 項が2つの場合 {
+
+                @BeforeEach
+                void setup() {
+                    obj = new AttributeSculptor();
+                }
+
+                @Test
+                void 加算のインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("newNumber"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new Binomial("+", new OneIdentifier("number"), new OneIdentifier(1))));
+
+                    obj.parse("newNumber = number + 1");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 大なりイコールのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("newNumber"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new Binomial(">=", new OneIdentifier("number"), new OneIdentifier(1))));
+
+                    obj.parse("newNumber = number >= 1");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Nested
+                class ドットのインスタンスでは {
+
+                    @BeforeEach
+                    void setup() {
+                        obj = new AttributeSculptor();
+                    }
+
+                    @Test
+                    void インスタンスのインスタンスを返す() {
+                        Attribute expected = new Attribute(new Name("newNumber"));
+                        expected.setDefaultValue(new DefaultValue(
+                                new Binomial(".", new OneIdentifier("instances"), new OneIdentifier("instance"))));
+
+                        obj.parse("newNumber = instances.instance");
+                        Attribute actual = obj.carve();
+
+                        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    }
+
+                    @Disabled("本来は正しくない")
+                    @Test
+                    void インスタンスの引数のないメソッドを返す() {
+                        Attribute expected = new Attribute(new Name("newNumber"));
+                        expected.setDefaultValue(new DefaultValue(
+                                        new MethodCall("instances.method")));
+
+                        obj.parse("newNumber = instances . method()");
+                        Attribute actual = obj.carve();
+
+                        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    }
+                }
+            }
+
+            @Nested
+            class メソッドの場合 {
+
+                @BeforeEach
+                void setup() {
+                    obj = new AttributeSculptor();
+                }
+
+                @Test
+                void 引数のないメソッドのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new MethodCall("methodName")));
+
+                    obj.parse("number = methodName()");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 引数が1つのメソッドのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new MethodCall("methodName", new OneIdentifier(1))));
+
+                    obj.parse("number = methodName(1)");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 引数が3つのメソッドのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new MethodCall("methodName", Arrays.asList(
+                                    new OneIdentifier(0),
+                                    new OneIdentifier("instance"),
+                                    new Monomial("-", new OneIdentifier(1))))));
+
+                    obj.parse("number = methodName(0, instance, -1)");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+            }
+
+            @Nested
+            class カッコで囲まれている式の場合 {
+
+                @BeforeEach
+                void setup() {
+                    obj = new AttributeSculptor();
+                }
+
+                @Test
+                void 項が1つのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new ExpressionWithParen(new OneIdentifier("textAroundParen"))));
+
+                    obj.parse("number = (textAroundParen)");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 項が4つのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(
+                            new Binomial("/",
+                                    new Binomial("*",
+                                            new ExpressionWithParen(
+                                                    new Binomial("+",
+                                                            new OneIdentifier("upperBase"),
+                                                            new OneIdentifier("lowerBase"))),
+                                            new OneIdentifier("height")),
+                                    new OneIdentifier(2))));
+
+                    obj.parse("number = (upperBase + lowerBase) * height / 2");
                     Attribute actual = obj.carve();
 
                     assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);

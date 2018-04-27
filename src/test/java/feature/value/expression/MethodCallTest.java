@@ -45,42 +45,98 @@ class MethodCallTest {
     @Nested
     class 引数を持つ場合 {
 
-        @Test
-        void メソッド名と引数を1つ入力するとメソッドを文字列で返す() {
-            String expected = "method(firstArgument)";
+        @Nested
+        class 個別に入れる際に {
 
-            obj = new MethodCall("method", new OneIdentifier("firstArgument"));
-            String actual = obj.toString();
+            @Test
+            void メソッド名と引数を1つ入力するとメソッドを文字列で返す() {
+                String expected = "method(firstArgument)";
 
-            assertThat(actual).isEqualTo(expected);
+                obj = new MethodCall("method", new OneIdentifier("firstArgument"));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void メソッド名と引数を2つ入力するとメソッドを文字列で返す() {
+                String expected = "method(firstArgument, secondArgument)";
+
+                obj = new MethodCall("method", new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void メソッド名と引数を3つ入力するとメソッドを文字列で返す() {
+                String expected = "method(firstArgument, secondArgument, thirdArgument)";
+
+                obj = new MethodCall("method", new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"), new OneIdentifier("thirdArgument"));
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 引数に1つでもnullを含む場合は例外を投げる() {
+                assertThatThrownBy(() ->
+                        obj = new MethodCall("method",
+                                new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"), null))
+                        .isInstanceOf(IllegalArgumentException.class);
+            }
         }
 
-        @Test
-        void メソッド名と引数を2つ入力するとメソッドを文字列で返す() {
-            String expected = "method(firstArgument, secondArgument)";
+        @Nested
+        class Listインスタンスとして入れる際に {
 
-            obj = new MethodCall("method", new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"));
-            String actual = obj.toString();
+            @Test
+            void メソッド名と引数を1つ入力するとメソッドを文字列で返す() {
+                String expected = "method(firstArgument)";
+                List<Expression> oneExpression = Arrays.asList(new OneIdentifier("firstArgument"));
 
-            assertThat(actual).isEqualTo(expected);
-        }
+                obj = new MethodCall("method", oneExpression);
+                String actual = obj.toString();
 
-        @Test
-        void メソッド名と引数を3つ入力するとメソッドを文字列で返す() {
-            String expected = "method(firstArgument, secondArgument, thirdArgument)";
+                assertThat(actual).isEqualTo(expected);
+            }
 
-            obj = new MethodCall("method", new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"), new OneIdentifier("thirdArgument"));
-            String actual = obj.toString();
+            @Test
+            void メソッド名と引数を2つ入力するとメソッドを文字列で返す() {
+                String expected = "method(firstArgument, secondArgument)";
+                List<Expression> twoExpression = Arrays.asList(
+                        new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"));
 
-            assertThat(actual).isEqualTo(expected);
-        }
+                obj = new MethodCall("method", twoExpression);
+                String actual = obj.toString();
 
-        @Test
-        void 引数に1つでもnullを含む場合は例外を投げる() {
-            assertThatThrownBy(() ->
-                    obj = new MethodCall("method",
-                            new OneIdentifier("firstArgument"), new OneIdentifier("secondArgument"), null))
-                    .isInstanceOf(IllegalArgumentException.class);
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void メソッド名と引数を3つ入力するとメソッドを文字列で返す() {
+                String expected = "method(firstArgument, secondArgument, thirdArgument)";
+                List<Expression> threeExpression = Arrays.asList(
+                        new OneIdentifier("firstArgument"),
+                        new OneIdentifier("secondArgument"),
+                        new OneIdentifier("thirdArgument"));
+
+                obj = new MethodCall("method",threeExpression);
+                String actual = obj.toString();
+
+                assertThat(actual).isEqualTo(expected);
+            }
+
+            @Test
+            void 引数に1つでもnullを含む場合は例外を投げる() {
+                assertThatThrownBy(() ->
+                        obj = new MethodCall("method",
+                                Arrays.asList(
+                                        new OneIdentifier("firstArgument"),
+                                        new OneIdentifier("secondArgument"),
+                                        null)))
+                        .isInstanceOf(IllegalArgumentException.class);
+            }
         }
     }
 
