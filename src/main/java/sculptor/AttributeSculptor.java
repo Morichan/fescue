@@ -5,6 +5,7 @@ import feature.Attribute;
 import feature.multiplicity.Bounder;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
+import feature.property.*;
 import feature.type.Type;
 import feature.value.DefaultValue;
 import feature.value.expression.*;
@@ -98,6 +99,9 @@ public class AttributeSculptor {
             } else if (ctx instanceof ClassFeatureParser.DefaultValueContext) {
                 feature.setDefaultValue(new DefaultValue(
                         createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1))));
+
+            } else { // if (ctx instanceof ClassFeatureParser.PropModifiersContext) {
+                feature.setProperties(extractProperties((ClassFeatureParser.PropertiesContext) ctx.getChild(0)));
             }
         }
 
@@ -109,7 +113,7 @@ public class AttributeSculptor {
      *
      * <p>
      *     式インスタンスを再帰的に生成します。
-     *     途中で{@link #extractExpressionFromArguments(ClassFeatureParser.ArgumentsContext)}を使う可能性があります。
+     *     途中で{@link #extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}を使う可能性があります。
      *     ClassFeature.g4ファイルにおけるexpressionの項目を参考にしました。
      * </p>
      *
@@ -129,7 +133,7 @@ public class AttributeSculptor {
             // } else if (ctx.getChild(0).getClass() == ClassFeatureParser.ExpressionContext.class) {
             } else {
                 expression = new MethodCall(ctx.getChild(0).getText(),
-                        extractExpressionFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(1)));
+                        extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(1)));
             }
 
         } else {
@@ -140,7 +144,7 @@ public class AttributeSculptor {
                     expression = new Binomial(ctx.getChild(1).getText(),
                             createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
                             new MethodCall(ctx.getChild(2).getChild(0).getText(),
-                                    extractExpressionFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(2).getChild(1))));
+                                    extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(2).getChild(1))));
                 } else {
                     expression = new Binomial(ctx.getChild(1).getText(),
                             createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
@@ -157,7 +161,7 @@ public class AttributeSculptor {
     }
 
     /**
-     * <p> メソッドにおける各引数の式リストを抽出する。 </p>
+     * <p> メソッドにおける各引数の式リストを抽出します。 </p>
      *
      * <p>
      *     メソッドにおける各引数の式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて再帰的に抽出します。
@@ -166,7 +170,7 @@ public class AttributeSculptor {
      * @param ctx 引数コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return 式インスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
      */
-    private List<Expression> extractExpressionFromArguments(ClassFeatureParser.ArgumentsContext ctx) {
+    private List<Expression> extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext ctx) {
         List<Expression> expressions = new ArrayList<>();
 
         if (ctx.getChild(1).getClass() != ClassFeatureParser.ExpressionListContext.class) return expressions;
@@ -178,5 +182,49 @@ public class AttributeSculptor {
         }
 
         return expressions;
+    }
+
+    /**
+     * <p> プロパティインスタンスリストを生成します。 </p>
+     *
+     * <p>
+     *     プロパティの文字列（{@code toString()}メソッド）で判断し、その文字列に対応するインスタンスをリスト化します。
+     *     式が付随するプロパティについては{@link #extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}を用います。
+     * </p>
+     *
+     * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @return プロパティインスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
+     */
+    private List<Property> extractProperties(ClassFeatureParser.PropertiesContext ctx) {
+        List<Property> properties = new ArrayList<>();
+
+        for (int i = 1; i < ctx.getChildCount(); i += 2) {
+            String propertyString = ctx.getChild(i).getChild(0).toString();
+            if (propertyString.equals("readOnly")) {
+                properties.add(new ReadOnly());
+            } else if (propertyString.equals("union")) {
+                properties.add(new Union());
+            } else if (propertyString.equals("subsets")) {
+                properties.add(new Subsets(
+                        extractExpressionFromProperty((ClassFeatureParser.PropertyNameContext) ctx.getChild(i).getChild(1))));
+            } else if (propertyString.equals("redefines")) {
+                properties.add(new Redefines(
+                        extractExpressionFromProperty((ClassFeatureParser.PropertyNameContext) ctx.getChild(i).getChild(1))));
+            } else if (propertyString.equals("ordered")) {
+                properties.add(new Ordered());
+            } else { // if (propertyString.equals("unique")) {
+                properties.add(new Unique());
+            }
+        }
+
+        return properties;
+    }
+
+    private Expression extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext ctx) {
+        if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
+            return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
+        } else {
+            return new OneIdentifier(ctx.getChild(0).getChild(0).toString());
+        }
     }
 }

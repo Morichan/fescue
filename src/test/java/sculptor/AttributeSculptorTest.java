@@ -4,6 +4,7 @@ import feature.Attribute;
 import feature.multiplicity.Bounder;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
+import feature.property.*;
 import feature.type.Type;
 import feature.value.DefaultValue;
 import feature.value.expression.*;
@@ -351,6 +352,53 @@ class AttributeSculptorTest {
 
                     assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
                 }
+            }
+        }
+
+        @Nested
+        class 名前とプロパティの場合 {
+
+            @BeforeEach
+            void setup() {
+                obj = new AttributeSculptor();
+            }
+
+            @Test
+            void プロパティが1つのインスタンスを返す() {
+                Attribute expected = new Attribute(new Name("number"));
+                expected.addProperty(new ReadOnly());
+
+                obj.parse("number {readOnly}");
+                Attribute actual = obj.carve();
+
+                assertThat(actual).hasToString(expected.toString());
+            }
+
+            @Test
+            void 複雑なプロパティが1つのインスタンスを返す() {
+                Attribute expected = new Attribute(new Name("number"));
+                expected.addProperty(new Redefines(new OneIdentifier("redefinedNumber")));
+
+                obj.parse("number {redefines redefinedNumber}");
+                Attribute actual = obj.carve();
+
+                assertThat(actual).hasToString(expected.toString());
+            }
+
+            @Test
+            void プロパティが6つのインスタンスを返す() {
+                Attribute expected = new Attribute(new Name("number"));
+                expected.addProperty(new ReadOnly());
+                expected.addProperty(new Union());
+                expected.addProperty(new Subsets(new MethodCall("getNumber")));
+                expected.addProperty(new Redefines(new Binomial("+", new OneIdentifier("number"), new OneIdentifier(1))));
+                expected.addProperty(new Ordered());
+                expected.addProperty(new Unique());
+
+                obj.parse("number {readOnly, union, subsets getNumber(), redefines number + 1, ordered, unique}");
+                Attribute actual = obj.carve();
+
+                assertThat(actual).hasToString(expected.toString());
             }
         }
     }
