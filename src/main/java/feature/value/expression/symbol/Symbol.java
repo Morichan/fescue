@@ -106,4 +106,18 @@ abstract public class Symbol {
         if (symbolText == null || !string2symbol.containsKey(symbolText)) throw new IllegalStateException();
         return string2symbol.get(symbolText);
     }
+
+    /**
+     * <p> 文字列が演算子として存在する場合は真を返す真偽値判定を行います。 </p>
+     *
+     * <p>
+     *     {@code ""}（空文字）および{@code null}を入力した場合は偽を返します。
+     * </p>
+     *
+     * @param symbolText 演算子の文字列 <br> {@code ""}（空文字）および{@code null}可
+     * @return 演算子として存在する場合は真を返す真偽値 <br> {@code ""}（空文字）および{@code null} の場合は偽を返します。
+     */
+    static public boolean isIncluded(String symbolText) {
+        return string2symbol.containsKey(symbolText);
+    }
 }

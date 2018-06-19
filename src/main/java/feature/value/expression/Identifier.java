@@ -1,5 +1,7 @@
 package feature.value.expression;
 
+import javafx.css.Match;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +31,7 @@ public class Identifier {
 
     private Pattern stringEnclosedBySingleQuotation = Pattern.compile("^'(.)*'$");
     private Pattern stringEnclosedByDoubleQuotation = Pattern.compile("^\"(.)*\"$");
+    private Pattern decimalLiteralString = Pattern.compile("(0|[1-9](\\.?|_\\.))[lL]?");
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -144,7 +147,8 @@ public class Identifier {
     boolean isValue(String text) {
         Matcher singleQuotationMatcher = stringEnclosedBySingleQuotation.matcher(text);
         Matcher doubleQuotationMatcher = stringEnclosedByDoubleQuotation.matcher(text);
+        Matcher decimalLiteralMatcher = decimalLiteralString.matcher(text);
 
-        return singleQuotationMatcher.matches() || doubleQuotationMatcher.matches();
+        return singleQuotationMatcher.matches() || doubleQuotationMatcher.matches() || decimalLiteralMatcher.matches();
     }
 }

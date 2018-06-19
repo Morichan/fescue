@@ -42,6 +42,14 @@ public class MethodCall implements Expression {
      * @param expressions メソッド引数（0こ以上の複数を設定可能）<br>{@code null}不可
      */
     public MethodCall(String text, Expression... expressions) {
+        initMethodCall(text, expressions);
+    }
+
+    public MethodCall(String text, List<Expression> expressions) {
+        initMethodCall(text, expressions.toArray(new Expression[expressions.size()]));
+    }
+
+    private void initMethodCall(String text, Expression... expressions) {
         for (Expression exp : expressions)
             if (exp == null)
                 throw new IllegalArgumentException();

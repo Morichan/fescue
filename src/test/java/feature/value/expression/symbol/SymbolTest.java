@@ -94,6 +94,14 @@ class SymbolTest {
 
             assertThat(actual.isHadSpaceBothSides()).isEqualTo(expected);
         }
+
+        @RepeatedTest(symbolCount)
+        void 存在する演算子を入力すると真を返す(RepetitionInfo info) {
+
+            boolean actual = Symbol.isIncluded(symbolStrings.get(info.getCurrentRepetition() - 1));
+
+            assertThat(actual).isTrue();
+        }
     }
 
     @Nested
@@ -107,6 +115,30 @@ class SymbolTest {
         @Test
         void 演算子の選択にnullを入力すると例外を投げる() {
             assertThatThrownBy(() -> Symbol.choose(null)).isInstanceOf(IllegalStateException.class);
+        }
+
+        @Test
+        void 演算子の文字列として存在しない文字列を入れると偽を返す() {
+
+            boolean actual = Symbol.isIncluded("NotFoundText");
+
+            assertThat(actual).isFalse();
+        }
+
+        @Test
+        void 演算子の文字列として空文字を入れると偽を返す() {
+
+            boolean actual = Symbol.isIncluded("");
+
+            assertThat(actual).isFalse();
+        }
+
+        @Test
+        void 演算子の文字列としてnullを入れると偽を返す() {
+
+            boolean actual = Symbol.isIncluded(null);
+
+            assertThat(actual).isFalse();
         }
     }
 }

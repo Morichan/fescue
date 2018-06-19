@@ -1,7 +1,7 @@
 package evaluation;
 
 /**
- * 抽出クラスインタフェース
+ * 評価クラスインタフェース
  */
 public interface Evaluation {
     /**
