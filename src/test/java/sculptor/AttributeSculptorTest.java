@@ -251,14 +251,55 @@ class AttributeSculptorTest {
                         assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
                     }
 
-                    @Disabled("本来は正しくない")
                     @Test
                     void インスタンスの引数のないメソッドを返す() {
                         Attribute expected = new Attribute(new Name("newNumber"));
-                        expected.setDefaultValue(new DefaultValue(
-                                        new MethodCall("instances.method")));
+                        expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                                new OneIdentifier("instances"), new MethodCall("method"))));
 
-                        obj.parse("newNumber = instances . method()");
+                        obj.parse("newNumber = instances.method()");
+                        Attribute actual = obj.carve();
+
+                        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    }
+
+                    @Test
+                    void インスタンスの引数のあるメソッドを返す() {
+                        Attribute expected = new Attribute(new Name("newNumber"));
+                        expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                                new OneIdentifier("instances"), new MethodCall("method", new OneIdentifier("arg")))));
+
+                        obj.parse("newNumber = instances.method(arg)");
+                        Attribute actual = obj.carve();
+
+                        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    }
+
+                    @Test
+                    void インスタンスの引数のあるメソッドのインスタンスを返す() {
+                        Attribute expected = new Attribute(new Name("newNumber"));
+                        expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                                new Binomial(".",
+                                        new OneIdentifier("instances"),
+                                        new MethodCall("methods", new OneIdentifier("withArg"))),
+                                new OneIdentifier("instance"))));
+
+                        obj.parse("newNumber = instances.methods(withArg).instance");
+                        Attribute actual = obj.carve();
+
+                        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                    }
+
+                    @Test
+                    void インスタンスの引数のあるメソッドの引数のあるメソッドを返す() {
+                        Attribute expected = new Attribute(new Name("newNumber"));
+                        expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                                new Binomial(".",
+                                        new OneIdentifier("instances"),
+                                        new MethodCall("methods", new MethodCall("withMethod"))),
+                                new MethodCall("method", new OneIdentifier("with"), new OneIdentifier("arg")))));
+
+                        obj.parse("newNumber = instances.methods(withMethod()).method(with, arg)");
                         Attribute actual = obj.carve();
 
                         assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
@@ -275,7 +316,7 @@ class AttributeSculptorTest {
                 }
 
                 @Test
-                void 引数のないメソッドのインスタンスを返す() {
+                void 引数のないメソッドを返す() {
                     Attribute expected = new Attribute(new Name("number"));
                     expected.setDefaultValue(new DefaultValue(
                             new MethodCall("methodName")));
@@ -287,7 +328,7 @@ class AttributeSculptorTest {
                 }
 
                 @Test
-                void 引数が1つのメソッドのインスタンスを返す() {
+                void 引数が1つのメソッドを返す() {
                     Attribute expected = new Attribute(new Name("number"));
                     expected.setDefaultValue(new DefaultValue(
                             new MethodCall("methodName", new OneIdentifier(1))));
@@ -299,7 +340,7 @@ class AttributeSculptorTest {
                 }
 
                 @Test
-                void 引数が3つのメソッドのインスタンスを返す() {
+                void 引数が3つのメソッドを返す() {
                     Attribute expected = new Attribute(new Name("number"));
                     expected.setDefaultValue(new DefaultValue(
                             new MethodCall("methodName", Arrays.asList(
@@ -308,6 +349,64 @@ class AttributeSculptorTest {
                                     new Monomial("-", new OneIdentifier(1))))));
 
                     obj.parse("number = methodName(0, instance, -1)");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 引数のないメソッドのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                            new MethodCall("methods"),
+                            new OneIdentifier("instance"))));
+
+                    obj.parse("number = methods().instance");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 引数のあるメソッドの引数のあるメソッドを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                            new MethodCall("methods", new OneIdentifier("with"), new OneIdentifier("arg")),
+                            new MethodCall("method", new OneIdentifier(1), new OneIdentifier(2), new OneIdentifier(3)))));
+
+                    obj.parse("number = methods(with, arg).method(1, 2, 3)");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 引数のないメソッドの引数のあるメソッドのインスタンスを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                            new Binomial(".",
+                                    new MethodCall("methods"),
+                                    new MethodCall("method", new OneIdentifier(1), new OneIdentifier(2), new OneIdentifier(3))),
+                            new OneIdentifier("inInstance"))));
+
+                    obj.parse("number = methods().method(1, 2, 3).inInstance");
+                    Attribute actual = obj.carve();
+
+                    assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+                }
+
+                @Test
+                void 引数のあるメソッドの引数のあるメソッドの引数のあるメソッドの引数のあるメソッドを返す() {
+                    Attribute expected = new Attribute(new Name("number"));
+                    expected.setDefaultValue(new DefaultValue(new Binomial(".",
+                            new Binomial(".",
+                                    new Binomial(".",
+                                            new MethodCall("method", new OneIdentifier("arg1")),
+                                            new MethodCall("forMethod", new OneIdentifier("arg2"))),
+                                    new MethodCall("ofMethod", new OneIdentifier("arg3"))),
+                            new MethodCall("inMethod", new OneIdentifier("arg4")))));
+
+                    obj.parse("number = method(arg1).forMethod(arg2).ofMethod(arg3).inMethod(arg4)");
                     Attribute actual = obj.carve();
 
                     assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);

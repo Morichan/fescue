@@ -130,26 +130,38 @@ public class AttributeSculptor {
             if (Symbol.isIncluded(ctx.getChild(0).getText())) {
                 expression = new Monomial(ctx.getChild(0).getText(),
                         createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1)));
-            // } else if (ctx.getChild(0).getClass() == ClassFeatureParser.ExpressionContext.class) {
-            } else {
-                expression = new MethodCall(ctx.getChild(0).getText(),
-                        extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(1)));
+            } else { // if (ctx.getChild(0).getClass() == ClassFeatureParser.ExpressionContext.class) {
+                if (ctx.getChild(0).getChildCount() == 1) {
+                    expression = new MethodCall(ctx.getChild(0).getText(),
+                            extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(1)));
+                } else {
+                    List<Expression> expressions = new ArrayList<>();
+                    if (ctx.getChild(1).getChildCount() >= 3) {
+                        for (int i = 0; i < ctx.getChild(1).getChild(1).getChildCount(); i += 2) {
+                            expressions.add(createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1).getChild(1).getChild(i)));
+                        }
+                    }
+                    expression = new Binomial(ctx.getChild(0).getChild(1).getText(),
+                            createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0).getChild(0)),
+                            new MethodCall(ctx.getChild(0).getChild(2).getText(), expressions));
+                }
             }
 
         } else {
             if (ctx.getChild(1).getClass() == ClassFeatureParser.ExpressionContext.class) {
                 expression = new ExpressionWithParen(createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1)));
             } else if (ctx.getChild(1).getText().equals(".")) {
-                if (ctx.getChild(2).getClass() == ClassFeatureParser.ExplicitGenericInvocationSuffixContext.class) {
-                    expression = new Binomial(ctx.getChild(1).getText(),
-                            createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
-                            new MethodCall(ctx.getChild(2).getChild(0).getText(),
-                                    extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(2).getChild(1))));
-                } else {
+                // ANTLR文法ファイル上ではここに入るはずだが決して入ることはない
+                // if (ctx.getChild(2).getClass() == ClassFeatureParser.ExplicitGenericInvocationSuffixContext.class) {
+                //     expression = new Binomial(ctx.getChild(1).getText(),
+                //             createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
+                //             new MethodCall(ctx.getChild(2).getChild(0).getText(),
+                //                     extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(2).getChild(1))));
+                // } else {
                     expression = new Binomial(ctx.getChild(1).getText(),
                             createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
                             new OneIdentifier(ctx.getChild(2).getText()));
-                }
+                // }
             } else {
                 expression = new Binomial(ctx.getChild(1).getText(),
                         createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
