@@ -88,41 +88,20 @@ public class OperationEvaluation extends FeatureEvaluation {
         FeatureEvalListener listener = walk(parser.operation());
         context = listener.getOperation();
 
-        confirmExtractingName();
+        //confirmExtractingName();
     }
 
+    /**
+     * <p> 字句解析および構文解析結果のコンテキストを取得します。 </p>
+     *
+     * <p>
+     *     {@link #walk()}を実行する前にこのメソッドを実行すると{@link IllegalStateException}を投げます。
+     * </p>
+     *
+     * @return 字句解析および構文解析結果のコンテキスト
+     */
     public ClassFeatureParser.OperationContext getContext() {
         if (context == null) throw new IllegalStateException();
         return context;
-    }
-
-
-
-    /**
-     * <p> 操作名が抽出できるかどうか確認します。 </p>
-     *
-     * <p>
-     *     次の場合は例外を投げます。
-     * </p>
-     *
-     * <ul>
-     *     <li>操作文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
-     *     <li>設定した操作文が操作文としての形式と正しくない場合 : {@link ClassFeatureParser.OperationContext#exception}</li>
-     * </ul>
-     */
-    private void confirmExtractingName() {
-        String name = null;
-        boolean isHadParamParen = false;
-
-        for (int i = 0; i < context.getChildCount(); i++) {
-            if (context.getChild(i) instanceof ClassFeatureParser.NameContext) {
-                name = context.getChild(i).getText();
-            } else if (context.getChild(i) instanceof ClassFeatureParser.ParameterListContext) {
-                isHadParamParen = true;
-                break;
-            }
-            if (context.exception != null) throw context.exception;
-        }
-        if (!isHadParamParen || name.contains("<missing")) throw new IllegalArgumentException();
     }
 }

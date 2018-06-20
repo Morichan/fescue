@@ -75,27 +75,11 @@ class OperationEvaluationTest {
         }
 
         @Test
-        void 正しくない文を設定して走査したらエラーを返す() {
-
-            obj.setText("int int()");
-
-            assertThatThrownBy(() -> obj.walk()).isInstanceOf(InputMismatchException.class);
-        }
-
-        @Test
         void 文を走査せずにコンテキストを取得しようとしたら例外を投げる() {
 
             obj.setText("operation()");
 
             assertThatThrownBy(() -> obj.getContext()).isInstanceOf(IllegalStateException.class);
-        }
-
-        @Test
-        void 操作名を設定せずに走査したらエラーを返す() {
-
-            obj.setText("+ (): int");
-
-            assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
