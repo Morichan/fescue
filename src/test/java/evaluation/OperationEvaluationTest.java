@@ -89,5 +89,13 @@ class OperationEvaluationTest {
 
             assertThatThrownBy(() -> obj.getContext()).isInstanceOf(IllegalStateException.class);
         }
+
+        @Test
+        void 操作名を設定せずに走査したらエラーを返す() {
+
+            obj.setText("+ () : int");
+
+            assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 }

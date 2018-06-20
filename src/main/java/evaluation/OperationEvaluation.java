@@ -120,6 +120,6 @@ public class OperationEvaluation extends FeatureEvaluation {
             }
             if (context.exception != null) throw context.exception;
         }
-        if (name == null) throw new IllegalArgumentException();
+        if (name == null || name.equals("<missing IDENTIFIER>")) throw new IllegalArgumentException();
     }
 }
