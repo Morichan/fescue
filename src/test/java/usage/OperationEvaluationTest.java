@@ -171,6 +171,7 @@ class OperationEvaluationTest {
                 }
             }
 
+            /*
             @Disabled("TravisCI上で実行不可")
             @Nested
             class プロパティ名を持つプロパティが1つであれば {
@@ -191,6 +192,7 @@ class OperationEvaluationTest {
                     assertThat(actual).isEqualTo(expected);
                 }
             }
+            */
         }
     }
 
