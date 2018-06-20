@@ -112,14 +112,17 @@ public class OperationEvaluation extends FeatureEvaluation {
      */
     private void confirmExtractingName() {
         String name = null;
+        boolean isHadParamParen = false;
 
         for (int i = 0; i < context.getChildCount(); i++) {
             if (context.getChild(i) instanceof ClassFeatureParser.NameContext) {
                 name = context.getChild(i).getText();
+            } else if (context.getChild(i) instanceof ClassFeatureParser.ParameterListContext) {
+                isHadParamParen = true;
                 break;
             }
             if (context.exception != null) throw context.exception;
         }
-        if (name == null || name.equals("<missing IDENTIFIER>")) throw new IllegalArgumentException();
+        if (!isHadParamParen || name.contains("<missing")) throw new IllegalArgumentException();
     }
 }

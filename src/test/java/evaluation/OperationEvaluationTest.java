@@ -93,7 +93,7 @@ class OperationEvaluationTest {
         @Test
         void 操作名を設定せずに走査したらエラーを返す() {
 
-            obj.setText("+ () : int");
+            obj.setText("+ (): int");
 
             assertThatThrownBy(() -> obj.walk()).isInstanceOf(IllegalArgumentException.class);
         }
