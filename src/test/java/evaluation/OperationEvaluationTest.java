@@ -2,7 +2,6 @@ package evaluation;
 
 import org.antlr.v4.runtime.InputMismatchException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import parser.ClassFeatureParser;
@@ -75,17 +74,16 @@ class OperationEvaluationTest {
             assertThatThrownBy(() -> obj.getText()).isInstanceOf(IllegalStateException.class);
         }
 
-        @Disabled("AttributeEvaluationTestとの違いが不明だが正しい例外を投げてこない")
         @Test
         void 正しくない文を設定して走査したらエラーを返す() {
 
-            obj.setText("+ :int");
+            obj.setText("int int()");
 
             assertThatThrownBy(() -> obj.walk()).isInstanceOf(InputMismatchException.class);
         }
 
         @Test
-        void 文を走査せずにコンテキストを取得しようとすると例外を投げる() {
+        void 文を走査せずにコンテキストを取得しようとしたら例外を投げる() {
 
             obj.setText("operation()");
 

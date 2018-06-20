@@ -107,7 +107,7 @@ public class OperationEvaluation extends FeatureEvaluation {
      *
      * <ul>
      *     <li>操作文を設定していない場合（{@link #setText(String)}参照） : {@link IllegalArgumentException}</li>
-     *     <li>設定した操作文が予約語と同じ文字列の場合 : {@link ClassFeatureParser.OperationContext#exception}</li>
+     *     <li>設定した操作文が操作文としての形式と正しくない場合 : {@link ClassFeatureParser.OperationContext#exception}</li>
      * </ul>
      */
     private void confirmExtractingName() {
