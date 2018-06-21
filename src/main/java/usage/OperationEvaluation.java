@@ -11,6 +11,12 @@ import java.util.List;
 /**
  * <p> 操作における要素の抽出クラス </p>
  *
+ * <p>
+ *     @deprecated このクラスはあくまで文字列を構文解析し、その結果を文字列で出力するだけです。
+ *     そのため、ポイントでほしい情報を抽出できず、不完全です。
+ *     {@link sculptor.OperationSculptor}クラスをご利用ください。
+ * </p>
+ *
  * <p> 簡単な使い方を次に示します。</p>
  *
  * <pre>
@@ -31,6 +37,7 @@ import java.util.List;
  *     順番を変えると例外として{@link IllegalArgumentException}や{@link org.antlr.v4.runtime.InputMismatchException}を投げます。
  * </p>
  */
+@Deprecated
 public class OperationEvaluation extends FeatureEvaluation {
 
     /**
