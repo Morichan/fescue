@@ -29,9 +29,9 @@
 
 
 
-# 機能
+# 使い方と機能
 
-各ファイルの機能について説明します。
+各ファイルの使い方と機能について説明します。
 
 ## ClassFeature.g4
 
@@ -40,68 +40,80 @@
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
 
-## fescue-0.3.1.jar
+## fescue-1.0.0.jar
 
 上記の構文解析機を利用した、属性の各要素抽出器です。
 
 次のように利用してください。
 
 ```java
-import usage.AttributeEvaluation;
-import usage.OperationEvaluation;
+import sculptor.OperationSculptor;
+import feature.Operation;
+import sculptor.AttributeSculptor;
+import feature.Attribute;
 
 /**
- * クラスの属性または機能マネージャ
+ * <p> クラスの属性または操作の機能マネージャの使い方 </p>
+ *
+ * <p> コンパイル方法 </p>
  *
  * <pre>
  *     {@code
- *     $ javac -cp fescue-0.3.1.jar FeatureManager.java
- *     $ java -cp ./;fescue-0.3.1.jar;antlr.jar FeatureManager
+ *     $ javac -encoding utf8 -classpath .;fescue-0.3.1.jar Main.java
+ *     $ java -classpath .;fescue-0.3.1.jar;antlr-4.7.1-complete.jar Main
+ *     }
+ * </pre>
+ *
+ * <p> 出力結果 </p>
+ *
+ * <pre>
+ *     {@code
+ *     - number : int
+ *     number
+ *     int
+ *
+ *     + setNumber(number : int) : void
+ *     setNumber
+ *     void
  *     }
  * </pre>
  */
-class FeatureManager {
+class Main {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         printAttribute();
         printOperation();
     }
 
     private static void printAttribute() {
-        AttributeEvaluation evaluation = new AttributeEvaluation();
-        evaluation.setText("- attribute : int");
-        evaluation.walk();
+        AttributeSculptor sculptor = new AttributeSculptor();
+        Attribute attribute;
 
-        String name = evaluation.extractName();
-        String visibility = evaluation.extractVisibility();
-        String propType = evaluation.extractPropType();
+        sculptor.parse("- number : int");
+        attribute = sculptor.carve();
 
-        // "visibility: -, name: attribute, type: int"
-        System.out.println(
-                "visibility: " + visibility +
-                ", name: " + name +
-                ", type: " + propType);
+        System.out.println(attribute); // "- number : int"
+        System.out.println(attribute.getName()); // "number"
+        System.out.println(attribute.getType()); // "int"
+
+        System.out.println(); // 改行
     }
 
     private static void printOperation() {
-        OperationEvaluation evaluation = new OperationEvaluation();
-        evaluation.setText("+ operation() : double");
-        evaluation.walk();
+        OperationSculptor sculptor = new OperationSculptor();
+        Operation operation;
 
-        String name = evaluation.extractName();
-        String visibility = evaluation.extractVisibility();
-        String returnType = evaluation.extractReturnType();
+        sculptor.parse("+ setNumber(number : int) : void");
+        operation = sculptor.carve();
 
-        // "visibility: +, name: operation, type: double"
-        System.out.println(
-                "visibility: " + visibility +
-                ", name: " + name +
-                ", type: " + returnType);
+        System.out.println(operation); // "+ setNumber(number : int) : void"
+        System.out.println(operation.getName()); // "setNumber"
+        System.out.println(operation.getReturnType()); // "void"
     }
 }
 ```
 
-テストコードに使用例や対応構文を書いていますので、そちらもご覧ください。
+各クラスのJavadocやテストコードに使用例や対応構文を書いていますので、そちらもご覧ください。
 
 
 
@@ -213,9 +225,9 @@ class FeatureManager {
 
 
 
-# 未対応の内容
+# 未対応内容
 
-構文解析機、またはそれを利用したツールの未対応の内容について説明します。
+構文解析機、またはそれを利用したツールの未対応内容について説明します。
 
 ## 文法ファイルにおける未対応内容
 
@@ -223,28 +235,44 @@ class FeatureManager {
 
 多重度を記述する際に、`'[0..1]'`のように下限および上限と範囲演算子`'..'`の間にスペースを挿入しない場合、構文解析機が正しい構文木を生成できません。
 Jarファイルの方を利用する場合は、文字列置換により間にスペースを挿入する（`'[0..1]' -> '[0 .. 1]'`）ため、問題ありません。
+また、文法ファイルのみを使う場合でも、間にスペースを挿入することで利用できます。
 
-## Usageパッケージにおける文字列抽出としての未対応内容
+これはANTLR側の問題の可能性もあるため、現在対応は保留です。
 
-### 各要素の抽出文字列の粒度
+## ビルドにおける未対応内容
 
-属性と操作のオプションの文字列や、多重度における文字列など、複数の要素を含む可能性がある要素を個別に抽出できません。
+### Gradleによる構文解析機生成法の未使用
 
-### 操作のパラメータの要素の抽出
-
-操作のパラメータの要素の抽出ができません。
-これは、操作のパラメータに多重度や既定値など、複数の要素を含んでおり、単純な文字列として抽出するべきではないと判断したためです。
+ANTLR4文法ファイルから生成する構文解析機ファイル群の出力先を、`/src/main/antlr` ディレクトリではなく `/src/main/java/parser` に設定しています。
+もともとGradleによるANTLR4文法ファイルからの構文解析機生成の存在を知らず、`.travis.yml` ファイルでゴリ押しで出力していました。
+しかし、それではGradleファイルを使う利点が半減してしまうため、そのうち対応するかもしれません。
 
 ## 共通する未対応内容
 
-### 属性のprop-modifierにおけるOCL文法
+### プリミティブ型以外の入力による例外の送出
 
-OCLの文法を記述していないため、属性のプロパティとしてOCLを記述しても正しい構文木を生成できません。
+型としてプリミティブ型以外の文字列を入力すると、解析せずに例外を投げます。
+これは、プリミティブ型以外はクラスがあるため、インライン属性やインライン操作ではなく、クラス図における関係の関連端名に記述するべき、という考えのもとです。
 
-### 操作のoper-propertyにおけるOCL文法
+しかし、次のような疑問点が残ります。
 
-OCLの文法を記述していないため、操作のプロパティとしてOCLを記述しても正しい構文木を生成できません。
+* あまりにも図が莫大になりやすいため、 `String` 型や `Data` 型など、言語レベルで提供されているクラス型はインラインでもよいのではないか？
+* `typedef` などによるプリミティブ型の言換え（`int8_t` や `uint` など）はプリミティブ型として追加できるようにしたほうがいいのではないか？
 
-### 操作のparam-propertyにおけるOCL文法
+この点をどうするかによっては、そのうち対応できるように変更する可能性があります。
 
-OCLの文法を記述していないため、操作のパラメータのプロパティとしてOCLを記述しても正しい構文木を生成できません。
+### UML2.5.1との定義文法の差異
+
+UML2.5.1を詳しく調べたわけではありませんが、もしかしたら構文解析するための文法がおかしい可能性があります。
+検証中です。
+
+### 属性のprop-modifierおよび操作のoper-propertyとparam-propertyにおけるOCL文法
+
+OCLの文法を記述していないため、次の3つにOCLを記述しても正しい構文木を生成できません。
+
+* 属性のプロパティ (prop-modifier)
+* 操作のプロパティ (oper-property)
+* 操作のパラメータのプロパティ (param-property)
+
+ただし、文字列をそのまま出力することは可能です。
+もしOCL文法の構文解析機があれば、そちらを利用して構文解析することをオススメします。
