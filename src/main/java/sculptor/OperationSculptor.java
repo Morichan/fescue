@@ -124,7 +124,7 @@ public class OperationSculptor {
                 if (ctx.getChildCount() > 2)
                     feature.setParameters(extractParameters((ClassFeatureParser.ParameterListContext) ctx));
 
-            } else if (ctx instanceof ClassFeatureParser.OperPropertiesContext) {
+            } else { // if (ctx instanceof ClassFeatureParser.OperPropertiesContext) {
                 feature.setProperties(extractOperationProperties((ClassFeatureParser.OperPropertiesContext) ctx));
             }
         }
@@ -169,7 +169,7 @@ public class OperationSculptor {
                     param.setDefaultValue(new DefaultValue(
                             createExpression((ClassFeatureParser.ExpressionContext) paramItem.getChild(1))));
 
-                } else if (paramItem instanceof ClassFeatureParser.ParamPropertiesContext) {
+                } else { // if (paramItem instanceof ClassFeatureParser.ParamPropertiesContext) {
                     param.setProperties(extractParamProperties((ClassFeatureParser.PropertiesContext) paramItem.getChild(0)));
                 }
             }
