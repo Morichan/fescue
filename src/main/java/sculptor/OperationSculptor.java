@@ -1,10 +1,12 @@
 package sculptor;
 
-import evaluation.AttributeEvaluation;
-import feature.Attribute;
+import evaluation.OperationEvaluation;
+import feature.Operation;
+import feature.direction.*;
 import feature.multiplicity.Bounder;
 import feature.multiplicity.MultiplicityRange;
 import feature.name.Name;
+import feature.parameter.Parameter;
 import feature.property.*;
 import feature.type.Type;
 import feature.value.DefaultValue;
@@ -16,65 +18,61 @@ import parser.ClassFeatureParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-/**
- * <p> 属性彫刻家 </p>
- *
- * <p>
- *     属性文を入力することで、{@link feature.Attribute}クラスのインスタンス化を行います。
- * </p>
- */
-public class AttributeSculptor {
+public class OperationSculptor {
 
-    private AttributeEvaluation evaluation;
-    private ClassFeatureParser.PropertyContext attribute;
+    private OperationEvaluation evaluation;
+    private ClassFeatureParser.OperationContext operation;
 
     /**
      * <p> 構文解析を行う。 </p>
      *
      * <p>
-     *     属性文を入力すると構文解析を行います。
+     *     操作文を入力すると構文解析を行います。
      *     ここでいう構文解析とは、字句解析と構文解析を含みます。
      * </p>
      *
-     * @param attributeText 属性文 <br> {@code null}不可
+     * <p>
+     *     {@code null}および{@code ""}（空文字）を入力すると{@link IllegalArgumentException}を投げます。
+     * </p>
+     *
+     * @param operationText 操作文 <br> {@code null}と{@code ""}（空文字）不可
      */
-    public void parse(String attributeText) {
-        if (attributeText == null) throw new IllegalArgumentException();
+    public void parse(String operationText) {
+        if (operationText == null || operationText.isEmpty()) throw new IllegalArgumentException();
 
-        evaluation = new AttributeEvaluation();
-        evaluation.setText(attributeText);
+        evaluation = new OperationEvaluation();
+        evaluation.setText(operationText);
         evaluation.walk();
 
-        attribute = evaluation.getContext();
+        operation = evaluation.getContext();
     }
 
     /**
-     * <p> 属性文コンテキストを取得します。 </p>
+     * <p> 操作文コンテキストを取得します。 </p>
      *
      * <p>
      *     コンテキストを取得したい場合はこのメソッドを利用してください。
      *     テストコード以外ではあまり使わないと思います。
      * </p>
      *
-     * @return 属性文コンテキスト
+     * @return 操作文コンテキスト
      */
     public ParserRuleContext getContext() {
-        if (attribute == null) throw new IllegalStateException();
-        return attribute;
+        if (operation == null) throw new IllegalStateException();
+        return operation;
     }
 
     /**
-     * <p> 属性文コンテキストから{@link Attribute}インスタンスを形成します。 </p>
+     * <p> 操作文コンテキストから{@link feature.Operation}インスタンスを形成します。 </p>
      *
-     * @return 属性文コンテキストから生成した {@link Attribute}インスタンス
+     * @return 操作文コンテキストから生成した {@link Operation}インスタンス
      */
-    public Attribute carve() {
-        Attribute feature = new Attribute(new Name("attribute"));
+    public Operation carve() {
+        Operation feature = new Operation(new Name("operation"));
 
-        for (int i = 0; i < attribute.getChildCount(); i++) {
-            ParserRuleContext ctx = (ParserRuleContext) attribute.getChild(i);
+        for (int i = 0; i < operation.getChildCount(); i++) {
+            ParserRuleContext ctx = (ParserRuleContext) operation.getChild(i);
 
             if (ctx instanceof ClassFeatureParser.VisibilityContext) {
                 feature.setVisibility(Visibility.choose(ctx.getText()));
@@ -82,30 +80,70 @@ public class AttributeSculptor {
             } else if (ctx instanceof ClassFeatureParser.NameContext) {
                 feature.setName(new Name(ctx.getText()));
 
-            } else if (ctx instanceof ClassFeatureParser.DividedContext) {
-                feature.setDerived(true);
-
-            } else if (ctx instanceof ClassFeatureParser.PropTypeContext) {
-                feature.setType(new Type(ctx.getChild(0).getChild(1).getText()));
-
-            } else if (ctx instanceof ClassFeatureParser.MultiplicityRangeContext) {
-                if (ctx.getChild(1) instanceof ClassFeatureParser.UpperContext) {
-                    feature.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(ctx.getChild(1).getText()))));
-                } else {
-                    feature.setMultiplicityRange(new MultiplicityRange(
-                            new Bounder(new OneIdentifier(ctx.getChild(1).getText())), new Bounder(new OneIdentifier(ctx.getChild(3).getText()))));
+            } else if (ctx instanceof ClassFeatureParser.ReturnTypeContext) {
+                if (ctx.getChild(0) instanceof ClassFeatureParser.TypeContext) {
+                    feature.setReturnType(new Type(ctx.getChild(0).getChild(1).getText()));
+                } else { // if (ctx.getChild(1).getText().equals("void")) {
+                    feature.setReturnType(new Type(ctx.getChild(1).getText()));
                 }
 
-            } else if (ctx instanceof ClassFeatureParser.DefaultValueContext) {
-                feature.setDefaultValue(new DefaultValue(
-                        createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(1))));
+            } else if (ctx instanceof ClassFeatureParser.ParameterListContext) {
+                if (ctx.getChildCount() > 2)
+                    feature.setParameters(extractParameters((ClassFeatureParser.ParameterListContext) ctx));
 
-            } else { // if (ctx instanceof ClassFeatureParser.PropModifiersContext) {
-                feature.setProperties(extractProperties((ClassFeatureParser.PropertiesContext) ctx.getChild(0)));
+            } else if (ctx instanceof ClassFeatureParser.OperPropertiesContext) {
+                feature.setProperties(extractOperationProperties((ClassFeatureParser.OperPropertiesContext) ctx));
             }
         }
 
         return feature;
+    }
+
+    /**
+     * <p> 操作文におけるパラメータコンテキストから{@link Parameter}インスタンスリストを形成します。 </p>
+     *
+     * @return 操作文におけるパラメータコンテキストから生成した {@link Operation}インスタンスリスト
+     */
+    private List<Parameter> extractParameters(ClassFeatureParser.ParameterListContext ctx) {
+        List<Parameter> parameters = new ArrayList<>();
+
+        for (int i = 1; i < ctx.getChildCount(); i += 2) {
+            Parameter param = new Parameter(new Name("parameter"));
+            for (int j = 0; j < ctx.getChild(i).getChildCount(); j++) {
+                ParserRuleContext paramItem = (ParserRuleContext) ctx.getChild(i).getChild(j);
+
+                if (paramItem instanceof ClassFeatureParser.ParameterNameContext) {
+                    param.setName(new Name(paramItem.getText()));
+
+                } else if (paramItem instanceof ClassFeatureParser.TypeExpressionContext) {
+                    param.setType(new Type(paramItem.getChild(0).getChild(1).getText()));
+
+                } else if (paramItem instanceof ClassFeatureParser.DirectionContext) {
+                    if (paramItem.getText().equals("in")) param.setDirection(new In(true));
+                    else if (paramItem.getText().equals("out")) param.setDirection(new Out());
+                    else if (paramItem.getText().equals("inout")) param.setDirection(new InOut());
+                    else param.setDirection(new Return());
+
+                } else if (paramItem instanceof ClassFeatureParser.MultiplicityRangeContext) {
+                    if (paramItem.getChild(1) instanceof ClassFeatureParser.UpperContext) {
+                        param.setMultiplicityRange(new MultiplicityRange(new Bounder(new OneIdentifier(paramItem.getChild(1).getText()))));
+                    } else {
+                        param.setMultiplicityRange(new MultiplicityRange(
+                                new Bounder(new OneIdentifier(paramItem.getChild(1).getText())), new Bounder(new OneIdentifier(paramItem.getChild(3).getText()))));
+                    }
+
+                } else if (paramItem instanceof ClassFeatureParser.DefaultValueContext) {
+                    param.setDefaultValue(new DefaultValue(
+                            createExpression((ClassFeatureParser.ExpressionContext) paramItem.getChild(1))));
+
+                } else if (paramItem instanceof ClassFeatureParser.ParamPropertiesContext) {
+                    param.setProperties(extractParamProperties((ClassFeatureParser.PropertiesContext) paramItem.getChild(0)));
+                }
+            }
+            parameters.add(param);
+        }
+
+        return parameters;
     }
 
     /**
@@ -118,14 +156,14 @@ public class AttributeSculptor {
      * </p>
      *
      * <p>
-     *     このメソッドは{@link OperationSculptor#createExpression(ClassFeatureParser.ExpressionContext)}と完全に一緒です。
+     *     このメソッドは{@link AttributeSculptor#createExpression(ClassFeatureParser.ExpressionContext)}と完全に一緒です。
      * </p>
      *
      * @param ctx 式コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return 式インスタンス <br> {@code null}の可能性なし
      */
     private Expression createExpression(ClassFeatureParser.ExpressionContext ctx) {
-        Expression expression = null;
+        Expression expression;
 
         if (ctx.getChildCount() == 1) {
             expression = new OneIdentifier(ctx.getText());
@@ -162,9 +200,9 @@ public class AttributeSculptor {
                 //             new MethodCall(ctx.getChild(2).getChild(0).getText(),
                 //                     extractExpressionsFromArguments((ClassFeatureParser.ArgumentsContext) ctx.getChild(2).getChild(1))));
                 // } else {
-                    expression = new Binomial(ctx.getChild(1).getText(),
-                            createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
-                            new OneIdentifier(ctx.getChild(2).getText()));
+                expression = new Binomial(ctx.getChild(1).getText(),
+                        createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0)),
+                        new OneIdentifier(ctx.getChild(2).getText()));
                 // }
             } else {
                 expression = new Binomial(ctx.getChild(1).getText(),
@@ -184,7 +222,7 @@ public class AttributeSculptor {
      * </p>
      *
      * <p>
-     *     このメソッドは{@link OperationSculptor#extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}と完全に一緒です。
+     *     このメソッドは{@link AttributeSculptor#extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}と完全に一緒です。
      * </p>
      *
      * @param ctx 引数コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
@@ -213,13 +251,13 @@ public class AttributeSculptor {
      * </p>
      *
      * <p>
-     *     このメソッドは{@link OperationSculptor#extractParamProperties(ClassFeatureParser.PropertiesContext)}と完全に一緒です。
+     *     このメソッドは{@link AttributeSculptor#extractProperties(ClassFeatureParser.PropertiesContext)}と完全に一緒です。
      * </p>
      *
      * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return プロパティインスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
      */
-    private List<Property> extractProperties(ClassFeatureParser.PropertiesContext ctx) {
+    private List<Property> extractParamProperties(ClassFeatureParser.PropertiesContext ctx) {
         List<Property> properties = new ArrayList<>();
 
         for (int i = 1; i < ctx.getChildCount(); i += 2) {
@@ -252,13 +290,57 @@ public class AttributeSculptor {
      * </p>
      *
      * <p>
-     *     このメソッドは{@link OperationSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
+     *     このメソッドは{@link AttributeSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と、
+     *     また処理は{@link #extractExpressionFromProperty(ClassFeatureParser.OperNameContext)}と完全に一緒です。
      * </p>
      *
      * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return 式インスタンス <br> {@code null}の可能性なし
      */
     private Expression extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext ctx) {
+        if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
+            return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
+        } else {
+            return new OneIdentifier(ctx.getChild(0).getChild(0).toString());
+        }
+    }
+
+    private List<Property> extractOperationProperties(ClassFeatureParser.OperPropertiesContext ctx) {
+        List<Property> properties = new ArrayList<>();
+
+        for (int i = 1; i < ctx.getChildCount(); i += 2) {
+            String propertyString = ctx.getChild(i).getChild(0).getText();
+            if (propertyString.equals("redefines")) {
+                properties.add(new Redefines(
+                        extractExpressionFromProperty((ClassFeatureParser.OperNameContext) ctx.getChild(i).getChild(1))));
+            } else if (propertyString.equals("query")) {
+                properties.add(new Query());
+            } else if (propertyString.equals("ordered")) {
+                properties.add(new Ordered());
+            } else { // if (propertyString.equals("unique")) {
+                properties.add(new Unique());
+            }
+        }
+
+        return properties;
+    }
+
+    /**
+     * <p> プロパティにおける式を抽出します。 </p>
+     *
+     * <p>
+     *     プロパティにおける式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて抽出します。
+     * </p>
+     *
+     * <p>
+     *     このメソッドは{@link AttributeSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
+     *     また処理は{@link #extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
+     * </p>
+     *
+     * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @return 式インスタンス <br> {@code null}の可能性なし
+     */
+    private Expression extractExpressionFromProperty(ClassFeatureParser.OperNameContext ctx) {
         if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
             return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
         } else {
