@@ -24,6 +24,32 @@ import java.util.concurrent.Callable;
  * <p>
  *     属性文を入力することで、{@link feature.Attribute}クラスのインスタンス化を行います。
  * </p>
+ *
+ * <pre>
+ *     {@code
+ *     import sculptor.AttributeSculptor;
+ *     import feature.Attribute;
+ *
+ *     class Main {
+ *         // 使い方
+ *         public static void main(String[] args) {
+ *             AttributeSculptor sculptor = new AttributeSculptor();
+ *             Attribute attribute;
+ *
+ *             // 属性文を構文解析します
+ *             sculptor.parse("- number : int");
+ *             // 構文解析結果をAttributeクラスのインスタンスとして出力します
+ *             attribute = sculptor.carve();
+ *
+ *             // 全体像を出力します
+ *             System.out.println(attribute); // "- number : int"
+ *             // 各項目を出力します
+ *             System.out.println(attribute.getName()); // "number"
+ *             System.out.println(attribute.getType()); // "int"
+ *         }
+ *     }
+ *     }
+ * </pre>
  */
 public class AttributeSculptor {
 
@@ -108,6 +134,8 @@ public class AttributeSculptor {
         return feature;
     }
 
+
+
     /**
      * <p> 式インスタンスを生成します。 </p>
      *
@@ -117,8 +145,12 @@ public class AttributeSculptor {
      *     ClassFeature.g4ファイルにおけるexpressionの項目を参考にしました。
      * </p>
      *
+     * <p>
+     *     このメソッドは{@link OperationSculptor#createExpression(ClassFeatureParser.ExpressionContext)}と完全に一緒です。
+     * </p>
+     *
      * @param ctx 式コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
-     * @return 式インスタンス
+     * @return 式インスタンス <br> {@code null}の可能性なし
      */
     private Expression createExpression(ClassFeatureParser.ExpressionContext ctx) {
         Expression expression = null;
@@ -179,6 +211,10 @@ public class AttributeSculptor {
      *     メソッドにおける各引数の式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて再帰的に抽出します。
      * </p>
      *
+     * <p>
+     *     このメソッドは{@link OperationSculptor#extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}と完全に一緒です。
+     * </p>
+     *
      * @param ctx 引数コンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return 式インスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
      */
@@ -200,8 +236,12 @@ public class AttributeSculptor {
      * <p> プロパティインスタンスリストを生成します。 </p>
      *
      * <p>
-     *     プロパティの文字列（{@code toString()}メソッド）で判断し、その文字列に対応するインスタンスをリスト化します。
-     *     式が付随するプロパティについては{@link #extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}を用います。
+     *     プロパティの文字列で判断し、その文字列に対応するインスタンスをリスト化します。
+     *     式が付随するプロパティについては{@link #extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}を用います。
+     * </p>
+     *
+     * <p>
+     *     このメソッドは{@link OperationSculptor#extractParamProperties(ClassFeatureParser.PropertiesContext)}と完全に一緒です。
      * </p>
      *
      * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
@@ -211,7 +251,7 @@ public class AttributeSculptor {
         List<Property> properties = new ArrayList<>();
 
         for (int i = 1; i < ctx.getChildCount(); i += 2) {
-            String propertyString = ctx.getChild(i).getChild(0).toString();
+            String propertyString = ctx.getChild(i).getChild(0).getText();
             if (propertyString.equals("readOnly")) {
                 properties.add(new ReadOnly());
             } else if (propertyString.equals("union")) {
@@ -232,11 +272,25 @@ public class AttributeSculptor {
         return properties;
     }
 
+    /**
+     * <p> プロパティにおける式を抽出します。 </p>
+     *
+     * <p>
+     *     プロパティにおける式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて抽出します。
+     * </p>
+     *
+     * <p>
+     *     このメソッドは{@link OperationSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
+     * </p>
+     *
+     * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @return 式インスタンス <br> {@code null}の可能性なし
+     */
     private Expression extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext ctx) {
         if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
             return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
         } else {
-            return new OneIdentifier(ctx.getChild(0).getChild(0).toString());
+            return new OneIdentifier(ctx.getChild(0).getChild(0).getText());
         }
     }
 }

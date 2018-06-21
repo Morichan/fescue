@@ -414,7 +414,7 @@ class AttributeSculptorTest {
             }
 
             @Nested
-            class カッコで囲まれている式の場合 {
+            class カッコで囲っている式の場合 {
 
                 @BeforeEach
                 void setup() {
