@@ -132,6 +132,8 @@ public class OperationSculptor {
         return feature;
     }
 
+
+
     /**
      * <p> 操作文におけるパラメータコンテキストから{@link Parameter}インスタンスリストを形成します。 </p>
      *
@@ -276,25 +278,25 @@ public class OperationSculptor {
     }
 
     /**
-     * <p> プロパティインスタンスリストを生成します。 </p>
+     * <p> パラメータにおけるプロパティインスタンスリストを生成します。 </p>
      *
      * <p>
-     *     プロパティの文字列（{@code toString()}メソッド）で判断し、その文字列に対応するインスタンスをリスト化します。
-     *     式が付随するプロパティについては{@link #extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}を用います。
+     *     パラメータにおけるプロパティの文字列で判断し、その文字列に対応するインスタンスをリスト化します。
+     *     式が付随するプロパティについては{@link #extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}を用います。
      * </p>
      *
      * <p>
      *     このメソッドは{@link AttributeSculptor#extractProperties(ClassFeatureParser.PropertiesContext)}と完全に一緒です。
      * </p>
      *
-     * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @param ctx パラメータにおけるプロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return プロパティインスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
      */
     private List<Property> extractParamProperties(ClassFeatureParser.PropertiesContext ctx) {
         List<Property> properties = new ArrayList<>();
 
         for (int i = 1; i < ctx.getChildCount(); i += 2) {
-            String propertyString = ctx.getChild(i).getChild(0).toString();
+            String propertyString = ctx.getChild(i).getChild(0).getText();
             if (propertyString.equals("readOnly")) {
                 properties.add(new ReadOnly());
             } else if (propertyString.equals("union")) {
@@ -316,28 +318,39 @@ public class OperationSculptor {
     }
 
     /**
-     * <p> プロパティにおける式を抽出します。 </p>
+     * <p> パラメータにおけるプロパティの式を抽出します。 </p>
      *
      * <p>
-     *     プロパティにおける式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて抽出します。
+     *     パラメータにおけるプロパティの式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて抽出します。
      * </p>
      *
      * <p>
-     *     このメソッドは{@link AttributeSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と、
-     *     また処理は{@link #extractExpressionFromProperty(ClassFeatureParser.OperNameContext)}と完全に一緒です。
+     *     このメソッドは{@link AttributeSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
+     *     また処理内容は{@link #extractExpressionFromProperty(ClassFeatureParser.OperNameContext)}と完全に一緒です。
      * </p>
      *
-     * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @param ctx パラメータにおけるプロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return 式インスタンス <br> {@code null}の可能性なし
      */
     private Expression extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext ctx) {
         if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
             return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
         } else {
-            return new OneIdentifier(ctx.getChild(0).getChild(0).toString());
+            return new OneIdentifier(ctx.getChild(0).getChild(0).getText());
         }
     }
 
+    /**
+     * <p> 操作におけるプロパティインスタンスリストを生成します。 </p>
+     *
+     * <p>
+     *     操作におけるプロパティの文字列で判断し、その文字列に対応するインスタンスをリスト化します。
+     *     式が付随するプロパティについては{@link #extractExpressionFromProperty(ClassFeatureParser.OperNameContext)}を用います。
+     * </p>
+     *
+     * @param ctx 操作におけるプロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @return プロパティインスタンスリスト <br> リストの要素数が{@code 0}の可能性あり
+     */
     private List<Property> extractOperationProperties(ClassFeatureParser.OperPropertiesContext ctx) {
         List<Property> properties = new ArrayList<>();
 
@@ -359,25 +372,25 @@ public class OperationSculptor {
     }
 
     /**
-     * <p> プロパティにおける式を抽出します。 </p>
+     * <p> 操作におけるプロパティの式を抽出します。 </p>
      *
      * <p>
-     *     プロパティにおける式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて抽出します。
+     *     操作におけるプロパティの式を{@link #createExpression(ClassFeatureParser.ExpressionContext)}を用いて抽出します。
      * </p>
      *
      * <p>
-     *     このメソッドは{@link AttributeSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
-     *     また処理は{@link #extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
+     *     このメソッドにおける処理内容は{@link AttributeSculptor#extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}
+     *     および{@link #extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}と完全に一緒です。
      * </p>
      *
-     * @param ctx プロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
+     * @param ctx 操作におけるプロパティコンテキスト <br> {@code null}については{@link NullPointerException}を投げるはず
      * @return 式インスタンス <br> {@code null}の可能性なし
      */
     private Expression extractExpressionFromProperty(ClassFeatureParser.OperNameContext ctx) {
         if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
             return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
         } else {
-            return new OneIdentifier(ctx.getChild(0).getChild(0).toString());
+            return new OneIdentifier(ctx.getChild(0).getChild(0).getText());
         }
     }
 }

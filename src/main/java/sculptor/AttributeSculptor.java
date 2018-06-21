@@ -134,6 +134,8 @@ public class AttributeSculptor {
         return feature;
     }
 
+
+
     /**
      * <p> 式インスタンスを生成します。 </p>
      *
@@ -234,8 +236,8 @@ public class AttributeSculptor {
      * <p> プロパティインスタンスリストを生成します。 </p>
      *
      * <p>
-     *     プロパティの文字列（{@code toString()}メソッド）で判断し、その文字列に対応するインスタンスをリスト化します。
-     *     式が付随するプロパティについては{@link #extractExpressionsFromArguments(ClassFeatureParser.ArgumentsContext)}を用います。
+     *     プロパティの文字列で判断し、その文字列に対応するインスタンスをリスト化します。
+     *     式が付随するプロパティについては{@link #extractExpressionFromProperty(ClassFeatureParser.PropertyNameContext)}を用います。
      * </p>
      *
      * <p>
@@ -249,7 +251,7 @@ public class AttributeSculptor {
         List<Property> properties = new ArrayList<>();
 
         for (int i = 1; i < ctx.getChildCount(); i += 2) {
-            String propertyString = ctx.getChild(i).getChild(0).toString();
+            String propertyString = ctx.getChild(i).getChild(0).getText();
             if (propertyString.equals("readOnly")) {
                 properties.add(new ReadOnly());
             } else if (propertyString.equals("union")) {
@@ -288,7 +290,7 @@ public class AttributeSculptor {
         if (ctx.getChild(0) instanceof ClassFeatureParser.ExpressionContext) {
             return createExpression((ClassFeatureParser.ExpressionContext) ctx.getChild(0));
         } else {
-            return new OneIdentifier(ctx.getChild(0).getChild(0).toString());
+            return new OneIdentifier(ctx.getChild(0).getChild(0).getText());
         }
     }
 }
