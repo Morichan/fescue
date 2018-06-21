@@ -24,6 +24,32 @@ import java.util.concurrent.Callable;
  * <p>
  *     属性文を入力することで、{@link feature.Attribute}クラスのインスタンス化を行います。
  * </p>
+ *
+ * <pre>
+ *     {@code
+ *     import sculptor.AttributeSculptor;
+ *     import feature.Attribute;
+ *
+ *     class Main {
+ *         // 使い方
+ *         public static void main(String[] args) {
+ *             AttributeSculptor sculptor = new AttributeSculptor();
+ *             Attribute attribute;
+ *
+ *             // 属性文を構文解析します
+ *             sculptor.parse("- number : int");
+ *             // 構文解析結果をAttributeクラスのインスタンスとして出力します
+ *             attribute = sculptor.carve();
+ *
+ *             // 全体像を出力します
+ *             System.out.println(attribute); // "- number : int"
+ *             // 各項目を出力します
+ *             System.out.println(attribute.getName()); // "number"
+ *             System.out.println(attribute.getType()); // "int"
+ *         }
+ *     }
+ *     }
+ * </pre>
  */
 public class AttributeSculptor {
 

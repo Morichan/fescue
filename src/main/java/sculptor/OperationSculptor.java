@@ -19,6 +19,39 @@ import parser.ClassFeatureParser;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p> 操作彫刻家 </p>
+ *
+ * <p>
+ *     操作文を入力することで、{@link feature.Operation}クラスのインスタンス化を行います。
+ * </p>
+ *
+ * <pre>
+ *     {@code
+ *     import sculptor.OperationSculptor;
+ *     import feature.Operation;
+ *
+ *     class Main {
+ *         // 使い方
+ *         public static void main(String[] args) {
+ *             OperationSculptor sculptor = new OperationSculptor();
+ *             Operation operation;
+ *
+ *             // 操作文を構文解析します
+ *             sculptor.parse("+ setNumber(number : int) : void");
+ *             // 構文解析結果をOperationクラスのインスタンスとして出力します
+ *             operation = sculptor.carve();
+ *
+ *             // 全体像を出力します
+ *             System.out.println(operation); // "+ setNumber(number : int) : void"
+ *             // 各項目を出力します
+ *             System.out.println(operation.getName()); // "setNumber"
+ *             System.out.println(operation.getReturnType()); // "void"
+ *         }
+ *     }
+ *     }
+ * </pre>
+ */
 public class OperationSculptor {
 
     private OperationEvaluation evaluation;
