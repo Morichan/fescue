@@ -1,10 +1,13 @@
-group 'grammars'
-version '1.0.0'
+group 'jp.ac.miyazaki_u.cs.earth'
+version '1.0.1'
 
 apply plugin: 'java'
 
 sourceCompatibility = 9
-tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
+tasks.withType(AbstractCompile)*.options*.encoding =
+        tasks.withType(GroovyCompile)*.groovyOptions*.encoding =
+                javadoc.options.encoding =
+                        javadoc.options.charSet = 'UTF-8'
 
 buildscript {
     repositories {
@@ -35,6 +38,16 @@ dependencies {
     testCompile 'net.java.quickcheck:quickcheck:0.+'
 
     testCompileOnly 'org.apiguardian:apiguardian-api:1.+'
+}
+
+ext.antlr = [destinationDir: 'src/main/java/jp/ac/miyazaki_u/cs/earth/fescue/parser']
+generateGrammarSource {
+    outputDirectory = file(new File("${antlr.destinationDir}"))
+    arguments = ["-package", "jp.ac.miyazaki_u.cs.earth.fescue.parser", "-listener", "-no-visitor"].flatten()
+}
+
+clean {
+    delete antlr.destinationDir
 }
 
 
