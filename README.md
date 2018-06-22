@@ -23,10 +23,26 @@
 
 # fescue
 
+The grammar file of Attribute and Operation in UML Class Diagram using [ANTLR v4](https://github.com/antlr/antlr4).
+And, the Feature Elements Section of Class in UML Extraction library that uses the parser generated based on the grammar file.
+
 [ANTLR v4](https://github.com/antlr/antlr4)を利用した、UMLのクラス図における、属性と操作の文法ファイル、およびそれを元に生成した構文解析機を利用する属性と操作の要素抽出ライブラリです。
 
-現在、文字列として属性と操作の抽出に対応（一部未対応）しています。
 
+
+# Build Process
+
+Windows and Linux (and other?)
+
+Gradle >= version 4.2.1
+
+```bash
+$ git clone https://github.com/Morichan/fescue
+$ cd ./fescue
+$ gradle build
+$ ls ./build/libs/
+fescue-1.0.1.jar
+```
 
 
 # 使い方と機能
@@ -121,7 +137,7 @@ class Main {
 
 それぞれの文法、および各要素について説明します。
 元となる文法は「UML2.0仕様書 2.1対応」 (ISBN: 978-4274066634) を参考にしました。
-詳細は`/src/main/resources/ClassFeature.g4`をご覧ください。
+詳細は`/src/main/antlr/ClassFeature.g4`をご覧ください。
 
 ## 属性
 
@@ -239,14 +255,6 @@ Jarファイルの方を利用する場合は、文字列置換により間に�
 
 これはANTLR側の問題の可能性もあるため、現在対応は保留です。
 
-## ビルドにおける未対応内容
-
-### Gradleによる構文解析機生成法の未使用
-
-ANTLR4文法ファイルから生成する構文解析機ファイル群の出力先を、`/src/main/antlr` ディレクトリではなく `/src/main/java/jp.ac.miyazaki_u.cs.earth.jp.ac.miyazaki_u.cs.earth.fescue.parser` に設定しています。
-もともとGradleによるANTLR4文法ファイルからの構文解析機生成の存在を知らず、`.travis.yml` ファイルでゴリ押しで出力していました。
-しかし、それではGradleファイルを使う利点が半減してしまうため、そのうち対応するかもしれません。
-
 ## 共通する未対応内容
 
 ### プリミティブ型以外の入力による例外の送出
@@ -263,8 +271,9 @@ ANTLR4文法ファイルから生成する構文解析機ファイル群の出�
 
 ### UML2.5.1との定義文法の差異
 
-UML2.5.1を詳しく調べたわけではありませんが、もしかしたら構文解析するための文法がおかしい可能性があります。
-検証中です。
+UML2.5.1では、属性および操作の定義文法が異なります。
+最新のバージョンでの記述法を用いることができません。
+影響範囲などについては検証中です。
 
 ### 属性のprop-modifierおよび操作のoper-propertyとparam-propertyにおけるOCL文法
 
