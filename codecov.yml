@@ -13,7 +13,7 @@ coverage:
     changes: no
 
   ignore:
-    - "./src/main/java/parser/*"
+    - "./src/main/java/jp.ac.miyazaki_u.cs.earth.jp.ac.miyazaki_u.cs.earth.fescue.parser/*"
 
 parsers:
   gcov:

@@ -4,4 +4,4 @@
 /build/
 *.test
 *.swp
-/src/main/java/parser/
+/src/main/java/jp/ac/miyazaki_u/cs/earth/fescue/parser/

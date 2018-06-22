@@ -243,7 +243,7 @@ Jarファイルの方を利用する場合は、文字列置換により間に�
 
 ### Gradleによる構文解析機生成法の未使用
 
-ANTLR4文法ファイルから生成する構文解析機ファイル群の出力先を、`/src/main/antlr` ディレクトリではなく `/src/main/java/parser` に設定しています。
+ANTLR4文法ファイルから生成する構文解析機ファイル群の出力先を、`/src/main/antlr` ディレクトリではなく `/src/main/java/jp.ac.miyazaki_u.cs.earth.jp.ac.miyazaki_u.cs.earth.fescue.parser` に設定しています。
 もともとGradleによるANTLR4文法ファイルからの構文解析機生成の存在を知らず、`.travis.yml` ファイルでゴリ押しで出力していました。
 しかし、それではGradleファイルを使う利点が半減してしまうため、そのうち対応するかもしれません。
 

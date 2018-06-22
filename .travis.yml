@@ -25,8 +25,8 @@ install:
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool # ツールの確認
   - java -cp ./antlr-4.7.1-complete.jar org.antlr.v4.Tool ./src/main/resources/ClassFeature.g4 # ./src/main/resources ディレクトリ内に構文解析機を生成
   - rm antlr-4.7.1-complete.jar
-  - mkdir ./src/main/java/parser/
-  - mv ./src/main/resources/ClassFeature*.java ./src/main/resources/*.tokens ./src/main/java/parser/.
+  - mkdir ./src/main/java/jp.ac.miyazaki_u.cs.earth.jp.ac.miyazaki_u.cs.earth.fescue.parser/
+  - mv ./src/main/resources/ClassFeature*.java ./src/main/resources/*.tokens ./src/main/java/jp.ac.miyazaki_u.cs.earth.jp.ac.miyazaki_u.cs.earth.fescue.parser/.
   - rm ./src/main/resources/*.interp
 
 

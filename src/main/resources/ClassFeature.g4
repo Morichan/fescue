@@ -1,7 +1,7 @@
 grammar ClassFeature;
 
 @header {
-package parser;
+package jp.ac.miyazaki_u.cs.earth.fescue.parser;
 }
 
 property
