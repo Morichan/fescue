@@ -35,7 +35,7 @@
 
 ## ClassFeature.g4
 
-`src/main/resources/ClassFeature.g4`に置いてあります。
+`src/main/antlr/ClassFeature.g4`に置いてあります。
 
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
