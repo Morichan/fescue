@@ -1,4 +1,4 @@
-group 'jp.ac.miyazaki_u.cs.earth'
+group 'io.github.morichan'
 version '1.0.1'
 
 apply plugin: 'java'
@@ -40,10 +40,10 @@ dependencies {
     testCompileOnly 'org.apiguardian:apiguardian-api:1.+'
 }
 
-ext.antlr = [destinationDir: 'src/main/java/jp/ac/miyazaki_u/cs/earth/fescue/parser']
+ext.antlr = [destinationDir: 'src/main/java/io/github/morichan/fescue/parser']
 generateGrammarSource {
     outputDirectory = file(new File("${antlr.destinationDir}"))
-    arguments = ["-package", "jp.ac.miyazaki_u.cs.earth.fescue.parser", "-listener", "-no-visitor"].flatten()
+    arguments = ["-package", "io.github.morichan.fescue.parser", "-listener", "-no-visitor"].flatten()
 }
 
 clean {
