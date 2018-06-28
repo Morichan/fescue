@@ -50,6 +50,10 @@ clean {
     delete antlr.destinationDir
 }
 
+if (gradle.startParameter.taskNames.contains('uploadArchives')) {
+    apply from: 'build.publish.gradle'
+}
+
 
 
 junitPlatformTest {
