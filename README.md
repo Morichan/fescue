@@ -34,14 +34,14 @@ And, the Feature Elements Section of Class in UML Extraction library that uses t
 
 Windows and Linux (and other?)
 
-Gradle >= version 4.2.1
+Gradle version >= 4.2.1
 
 ```bash
 $ git clone https://github.com/Morichan/fescue
 $ cd ./fescue
 $ gradle build
 $ ls ./build/libs/
-fescue-1.0.1.jar
+fescue-2.0.0.jar
 ```
 
 
@@ -209,7 +209,8 @@ class Main {
 ```
 
 ```elisp
-(operation (visibility +)
+(operation
+    (visibility +)
     (name selectProjectData)
     (parameterList (
         (parameter
@@ -230,8 +231,10 @@ class Main {
                     (expression
                         (expression
                             (expression getDataList)
-                            (arguments ( (expressionList (expression dataId) , (expression count)) ))) . get)
-                            (arguments ( (expressionList (expression (expression Project) . number)) ))))
+                            (arguments ( (expressionList (expression dataId) , (expression count)) )))
+                        .
+                        get)
+                    (arguments ( (expressionList (expression (expression Project) . number)) ))))
             (paramProperties (properties { (propModifier readOnly) }))) ))
     (returnType (type : Data))
     (operProperties { (operProperty query) , (operProperty redefines (operName (name selectProjectDataImpl))) }))
