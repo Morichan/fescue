@@ -63,10 +63,10 @@ UMLのクラス図における属性の文章を入力すると、構文木を�
 次のように利用してください。
 
 ```java
-import jp.ac.miyazaki_u.cs.earth.fescue.sculptor.OperationSculptor;
-import jp.ac.miyazaki_u.cs.earth.fescue.feature.Operation;
-import jp.ac.miyazaki_u.cs.earth.fescue.sculptor.AttributeSculptor;
-import jp.ac.miyazaki_u.cs.earth.fescue.feature.Attribute;
+import io.github.morichan.fescue.sculptor.OperationSculptor;
+import io.github.morichan.fescue.feature.Operation;
+import io.github.morichan.fescue.sculptor.AttributeSculptor;
+import io.github.morichan.fescue.feature.Attribute;
 
 /**
  * <p> クラスの属性または操作の機能マネージャの使い方 </p>

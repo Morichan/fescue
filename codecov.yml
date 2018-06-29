@@ -13,7 +13,7 @@ coverage:
     changes: no
 
   ignore:
-    - "./src/main/java/jp/ac/miyazaki_u/cs/earth/fescue/parser/*"
+    - "./src/main/java/io/github/morichan/fescue/parser/*"
 
 parsers:
   gcov:

@@ -4,4 +4,5 @@
 /build/
 *.test
 *.swp
+build.publish.gradle
 /src/main/java/jp/ac/miyazaki_u/cs/earth/fescue/parser/
