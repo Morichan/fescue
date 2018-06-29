@@ -12,7 +12,7 @@
 
 [![Java version](https://img.shields.io/badge/java-9+-4c7e9f.svg)](https://www.java.com/en/)
 [![JUnit version](https://img.shields.io/badge/junit-5+-dc524a.svg)](http://junit.org/junit5/)
-[![Gradle version](https://img.shields.io/badge/gradle-4.3+-007042.svg)](https://gradle.org/docs/)
+[![Gradle version](https://img.shields.io/badge/gradle-4.4+-007042.svg)](https://gradle.org/docs/)
 [![ANTLR version](https://img.shields.io/badge/antlr-4+-ec312e.svg)](http://junit.org/junit5/)
 
 [![GitHub tag](https://img.shields.io/github/tag/Morichan/fescue.svg)](https://github.com/Morichan/fescue/tags)
@@ -36,31 +36,63 @@ Windows and Linux (and other?)
 
 Gradle version >= 4.2.1
 
-```bash
+```sh
 $ git clone https://github.com/Morichan/fescue
 $ cd ./fescue
 $ gradle build
 $ ls ./build/libs/
-fescue-2.0.0.jar
+fescue-2.0.1.jar
 ```
 
 
-# 使い方と機能
+
+# How to Use
+
+By Maven
+
+```xml
+<dependency>
+  <groupId>io.github.morichan</groupId>
+  <artifactId>fescue</artifactId>
+  <version>2.0.1</version>
+</dependency>
+```
+
+By Gradle
+
+```gradle
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'io.github.morichan:fescue:2.0.1'
+}
+```
+
+Explain how to use each file and its function.
 
 各ファイルの使い方と機能について説明します。
 
 ## ClassFeature.g4
 
-`src/main/antlr/ClassFeature.g4`に置いてあります。
+It is put on `src/main/antlr/ClassFeature.g4` .
+
+When you enter a sentence of the Attribute in UML Class Diagram, it generates a syntax tree.
+Please refer to [ANTLR v4](https://github.com/antlr/antlr4) for usage and how to make a syntax analyzer.
 
 UMLのクラス図における属性の文章を入力すると、構文木を生成します。
 使い方および構文解析機の作り方については、[ANTLR v4](https://github.com/antlr/antlr4)を参考にしてください。
 
-## fescue-2.0.0.jar
+![Feature's Class Diagram](https://github.com/Morichan/fescue/blob/master/documents/feature_class_diagram.svg)
 
-上記の構文解析機を利用した、属性の各要素抽出器です。
+## fescue-2.0.1.jar
 
-次のように利用してください。
+Each element extractor of the Attribute and the Operation using the above syntactic analyzer.
+
+上記の構文解析機を利用した、属性および操作の各要素抽出器です。
 
 ```java
 import io.github.morichan.fescue.sculptor.OperationSculptor;
@@ -69,18 +101,18 @@ import io.github.morichan.fescue.sculptor.AttributeSculptor;
 import io.github.morichan.fescue.feature.Attribute;
 
 /**
- * <p> クラスの属性または操作の機能マネージャの使い方 </p>
+ * <p> How to use the fescue, which the Class Feature like the Attribute and Operation </p>
  *
- * <p> コンパイル方法 </p>
+ * <p> How to Compile </p>
  *
  * <pre>
  *     {@code
- *     $ javac -encoding utf8 -classpath .;fescue-1.0.1.jar Main.java
- *     $ java -classpath .;fescue-1.0.1.jar;antlr-4.7.1-complete.jar Main
+ *     $ javac -encoding utf8 -classpath .;fescue-2.0.1.jar Main.java
+ *     $ java -classpath .;fescue-2.0.1.jar;antlr-4.7.1-complete.jar Main
  *     }
  * </pre>
  *
- * <p> 出力結果 </p>
+ * <p> Result </p>
  *
  * <pre>
  *     {@code
@@ -133,13 +165,13 @@ class Main {
 
 
 
-# 文法
+# Grammar: 文法
 
 それぞれの文法、および各要素について説明します。
 元となる文法は「UML2.0仕様書 2.1対応」 (ISBN: 978-4274066634) を参考にしました。
 詳細は`/src/main/antlr/ClassFeature.g4`をご覧ください。
 
-## 属性
+## Attribute: 属性
 
 属性の文法は次の通りです。
 
@@ -176,7 +208,7 @@ class Main {
 
 ![example_attribute](https://user-images.githubusercontent.com/20200292/35249331-eb8265e2-0014-11e8-84ec-0b27b0325618.PNG)
 
-## 操作
+## Operation: 操作
 
 操作の文法は次の通りです。
 
@@ -212,30 +244,34 @@ class Main {
 (operation
     (visibility +)
     (name selectProjectData)
-    (parameterList (
-        (parameter
-            (direction in)
-            (parameterName (name projectId))
-            (typeExpression (type : (primitiveType char)))
-            (multiplicityRange [ (upper *) ])
-            (defaultValue = (expression (literal "hogehoge001")))) ,
-        (parameter
-            (parameterName (name data))
-            (typeExpression (type : Data))
-            (multiplicityRange [
-                (lower (valueSpecification ( (expression (expression lowCount) - (expression (literal (integerLiteral 1)))) )))
-                ..
-                (upper *) ])
-            (defaultValue =
-                (expression
+    (parameterList
+        (
+            (parameter
+                (direction in)
+                (parameterName (name projectId))
+                (typeExpression (type : (primitiveType char)))
+                (multiplicityRange [ (upper *) ])
+                (defaultValue = (expression (literal "hogehoge001")))) ,
+            (parameter
+                (parameterName (name data))
+                (typeExpression (type : Data))
+                (multiplicityRange
+                    [
+                        (lower (valueSpecification ( (expression (expression lowCount) - (expression (literal (integerLiteral 1)))) )))
+                        ..
+                        (upper *)
+                    ])
+                (defaultValue =
                     (expression
                         (expression
-                            (expression getDataList)
-                            (arguments ( (expressionList (expression dataId) , (expression count)) )))
-                        .
-                        get)
-                    (arguments ( (expressionList (expression (expression Project) . number)) ))))
-            (paramProperties (properties { (propModifier readOnly) }))) ))
+                            (expression
+                                (expression getDataList)
+                                (arguments ( (expressionList (expression dataId) , (expression count)) )))
+                            .
+                            get)
+                        (arguments ( (expressionList (expression (expression Project) . number)) ))))
+                (paramProperties (properties { (propModifier readOnly) })))
+        ))
     (returnType (type : Data))
     (operProperties { (operProperty query) , (operProperty redefines (operName (name selectProjectDataImpl))) }))
 ```
@@ -244,7 +280,7 @@ class Main {
 
 
 
-# 未対応内容
+# Unsupported Contents: 未対応内容
 
 構文解析機、またはそれを利用したツールの未対応内容について説明します。
 
