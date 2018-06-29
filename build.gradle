@@ -2,6 +2,7 @@ group 'io.github.morichan'
 version '2.0.0'
 
 apply plugin: 'java'
+apply plugin: 'signing'
 
 sourceCompatibility = 9
 tasks.withType(AbstractCompile)*.options*.encoding =
@@ -52,6 +53,20 @@ clean {
 
 if (gradle.startParameter.taskNames.contains('uploadArchives')) {
     apply from: 'build.publish.gradle'
+}
+
+
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+artifacts {
+    archives javadocJar, sourcesJar
 }
 
 
