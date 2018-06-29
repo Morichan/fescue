@@ -25,7 +25,7 @@ before_install:
 after_success:
   - pwd
   - gradle clean jacocoTestReport build
-  - '[ "$TRAVIS_PULL_REQUEST" != "false" ] && [ -n "$TRAVIS_TAG" ] && gradle uploadArchives || echo "Do not Upload Archives, $TRAVIS_PULL_REQUEST , $TRAVIS_TAG"'
+  - '[ "$TRAVIS_PULL_REQUEST" != "false" ] && gradle uploadArchives || echo "Do not Upload Archives."' # プルリク申請時にOSSRHにアップロード
   - pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g' # 代替treeコマンド (https://qiita.com/yone098@github/items/bba8a42de6b06e40983b)
   - bash <(curl -s https://codecov.io/bash) # Travisでのディレクトリはローカルと異なる
   # - gradle coveralls
