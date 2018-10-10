@@ -72,13 +72,12 @@ public class Type {
      *
      * <p>
      *     型の名前を最初に設定します。
-     *     設定時に{@code null}判定と定義済み型判定を行い、真の場合は{@link IllegalArgumentException}を投げます（{@link #checkTypeName(Name)}参照）。
      * </p>
      *
      * @param name 型の名前<br>{@code null}不可
      */
     public void setName(Name name) {
-        checkTypeName(name);
+        // checkTypeName(name);
         this.name = name;
     }
 
