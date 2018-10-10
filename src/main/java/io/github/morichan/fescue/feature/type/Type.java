@@ -117,8 +117,11 @@ public class Type {
      *     定義済みの型は{@link #predefinedTypeNames}で定義しています。
      * </p>
      *
+     * @deprecated 定義した型を判別する必要が無くなりました。将来的に定義済みの型か否かを判別する真偽値をこのクラスのフィールドに追加する場合のために保存しておきますが、それ以外の利用価値がわかりません。
+     *
      * @param name 任意の名前
      */
+    @Deprecated
     private void checkTypeName(Name name) {
         if (name == null || ! predefinedTypeNames.contains(name.getNameText())) throw new IllegalArgumentException();
     }
