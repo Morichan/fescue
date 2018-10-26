@@ -41,7 +41,7 @@ $ git clone https://github.com/Morichan/fescue
 $ cd ./fescue
 $ gradle build
 $ ls ./build/libs/
-fescue-2.1.0.jar
+fescue-2.1.1.jar
 ```
 
 
@@ -54,7 +54,7 @@ By Maven
 <dependency>
   <groupId>io.github.morichan</groupId>
   <artifactId>fescue</artifactId>
-  <version>2.1.0</version>
+  <version>2.1.1</version>
 </dependency>
 ```
 
@@ -68,7 +68,7 @@ repositories {
 }
 
 dependencies {
-    compile 'io.github.morichan:fescue:2.1.0'
+    compile 'io.github.morichan:fescue:2.1.1'
 }
 ```
 
@@ -88,7 +88,7 @@ UMLのクラス図における属性の文章を入力すると、構文木を�
 
 ![Feature's Class Diagram](https://github.com/Morichan/fescue/blob/master/documents/feature_class_diagram.svg)
 
-## fescue-2.1.0.jar
+## fescue-2.1.1.jar
 
 Each element extractor of the Attribute and the Operation using the above syntactic analyzer.
 
@@ -107,8 +107,8 @@ import io.github.morichan.fescue.feature.Attribute;
  *
  * <pre>
  *     {@code
- *     $ javac -encoding utf8 -classpath .;fescue-2.1.0.jar Main.java
- *     $ java -classpath .;fescue-2.1.0.jar;antlr-4.7.1-complete.jar Main
+ *     $ javac -encoding utf8 -classpath .;fescue-2.1.1.jar Main.java
+ *     $ java -classpath .;fescue-2.1.1.jar;antlr-4.7.1-complete.jar Main
  *     }
  * </pre>
  *
