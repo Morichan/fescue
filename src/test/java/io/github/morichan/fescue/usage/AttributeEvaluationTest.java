@@ -1957,7 +1957,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を入力するとエラーを返す() {
-                    walk("not : float");
+                    walk("Boolean : Integer");
 
                     assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
                 }
@@ -1968,7 +1968,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
-                    walk("- int");
+                    walk("- Boolean");
 
                     assertThat(obj.extractVisibility()).isEqualTo("-");
                 }
@@ -1979,7 +1979,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
-                    walk("/int");
+                    walk("/String");
 
                     assertThat(obj.extractDivided()).isEqualTo("/");
                 }
@@ -1990,7 +1990,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力するとエラーを返す() {
-                    walk("int : float");
+                    walk("String : Boolean");
 
                     assertThatThrownBy(() -> obj.extractPropType()).isInstanceOf(InputMismatchException.class);
                 }
@@ -2003,7 +2003,7 @@ class AttributeEvaluationTest {
                 void 予約語と同じ文字列を名前に入力すると下限でエラーを返す() {
                     SoftAssertions softly = new SoftAssertions();
 
-                    walk("double [0..1]");
+                    walk("UnlimitedNatural [0..1]");
 
                     softly.assertThatThrownBy(() -> obj.extractMultiplicityRangeUpper()).isInstanceOf(InputMismatchException.class);
                     assertThatThrownBy(() -> obj.extractMultiplicityRangeLower()).isInstanceOf(InputMismatchException.class);
@@ -2011,7 +2011,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力すると上限でエラーを返す() {
-                    walk("double [*]");
+                    walk("UnlimitedNatural [*]");
 
                     assertThatThrownBy(() -> obj.extractMultiplicityRangeUpper()).isInstanceOf(InputMismatchException.class);
                 }
@@ -2085,7 +2085,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力するとエラーを返す() {
-                    walk("int = 1");
+                    walk("Integer = 1");
 
                     assertThatThrownBy(() -> obj.extractDefaultValue()).isInstanceOf(InputMismatchException.class);
                 }
@@ -2096,7 +2096,7 @@ class AttributeEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力するとエラーを返す() {
-                    walk("int {readOnly}");
+                    walk("Integer {readOnly}");
 
                     assertThatThrownBy(() -> obj.extractPropModifier()).isInstanceOf(InputMismatchException.class);
                 }

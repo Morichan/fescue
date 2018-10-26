@@ -174,13 +174,9 @@ expressionList
 
 primitiveType
     :   BOOLEAN
-    |   CHAR
-    |   BYTE
-    |   SHORT
-    |   INT
-    |   LONG
-    |   FLOAT
-    |   DOUBLE
+    |   INTEGER
+    |   STRING
+    |   UNLIMITED_NATURAL
     ;
 
 literal
@@ -226,15 +222,20 @@ RANGE:              '..';
 
 NEW:                'new';
 
-BOOLEAN:            'bool' | 'boolean';
-CHAR:               'c' | 'char' | 'character';
-BYTE:               'i8' | 'int8' | 'int8_t' | 'byte';
-SHORT:              'i16' | 'int16' | 'int16_t' | 'short';
-INT:                'i32' | 'int32' | 'int32_t' | 'int' | 'integer';
-LONG:               'i64' | 'int64' | 'int64_t' | 'long';
-FLOAT:              'f32' | 'float';
-DOUBLE:             'lf' | 'f64' | 'double';
+BOOLEAN:            'Boolean';
+INTEGER:            'Integer';
+STRING:             'String';
+UNLIMITED_NATURAL:  'UnlimitedNatural';
 VOID:               'void';
+
+//BOOLEAN:            'bool' | 'boolean';
+//CHAR:               'c' | 'char' | 'character';
+//BYTE:               'i8' | 'int8' | 'int8_t' | 'byte';
+//SHORT:              'i16' | 'int16' | 'int16_t' | 'short';
+//INT:                'i32' | 'int32' | 'int32_t' | 'int' | 'integer';
+//LONG:               'i64' | 'int64' | 'int64_t' | 'long';
+//FLOAT:              'f32' | 'float';
+//DOUBLE:             'lf' | 'f64' | 'double';
 
 LPAREN:             '(';
 RPAREN:             ')';

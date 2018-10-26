@@ -75,7 +75,7 @@ class AttributeEvaluationTest {
         void 正しくない文を設定して走査したらエラーを返す() {
             obj = new AttributeEvaluation();
 
-            obj.setText("- int");
+            obj.setText("- Integer");
 
             assertThatThrownBy(() -> obj.walk()).isInstanceOf(InputMismatchException.class);
         }

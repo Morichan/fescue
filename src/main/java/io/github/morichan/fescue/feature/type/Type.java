@@ -27,18 +27,14 @@ public class Type {
     private Name name;
 
     /**
-     * 定義済みの型の名前のリスト
+     * <p> 定義済みのプリミティブ型の名前のリスト </p>
+     *
+     * <p>
+     * 定義はUML2.0 仕様書 12章 Core::PrimitiveTypesに記述しているものを利用しています。
+     * </p>
      */
-    private static final List<String> predefinedTypeNames = Arrays.asList(
-            "bool", "boolean",
-            "c", "char", "character",
-            "i8", "int8", "int8_t", "byte",
-            "i16", "int16", "int16_t", "short",
-            "i32", "int32", "int32_t", "int", "integer",
-            "i64", "int64", "int64_t", "long",
-            "f32", "float",
-            "lf", "f64", "double",
-            "void");
+    private static final List<String> predefinedPrimitiveTypeNames = Arrays.asList(
+            "Integer", "Boolean", "String", "UnlimitedNatural");
 
     /**
      * <p> デフォルトコンストラクタ </p>
@@ -114,7 +110,7 @@ public class Type {
      * <p> 入力した名前が{@code null}または定義済みの型でない場合は{@link IllegalArgumentException}を投げます。 </p>
      *
      * <p>
-     *     定義済みの型は{@link #predefinedTypeNames}で定義しています。
+     *     定義済みの型は{@link #predefinedPrimitiveTypeNames}で定義しています。
      * </p>
      *
      * @deprecated 定義した型を判別する必要が無くなりました。将来的に定義済みの型か否かを判別する真偽値をこのクラスのフィールドに追加する場合のために保存しておきますが、それ以外の利用価値がわかりません。
@@ -123,6 +119,6 @@ public class Type {
      */
     @Deprecated
     private void checkTypeName(Name name) {
-        if (name == null || ! predefinedTypeNames.contains(name.getNameText())) throw new IllegalArgumentException();
+        if (name == null || ! predefinedPrimitiveTypeNames.contains(name.getNameText())) throw new IllegalArgumentException();
     }
 }

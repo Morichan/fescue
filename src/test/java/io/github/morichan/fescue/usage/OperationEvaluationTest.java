@@ -234,7 +234,7 @@ class OperationEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を入力するとエラーを返す() {
-                    walk("not() : float");
+                    walk("String() : String");
 
                     assertThatThrownBy(() -> obj.extractName()).isInstanceOf(InputMismatchException.class);
                 }
@@ -245,7 +245,7 @@ class OperationEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力してもエラーは返さない() {
-                    walk("+ int()");
+                    walk("+ Integer()");
 
                     assertThat(obj.extractVisibility()).isEqualTo("+");
                 }
@@ -256,7 +256,7 @@ class OperationEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力するとエラーを返す() {
-                    walk("double() : double");
+                    walk("String() : double");
 
                     assertThatThrownBy(() -> obj.extractReturnType()).isInstanceOf(InputMismatchException.class);
                 }
@@ -267,7 +267,7 @@ class OperationEvaluationTest {
 
                 @Test
                 void 予約語と同じ文字列を名前に入力するとエラーを返す() {
-                    walk("int() {query}");
+                    walk("Boolean() {query}");
 
                     assertThatThrownBy(() -> obj.extractOperationProperty()).isInstanceOf(InputMismatchException.class);
                 }
