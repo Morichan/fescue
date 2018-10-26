@@ -37,6 +37,15 @@ public class Type {
             "Integer", "Boolean", "String", "UnlimitedNatural");
 
     /**
+     * <p> プリミティブ型の場合は真を返す真偽値 </p>
+     *
+     * <p>
+     * {@link #predefinedPrimitiveTypeNames} 内の要素と一致している場合は真であるように定義しています。
+     * </p>
+     */
+    private boolean isPrimitiveTypes = false;
+
+    /**
      * <p> デフォルトコンストラクタ </p>
      *
      * <p>
@@ -73,7 +82,7 @@ public class Type {
      * @param name 型の名前<br>{@code null}不可
      */
     public void setName(Name name) {
-        // checkTypeName(name);
+        checkTypeName(name);
         this.name = name;
     }
 
@@ -92,6 +101,10 @@ public class Type {
         return name;
     }
 
+    public boolean isPrimitiveTypes() {
+        return isPrimitiveTypes;
+    }
+
     /**
      * <p> 型の名前の文字列を取得します。 </p>
      *
@@ -107,18 +120,15 @@ public class Type {
     }
 
     /**
-     * <p> 入力した名前が{@code null}または定義済みの型でない場合は{@link IllegalArgumentException}を投げます。 </p>
+     * <p> 入力した名前がプリミティブ型か否かを判定します。 </p>
      *
      * <p>
      *     定義済みの型は{@link #predefinedPrimitiveTypeNames}で定義しています。
      * </p>
      *
-     * @deprecated 定義した型を判別する必要が無くなりました。将来的に定義済みの型か否かを判別する真偽値をこのクラスのフィールドに追加する場合のために保存しておきますが、それ以外の利用価値がわかりません。
-     *
      * @param name 任意の名前
      */
-    @Deprecated
     private void checkTypeName(Name name) {
-        if (name == null || ! predefinedPrimitiveTypeNames.contains(name.getNameText())) throw new IllegalArgumentException();
+        if (predefinedPrimitiveTypeNames.contains(name.getNameText())) isPrimitiveTypes = true;
     }
 }

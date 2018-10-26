@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import java.util.Arrays;
 import java.util.List;
 
+import static net.java.quickcheck.generator.PrimitiveGenerators.booleans;
 import static net.java.quickcheck.generator.PrimitiveGenerators.strings;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,18 +18,9 @@ class TypeTest {
     Type obj;
 
     List<String> predefinedTypeNames = Arrays.asList(
-            "bool", "boolean",
-            "c", "char", "character",
-            "i8", "int8", "int8_t", "byte",
-            "i16", "int16", "int16_t", "short",
-            "i32", "int32", "int32_t", "int", "integer",
-            "i64", "int64", "int64_t", "long",
-            "f32", "float",
-            "lf", "f64", "double",
-            "void");
-    final Generator<String> exceptionTypeNameGenerator = strings(1, 1);
+            "Boolean", "Integer", "String", "UnlimitedNatural");
 
-    final int predefinedTypeNameCount = 28;
+    final int predefinedTypeNameCount = 4;
 
     @BeforeEach
     void setup() {
@@ -43,6 +35,24 @@ class TypeTest {
         Name actual = obj.getName();
 
         assertThat(actual).isEqualToComparingFieldByField(expected);
+    }
+
+    @Test
+    void プリミティブ型以外を設定すると偽を返す() {
+
+        obj.setName(new Name("int"));
+        boolean actual = obj.isPrimitiveTypes();
+
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void プリミティブ型を設定すると真を返す() {
+
+        obj.setName(new Name("Integer"));
+        boolean actual = obj.isPrimitiveTypes();
+
+        assertThat(actual).isTrue();
     }
 
     @Test
